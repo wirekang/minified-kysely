@@ -42,7 +42,7 @@ export class GitManager {
       .sort((a, b) => semverCompare(a.name, b.name, true));
   }
 
-  async listCommitIds(): Promise<Array<string>> {
+  getCommitIds(): Array<string> {
     return this.commitIds;
   }
 
@@ -65,6 +65,6 @@ export class GitManager {
     rw.sorting(Git.Revwalk.SORT.TIME);
     rw.push(c.id());
     const commits = await rw.getCommitsUntil(() => true);
-    return commits.map((it) => it.id().toString());
+    return commits.map((it) => it.id().toString()).reverse();
   }
 }

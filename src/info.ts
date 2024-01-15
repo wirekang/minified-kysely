@@ -20,5 +20,5 @@ export async function loadInfo() {
 }
 
 export function saveInfo(info: Info) {
-  return fs.writeFile(INFO_JSON_PATH, JSON.stringify(info));
+  return fs.writeFile(INFO_JSON_PATH, JSON.stringify(info, null, 4));
 }

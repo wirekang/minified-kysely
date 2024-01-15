@@ -1,13 +1,13 @@
 import { GitManager, RemoteHead } from "./git-manager";
 import { Info, Module, loadInfo, saveInfo } from "./info";
-import { createTempDir, escapeFileName, execAsync, normalizePath } from "./utils";
+import { createTempDir, escapeBranchName, execAsync, removePathSuffix } from "./utils";
 import path from "node:path/posix";
 import fs from "node:fs/promises";
 import { BRANCHES, DEV_DEPENDENCIES, DIST_DIR, KYSELY_MIN_VERSION } from "./constants";
 import { rimraf } from "rimraf";
 import { bundle } from "./bundle";
 import semverCompare from "semver/functions/compare";
-import { patchDependencies } from "./deps";
+import { patchFiles } from "./patch";
 
 (async () => {
   const gm = new GitManager();
@@ -31,6 +31,12 @@ import { patchDependencies } from "./deps";
 })();
 
 async function go(modules: Array<Module>, gm: GitManager, type: string, head: RemoteHead) {
+  const commitIds = gm.getCommitIds();
+  if (!commitIds.includes(head.oid)) {
+    console.log(`Ignore deleted commit ${head.name} ${head.oid}`);
+    return;
+  }
+
   let module = modules.find((it) => it.id === head.name);
 
   if (module === undefined) {
@@ -50,25 +56,15 @@ async function go(modules: Array<Module>, gm: GitManager, type: string, head: Re
     return;
   }
   console.log(`Update ${type} ${head.name}`);
-  module.dir = normalizePath(path.join(DIST_DIR, type, escapeFileName(head.name)));
+  module.dir = removePathSuffix(path.join(DIST_DIR, type, escapeBranchName(head.name)));
   module.commitId = head.oid;
 
   console.log(`Checkout ${head.name}(${head.oid})`);
   await gm.restore();
   await gm.checkout(head.oid);
   const gitDir = gm.getDirectory();
-  const packageJsonPath = path.join(gitDir, "package.json");
-  const packageJson = JSON.parse(await fs.readFile(packageJsonPath, { encoding: "utf-8" }));
-  const newDeps = patchDependencies(
-    gitDir,
-    head.oid,
-    packageJson.dependencies ?? [],
-    packageJson.devDependencies ?? [],
-    await gm.listCommitIds(),
-  );
-  packageJson.dependencies = newDeps.dependencies;
-  packageJson.devDependencies = newDeps.devDependencies;
-  await fs.writeFile(packageJsonPath, JSON.stringify(packageJson));
+  await patchFiles(gitDir, head.oid, commitIds);
+  const packageJson = JSON.parse(await fs.readFile(path.join(gitDir, "package.json"), { encoding: "utf-8" }));
   await execAsync(`cd "${gitDir}" && npm ci`);
   await execAsync(`cd "${gitDir}" && npm run build`);
   const exports: any = {};
@@ -88,6 +84,6 @@ async function go(modules: Array<Module>, gm: GitManager, type: string, head: Re
   await fs.cp(buildDir, module.dir, { recursive: true });
   module.files = (await fs.readdir(module.dir, { recursive: true, withFileTypes: true }))
     .filter((it) => it.isFile())
-    .map((it) => path.join(normalizePath(it.path), it.name))
+    .map((it) => path.join(it.path, it.name))
     .map((it) => it.substring(module!!.dir.length + 1));
 }
