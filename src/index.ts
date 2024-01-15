@@ -1,4 +1,4 @@
-import { Module, loadInfo, saveInfo } from "./info";
+import { loadInfo, saveInfo } from "./info";
 import { createTempDir, escapeBranchName, execAsync, removePathSuffix } from "./utils";
 //@ts-ignore
 import path from "node:path/posix";
@@ -8,6 +8,7 @@ import { BRANCHES, DEV_DEPENDENCIES, DIST_DIR } from "./constants";
 import { bundle } from "./bundle";
 import { patchFiles } from "./patch";
 import { checkout, clone, getCommits, restore } from "./git";
+import { Module } from "./info-type";
 
 (async () => {
   const dir = await createTempDir("kysely");
@@ -49,7 +50,7 @@ async function go(
   type: string,
   id: string,
   commitId: string,
-  commitIds: Array<string>,
+  commitIds: Array<string>
 ) {
   let module = modules.find((it) => it.id === id);
 

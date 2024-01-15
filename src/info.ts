@@ -1,21 +1,9 @@
 //@ts-ignore
 import fs from "node:fs/promises";
 import { INFO_JSON_PATH } from "./constants";
+import type { Info } from "./info-type";
 
-export type Info = {
-  lastCommitId: string;
-  tags: Array<Module>;
-  branches: Array<Module>;
-};
 
-export type Module = {
-  id: string;
-  commitId: string;
-  exports: Array<string>;
-  dependencies: Record<string, string>;
-  dir: string;
-  files: Array<string>;
-};
 
 export async function loadInfo() {
   return JSON.parse(await fs.readFile(INFO_JSON_PATH, { encoding: "utf-8" })) as Info;
