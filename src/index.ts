@@ -39,6 +39,7 @@ import { checkout, clone, getCommits, restore } from "./git";
   for (const tag in tags) {
     await go(dir, info.tags, "tag", tag, tags[tag], commitIds);
   }
+  info.lastCommitId = commitIds[commitIds.length - 1];
   await saveInfo(info);
 })();
 

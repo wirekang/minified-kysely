@@ -3,6 +3,7 @@ import fs from "node:fs/promises";
 import { INFO_JSON_PATH } from "./constants";
 
 export type Info = {
+  lastCommitId: string;
   tags: Array<Module>;
   branches: Array<Module>;
 };
