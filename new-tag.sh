@@ -30,6 +30,7 @@ if [ -z "$NEEDS_TAG" ]; then
     echo "Tagged with $NEW_TAG"
     git tag "$NEW_TAG"
     git push --tags
+    git push
 else
     echo "Already a tag on this commit"
 fi

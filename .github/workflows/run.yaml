@@ -26,4 +26,4 @@ jobs:
           git config user.email "<>"
           git add dist
           git commit -m "by bot"
-      - run: ./new-commit.sh
+      - run: ./new-tag.sh
