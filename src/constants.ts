@@ -1,3 +1,4 @@
+//@ts-ignore
 import path from "node:path/posix";
 
 export const KYSELY_GIT_URL = "https://github.com/kysely-org/kysely.git";

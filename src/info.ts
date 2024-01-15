@@ -1,3 +1,4 @@
+//@ts-ignore
 import fs from "node:fs/promises";
 import { INFO_JSON_PATH } from "./constants";
 

@@ -1,5 +1,7 @@
 import { JSON_PATCHES } from "./constants";
+//@ts-ignore
 import path from "node:path/posix";
+//@ts-ignore
 import fs from "node:fs/promises";
 import { nestedAssign } from "./utils";
 

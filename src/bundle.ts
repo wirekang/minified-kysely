@@ -1,4 +1,5 @@
 import { rollup } from "rollup";
+//@ts-ignore
 import path from "node:path/posix";
 import terser from "@rollup/plugin-terser";
 import { dts } from "rollup-plugin-dts";

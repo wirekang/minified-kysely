@@ -1,6 +1,8 @@
 import { Module, loadInfo, saveInfo } from "./info";
 import { createTempDir, escapeBranchName, execAsync, removePathSuffix } from "./utils";
+//@ts-ignore
 import path from "node:path/posix";
+//@ts-ignore
 import fs from "node:fs/promises";
 import { BRANCHES, DEV_DEPENDENCIES, DIST_DIR } from "./constants";
 import { bundle } from "./bundle";

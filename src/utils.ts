@@ -1,6 +1,10 @@
+//@ts-ignore
 import { exec } from "node:child_process";
+//@ts-ignore
 import os from "node:os";
+//@ts-ignore
 import path from "node:path/posix";
+//@ts-ignore
 import fs from "node:fs/promises";
 
 export async function createTempDir(name: string) {
