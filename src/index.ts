@@ -3,10 +3,9 @@ import { createTempDir, escapeBranchName, execAsync, removePathSuffix } from "./
 import path from "node:path/posix";
 import fs from "node:fs/promises";
 import { BRANCHES, DEV_DEPENDENCIES, DIST_DIR } from "./constants";
-import { rimraf } from "rimraf";
 import { bundle } from "./bundle";
 import { patchFiles } from "./patch";
-import { Commit, checkout, clone, getCommits, restore } from "./git";
+import { checkout, clone, getCommits, restore } from "./git";
 
 (async () => {
   const dir = await createTempDir("kysely");
@@ -90,7 +89,7 @@ async function go(
   module.dependencies = dependencies;
   const bundleDir = await createTempDir("rollup");
   await bundle(dir, bundleDir, exports);
-  await rimraf(module.dir);
+  await execAsync(`rm -rf "${module.dir}"`);
   await fs.mkdir(module.dir, { recursive: true });
   await fs.cp(bundleDir, module.dir, { recursive: true });
   module.files = (await fs.readdir(module.dir, { recursive: true, withFileTypes: true }))
