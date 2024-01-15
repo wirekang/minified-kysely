@@ -17,12 +17,7 @@ export async function bundle(rootDir: string, outDir: string, exports: Record<st
       format: "es",
       generatedCode: "es2015",
     },
-    plugins: [
-      terser({
-        keep_classnames: true,
-        keep_fnames: true,
-      }),
-    ],
+    plugins: [terser()],
   });
   await jsBundle.write({ dir: outDir });
   await jsBundle.close();
