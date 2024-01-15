@@ -22,9 +22,10 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run start
-      - run: |
+      - name: Push changes
+        run: |
           git config user.name "GitHub Actions Bot"
           git config user.email "<>"
           git add dist
-          git commit -m "by bot"
+          git commit -m "by bot" || echo "no changes"
           git push
