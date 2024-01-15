@@ -12,6 +12,10 @@ export async function bundle(rootDir: string, outDir: string, exports: Record<st
   const jsBundle = await rollup({
     input,
     logLevel: "silent",
+    output: {
+      format: "es",
+      generatedCode: "es2015",
+    },
     plugins: [
       terser({
         keep_classnames: true,
