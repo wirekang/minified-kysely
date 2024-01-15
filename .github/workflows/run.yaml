@@ -24,6 +24,6 @@ jobs:
         run: |
           git config user.name "GitHub Actions Bot"
           git config user.email "<>"
-          git add dist
+          git add dist || "no changes in /dist"
           git commit -m "by bot"
       - run: ./new-tag.sh
