@@ -1,49 +1,61 @@
-import { GitManager, RemoteHead } from "./git-manager";
-import { Info, Module, loadInfo, saveInfo } from "./info";
+import { Module, loadInfo, saveInfo } from "./info";
 import { createTempDir, escapeBranchName, execAsync, removePathSuffix } from "./utils";
 import path from "node:path/posix";
 import fs from "node:fs/promises";
-import { BRANCHES, DEV_DEPENDENCIES, DIST_DIR, KYSELY_MIN_VERSION } from "./constants";
+import { BRANCHES, DEV_DEPENDENCIES, DIST_DIR } from "./constants";
 import { rimraf } from "rimraf";
 import { bundle } from "./bundle";
-import semverCompare from "semver/functions/compare";
 import { patchFiles } from "./patch";
+import { Commit, checkout, clone, getCommits, restore } from "./git";
 
 (async () => {
-  const gm = new GitManager();
-  await gm.init();
-  const tags = await gm.listVersionTags();
-  const branches = await gm.listBranches();
+  const dir = await createTempDir("kysely");
+  console.log(`Clone kysely into ${dir}`);
+  await clone(dir);
+  const commits = await getCommits(dir);
+  console.log(`Commits: ${commits.length}`);
+
+  const branches: Record<string, string> = {};
+  const tags: Record<string, string> = {};
+  commits.forEach((commit) => {
+    commit.branches.forEach((branch) => {
+      if (BRANCHES.includes(branch)) {
+        branches[branch] = commit.id;
+      }
+    });
+    commit.tags.forEach((tag) => {
+      tags[tag] = commit.id;
+    });
+  });
+  console.log(`Branches: ${Object.keys(branches).join(",")}`);
+  console.log(`Tags: ${Object.keys(tags).join(",")}`);
+
+  const commitIds = commits.map((it) => it.id);
   const info = await loadInfo();
-  for (const branch of branches) {
-    if (!BRANCHES.includes(branch.name)) {
-      continue;
-    }
-    await go(info.branches, gm, "branch", branch);
+  for (const branch in branches) {
+    await go(dir, info.branches, "branch", branch, branches[branch], commitIds);
   }
-  for (const tag of tags) {
-    if (semverCompare(KYSELY_MIN_VERSION, tag.name) === 1) {
-      continue;
-    }
-    await go(info.tags, gm, "tag", tag);
+  for (const tag in tags) {
+    await go(dir, info.tags, "tag", tag, tags[tag], commitIds);
   }
   await saveInfo(info);
 })();
 
-async function go(modules: Array<Module>, gm: GitManager, type: string, head: RemoteHead) {
-  const commitIds = gm.getCommitIds();
-  if (!commitIds.includes(head.oid)) {
-    console.log(`Ignore deleted commit ${head.name} ${head.oid}`);
-    return;
-  }
-
-  let module = modules.find((it) => it.id === head.name);
+async function go(
+  dir: string,
+  modules: Array<Module>,
+  type: string,
+  id: string,
+  commitId: string,
+  commitIds: Array<string>,
+) {
+  let module = modules.find((it) => it.id === id);
 
   if (module === undefined) {
-    console.log(`New ${type} ${head.name}`);
+    console.log(`New ${type} ${id}`);
     const newModule: Module = {
-      id: head.name,
-      commitId: head.oid,
+      id,
+      commitId,
       dependencies: {},
       exports: [],
       files: [],
@@ -51,22 +63,21 @@ async function go(modules: Array<Module>, gm: GitManager, type: string, head: Re
     };
     modules.push(newModule);
     module = newModule;
-  } else if (module.commitId === head.oid) {
-    console.log(`Skip ${type} ${head.name}`);
+  } else if (module.commitId === commitId) {
+    console.log(`Skip unchanged ${type} ${id}`);
     return;
   }
-  console.log(`Update ${type} ${head.name}`);
-  module.dir = removePathSuffix(path.join(DIST_DIR, type, escapeBranchName(head.name)));
-  module.commitId = head.oid;
+  console.log(`Update ${type} ${id}`);
+  module.dir = removePathSuffix(path.join(DIST_DIR, type, escapeBranchName(id)));
+  module.commitId = commitId;
 
-  console.log(`Checkout ${head.name}(${head.oid})`);
-  await gm.restore();
-  await gm.checkout(head.oid);
-  const gitDir = gm.getDirectory();
-  await patchFiles(gitDir, head.oid, commitIds);
-  const packageJson = JSON.parse(await fs.readFile(path.join(gitDir, "package.json"), { encoding: "utf-8" }));
-  await execAsync(`cd "${gitDir}" && npm ci`);
-  await execAsync(`cd "${gitDir}" && npm run build`);
+  console.log(`Checkout ${id}(${commitId})`);
+  await restore(dir);
+  await checkout(dir, commitId);
+  await patchFiles(dir, commitId, commitIds);
+  await execAsync(`cd "${dir}" && npm ci`);
+  await execAsync(`cd "${dir}" && npm run build`);
+  const packageJson = JSON.parse(await fs.readFile(path.join(dir, "package.json"), { encoding: "utf-8" }));
   const exports: any = {};
   Object.keys(packageJson.exports).forEach((it) => {
     exports[it] = packageJson.exports[it].import;
@@ -77,11 +88,11 @@ async function go(modules: Array<Module>, gm: GitManager, type: string, head: Re
   });
   module.exports = Object.keys(exports);
   module.dependencies = dependencies;
-  const buildDir = await createTempDir("rollup");
-  await bundle(gitDir, buildDir, exports);
+  const bundleDir = await createTempDir("rollup");
+  await bundle(dir, bundleDir, exports);
   await rimraf(module.dir);
   await fs.mkdir(module.dir, { recursive: true });
-  await fs.cp(buildDir, module.dir, { recursive: true });
+  await fs.cp(bundleDir, module.dir, { recursive: true });
   module.files = (await fs.readdir(module.dir, { recursive: true, withFileTypes: true }))
     .filter((it) => it.isFile())
     .map((it) => path.join(it.path, it.name))

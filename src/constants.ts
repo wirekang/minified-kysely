@@ -1,11 +1,12 @@
 import path from "node:path/posix";
 
 export const KYSELY_GIT_URL = "https://github.com/kysely-org/kysely.git";
+export const GIT_SEPERATOR = "!@{#";
 export const DIST_DIR = "dist";
 export const INFO_JSON_PATH = path.join(DIST_DIR, "info.json");
 export const DEV_DEPENDENCIES = ["typescript"];
 export const BRANCHES = ["master"];
-export const KYSELY_MIN_VERSION = "0.24.0";
+export const START_COMMIT = "501ea488807b0f6a0750d61a53f9bc4c3c965cac";
 
 export const JSON_PATCHES: Record<string, Array<JsonPatch>> = {
   "package.json": [

@@ -13,7 +13,6 @@ export async function createTempDir(name: string) {
 
 export function execAsync(cmd: string): Promise<string> {
   return new Promise((resolve, reject) => {
-    console.log("Exec " + cmd);
     exec(cmd, (err, stdout, stderr) => {
       if (err) {
         console.error(stdout);

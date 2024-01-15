@@ -21,6 +21,29 @@
             "dir": "dist/tag/0.24.0"
         },
         {
+            "id": "0.24.1",
+            "commitId": "bbcf1f56f0005eb06e8adf3dad4c8ff5fc041df0",
+            "dependencies": {
+                "typescript": "5.0.2"
+            },
+            "exports": [
+                ".",
+                "./helpers/postgres",
+                "./helpers/mysql"
+            ],
+            "files": [
+                "index.d.ts",
+                "index.js",
+                "kysely.d-i-Fj6aQr.d.ts",
+                "sql-HMtWStn6.js",
+                "helpers/mysql.d.ts",
+                "helpers/mysql.js",
+                "helpers/postgres.d.ts",
+                "helpers/postgres.js"
+            ],
+            "dir": "dist/tag/0.24.1"
+        },
+        {
             "id": "0.24.2",
             "commitId": "a826cede4007211ec670bfe094de8acdddbbe1cb",
             "dependencies": {

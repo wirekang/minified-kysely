@@ -8,20 +8,15 @@
     "start": "npm run build && node build/"
   },
   "dependencies": {
-    "@rollup/plugin-multi-entry": "^6.0.1",
     "@rollup/plugin-terser": "^0.4.4",
     "@rollup/pluginutils": "^5.1.0",
     "axios": "^1.6.5",
-    "nodegit": "^0.27.0",
     "rimraf": "^5.0.5",
     "rollup": "^4.9.5",
-    "rollup-plugin-dts": "^6.1.0",
-    "semver": "^7.5.4"
+    "rollup-plugin-dts": "^6.1.0"
   },
   "devDependencies": {
     "@types/jest": "^29.5.11",
-    "@types/nodegit": "^0.28.7",
-    "@types/semver": "^7.5.6",
     "jest": "^29.7.0",
     "prettier": "^3.2.2",
     "typescript": "^5.3.3"
