@@ -20,10 +20,8 @@ jobs:
           node-version: 20.x
       - run: npm ci
       - run: npm run start
-      - name: Push changes
+      - name: Setup git config
         run: |
           git config user.name "GitHub Actions Bot"
           git config user.email "<>"
-          git add dist
-          git commit -m "by bot" || echo "no changes"
-          git push
+      - run: ./new-commit.sh
