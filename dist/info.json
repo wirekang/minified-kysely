@@ -221,28 +221,64 @@
             "dir": "dist/tag/0.27.0"
         },
         {
-          "id": "0.27.1",
-          "commitId": "20e91306ed3d8e565ccacc6cf011210b72ea2fce",
-          "dependencies": {
-            "typescript": "^5.2.2"
-          },
-          "exports": [".", "./helpers/postgres", "./helpers/mysql", "./helpers/mssql", "./helpers/sqlite"],
-          "files": [
-            "index.d.ts",
-            "index.js",
-            "json-object-args-K6J3VjSb.js",
-            "kysely.d-WYgyVani.d.ts",
-            "sql-_-gR90hb.js",
-            "helpers/mssql.d.ts",
-            "helpers/mssql.js",
-            "helpers/mysql.d.ts",
-            "helpers/mysql.js",
-            "helpers/postgres.d.ts",
-            "helpers/postgres.js",
-            "helpers/sqlite.d.ts",
-            "helpers/sqlite.js"
-          ],
-          "dir": "dist/tag/0.27.1"
+            "id": "0.27.1",
+            "commitId": "20e91306ed3d8e565ccacc6cf011210b72ea2fce",
+            "dependencies": {
+                "typescript": "^5.2.2"
+            },
+            "exports": [
+                ".",
+                "./helpers/postgres",
+                "./helpers/mysql",
+                "./helpers/mssql",
+                "./helpers/sqlite"
+            ],
+            "files": [
+                "index.d.ts",
+                "index.js",
+                "json-object-args-K6J3VjSb.js",
+                "kysely.d-WYgyVani.d.ts",
+                "sql-_-gR90hb.js",
+                "helpers/mssql.d.ts",
+                "helpers/mssql.js",
+                "helpers/mysql.d.ts",
+                "helpers/mysql.js",
+                "helpers/postgres.d.ts",
+                "helpers/postgres.js",
+                "helpers/sqlite.d.ts",
+                "helpers/sqlite.js"
+            ],
+            "dir": "dist/tag/0.27.1"
+        },
+        {
+            "id": "0.27.2",
+            "commitId": "5091048ddb4147f17fe33564cb4f3f313bc75adb",
+            "dependencies": {
+                "typescript": "^5.2.2"
+            },
+            "exports": [
+                ".",
+                "./helpers/postgres",
+                "./helpers/mysql",
+                "./helpers/mssql",
+                "./helpers/sqlite"
+            ],
+            "files": [
+                "index.d.ts",
+                "index.js",
+                "json-object-args-K6J3VjSb.js",
+                "kysely.d-uju5WyNj.d.ts",
+                "sql-_-gR90hb.js",
+                "helpers/mssql.d.ts",
+                "helpers/mssql.js",
+                "helpers/mysql.d.ts",
+                "helpers/mysql.js",
+                "helpers/postgres.d.ts",
+                "helpers/postgres.js",
+                "helpers/sqlite.d.ts",
+                "helpers/sqlite.js"
+            ],
+            "dir": "dist/tag/0.27.2"
         }
     ],
     "branches": [
