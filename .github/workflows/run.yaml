@@ -3,7 +3,7 @@ name: "run"
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0/30 * * * *'
+    - cron: '0 * * * *'
 
 jobs:
   run:
@@ -24,6 +24,6 @@ jobs:
         run: |
           git config user.name "GitHub Actions Bot"
           git config user.email "<>"
-          git add dist || "no changes in /dist"
+          git add dist
           git commit -m "by bot"
       - run: ./new-tag.sh
