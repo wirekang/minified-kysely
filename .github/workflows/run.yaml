@@ -24,4 +24,4 @@ jobs:
           git config user.email "<>"
           git add dist
           git commit -m "by bot"
-      - run: ./new-tag.sh
+          git push origin main
