@@ -1687,6 +1687,7 @@ interface ColumnMetadata {
     readonly isAutoIncrementing: boolean;
     readonly isNullable: boolean;
     readonly hasDefaultValue: boolean;
+    readonly comment?: string;
 }
 
 /**
