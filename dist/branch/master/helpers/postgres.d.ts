@@ -1,4 +1,4 @@
-import { bF as Expression, R as RawBuilder, aW as Simplify } from '../kysely.d--3O4Nfzo.js';
+import { bF as Expression, R as RawBuilder, aW as Simplify } from '../kysely.d-4CMRQOK4.js';
 
 /**
  * A postgres helper for aggregating a subquery (or other expression) into a JSONB array.

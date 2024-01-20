@@ -1501,7 +1501,9 @@ declare const DeleteQueryNode: Readonly<{
     is(node: OperationNode): node is DeleteQueryNode;
     create(fromItems: OperationNode[], withNode?: WithNode): DeleteQueryNode;
     cloneWithOrderByItems(deleteNode: DeleteQueryNode, items: ReadonlyArray<OrderByItemNode>): DeleteQueryNode;
+    cloneWithoutOrderBy(deleteNode: DeleteQueryNode): DeleteQueryNode;
     cloneWithLimit(deleteNode: DeleteQueryNode, limit: LimitNode): DeleteQueryNode;
+    cloneWithoutLimit(deleteNode: DeleteQueryNode): DeleteQueryNode;
     cloneWithUsing(deleteNode: DeleteQueryNode, tables: OperationNode[]): DeleteQueryNode;
 }>;
 
@@ -1526,8 +1528,9 @@ declare const QueryNode: Readonly<{
     cloneWithWhere<T extends HasWhere>(node: T, operation: OperationNode): T;
     cloneWithJoin<T_1 extends HasJoins>(node: T_1, join: JoinNode): T_1;
     cloneWithReturning<T_2 extends HasReturning>(node: T_2, selections: ReadonlyArray<SelectionNode>): T_2;
-    cloneWithoutWhere<T_3 extends HasWhere>(node: T_3): T_3;
-    cloneWithExplain<T_4 extends HasExplain>(node: T_4, format: ExplainFormat | undefined, options: Expression<any> | undefined): T_4;
+    cloneWithoutReturning<T_3 extends HasReturning>(node: T_3): T_3;
+    cloneWithoutWhere<T_4 extends HasWhere>(node: T_4): T_4;
+    cloneWithExplain<T_5 extends HasExplain>(node: T_5, format: ExplainFormat | undefined, options: Expression<any> | undefined): T_5;
 }>;
 
 type RootOperationNode = QueryNode | CreateTableNode | CreateIndexNode | CreateSchemaNode | CreateViewNode | DropTableNode | DropIndexNode | DropSchemaNode | DropViewNode | AlterTableNode | RawNode | CreateTypeNode | DropTypeNode | MergeQueryNode;
@@ -10587,6 +10590,25 @@ declare class InsertQueryBuilder<DB, TB extends keyof DB, O> implements Returnin
      */
     returningAll(): InsertQueryBuilder<DB, TB, Selectable<DB[TB]>>;
     /**
+     * Clears all `returning` clauses from the query.
+     *
+     * ### Examples
+     *
+     * ```ts
+     * db.insertInto('person')
+     *   .values({ first_name: 'James', last_name: 'Smith', age: 42 })
+     *   .returning(['first_name'])
+     *   .clearReturning()
+     * ```
+     *
+     * The generated SQL(PostgreSQL):
+     *
+     * ```sql
+     * insert into "person" ("James", "Smith", 42)
+     * ```
+     */
+    clearReturning(): InsertQueryBuilder<DB, TB, InsertResult>;
+    /**
      * Simply calls the provided function passing `this` as the only argument. `$call` returns
      * what the provided function returns.
      *
@@ -11570,6 +11592,65 @@ declare class DeleteQueryBuilder<DB, TB extends keyof DB, O> implements WhereInt
      */
     returningAll<T extends TB>(table: T): DeleteQueryBuilder<DB, TB, ReturningAllRow<DB, T, O>>;
     returningAll(): DeleteQueryBuilder<DB, TB, ReturningAllRow<DB, TB, O>>;
+    /**
+     * Clears all `returning` clauses from the query.
+     *
+     * ### Examples
+     *
+     * ```ts
+     * db.deleteFrom('pet')
+     *   .returningAll()
+     *   .where('name', '=', 'Max')
+     *   .clearReturning()
+     * ```
+     *
+     * The generated SQL(PostgreSQL):
+     *
+     * ```sql
+     * delete from "pet" where "name" = "Max"
+     * ```
+     */
+    clearReturning(): DeleteQueryBuilder<DB, TB, DeleteResult>;
+    /**
+     * Clears the `limit` clause from the query.
+     *
+     * ### Examples
+     *
+     * ```ts
+     * db.deleteFrom('pet')
+     *   .returningAll()
+     *   .where('name', '=', 'Max')
+     *   .limit(5)
+     *   .clearLimit()
+     * ```
+     *
+     * The generated SQL(PostgreSQL):
+     *
+     * ```sql
+     * delete from "pet" where "name" = "Max" returning *
+     * ```
+     */
+    clearLimit(): DeleteQueryBuilder<DB, TB, O>;
+    /**
+     * Clears the `order by` clause from the query.
+     *
+     * ### Examples
+     *
+     * ```ts
+     * db.deleteFrom('pet')
+     *   .returningAll()
+     *   .where('name', '=', 'Max')
+     *   .orderBy('id')
+     *   .clearOrderBy()
+     * ```
+     *
+     * The generated SQL(PostgreSQL):
+     *
+     * ```sql
+     * delete from "pet" where "name" = "Max" returning *
+     * ```
+     */
+    clearOrderBy(): DeleteQueryBuilder<DB, TB, O>;
     /**
      * Adds an `order by` clause to the query.
      *
@@ -12629,6 +12710,26 @@ declare class UpdateQueryBuilder<DB, UT extends keyof DB, TB extends keyof DB, O
      * that support `returning` such as PostgreSQL.
      */
     returningAll(): UpdateQueryBuilder<DB, UT, TB, Selectable<DB[TB]>>;
+    /**
+     * Clears all `returning` clauses from the query.
+     *
+     * ### Examples
+     *
+     * ```ts
+     * db.updateTable('person')
+     *   .returningAll()
+     *   .set({ age: 39 })
+     *   .where('first_name', '=', 'John')
+     *   .clearReturning()
+     * ```
+     *
+     * The generated SQL(PostgreSQL):
+     *
+     * ```sql
+     * update "person" set "age" = 39 where "first_name" = "John"
+     * ```
+     */
+    clearReturning(): UpdateQueryBuilder<DB, UT, TB, UpdateResult>;
     /**
      * Simply calls the provided function passing `this` as the only argument. `$call` returns
      * what the provided function returns.
