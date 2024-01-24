@@ -2,7 +2,7 @@
     "lastCommitId": "93630057467f8d78b1688e6b002bb312aeccce68",
     "tags": [
         {
-            "id": "0.24.0",
+            "name": "0.24.0",
             "commitId": "501ea488807b0f6a0750d61a53f9bc4c3c965cac",
             "dependencies": {
                 "typescript": "5.0.2"
@@ -19,10 +19,15 @@
                 "helpers/postgres.d.ts",
                 "helpers/postgres.js"
             ],
+            "dialects": [
+                "postgres",
+                "mysql",
+                "sqlite"
+            ],
             "dir": "dist/tag/0.24.0"
         },
         {
-            "id": "0.24.1",
+            "name": "0.24.1",
             "commitId": "bbcf1f56f0005eb06e8adf3dad4c8ff5fc041df0",
             "dependencies": {
                 "typescript": "5.0.2"
@@ -42,10 +47,15 @@
                 "helpers/postgres.d.ts",
                 "helpers/postgres.js"
             ],
+            "dialects": [
+                "postgres",
+                "mysql",
+                "sqlite"
+            ],
             "dir": "dist/tag/0.24.1"
         },
         {
-            "id": "0.24.2",
+            "name": "0.24.2",
             "commitId": "a826cede4007211ec670bfe094de8acdddbbe1cb",
             "dependencies": {
                 "typescript": "5.0.2"
@@ -65,10 +75,15 @@
                 "helpers/postgres.d.ts",
                 "helpers/postgres.js"
             ],
+            "dialects": [
+                "postgres",
+                "mysql",
+                "sqlite"
+            ],
             "dir": "dist/tag/0.24.2"
         },
         {
-            "id": "0.25.0",
+            "name": "0.25.0",
             "commitId": "d9e06ab6568de976af675df4794a49e73fe648aa",
             "dependencies": {
                 "typescript": "5.0.2"
@@ -88,10 +103,15 @@
                 "helpers/postgres.d.ts",
                 "helpers/postgres.js"
             ],
+            "dialects": [
+                "postgres",
+                "mysql",
+                "sqlite"
+            ],
             "dir": "dist/tag/0.25.0"
         },
         {
-            "id": "0.26.0",
+            "name": "0.26.0",
             "commitId": "8d7b102ba847c9e75c8468ca42dd3ceb7210883d",
             "dependencies": {
                 "typescript": "^5.1.6"
@@ -111,10 +131,15 @@
                 "helpers/postgres.d.ts",
                 "helpers/postgres.js"
             ],
+            "dialects": [
+                "postgres",
+                "mysql",
+                "sqlite"
+            ],
             "dir": "dist/tag/0.26.0"
         },
         {
-            "id": "0.26.1",
+            "name": "0.26.1",
             "commitId": "56e1f246e2bb8062955246a52a02830c3c86acb1",
             "dependencies": {
                 "typescript": "^5.1.6"
@@ -134,10 +159,15 @@
                 "helpers/postgres.d.ts",
                 "helpers/postgres.js"
             ],
+            "dialects": [
+                "postgres",
+                "mysql",
+                "sqlite"
+            ],
             "dir": "dist/tag/0.26.1"
         },
         {
-            "id": "0.26.2",
+            "name": "0.26.2",
             "commitId": "f6cb2736a99212f2f0549915ca311851bdfe55ad",
             "dependencies": {
                 "typescript": "^5.1.6"
@@ -161,10 +191,15 @@
                 "helpers/sqlite.d.ts",
                 "helpers/sqlite.js"
             ],
+            "dialects": [
+                "postgres",
+                "mysql",
+                "sqlite"
+            ],
             "dir": "dist/tag/0.26.2"
         },
         {
-            "id": "0.26.3",
+            "name": "0.26.3",
             "commitId": "3aa3ba65c79c71c2c12d94c1517a4ebab7e182e6",
             "dependencies": {
                 "typescript": "^5.1.6"
@@ -188,10 +223,15 @@
                 "helpers/sqlite.d.ts",
                 "helpers/sqlite.js"
             ],
+            "dialects": [
+                "postgres",
+                "mysql",
+                "sqlite"
+            ],
             "dir": "dist/tag/0.26.3"
         },
         {
-            "id": "0.27.0",
+            "name": "0.27.0",
             "commitId": "04f9a9e2dac00c70ba959c56d980ba7b87dbadf6",
             "dependencies": {
                 "typescript": "^5.2.2"
@@ -218,10 +258,16 @@
                 "helpers/sqlite.d.ts",
                 "helpers/sqlite.js"
             ],
+            "dialects": [
+                "postgres",
+                "mysql",
+                "mssql",
+                "sqlite"
+            ],
             "dir": "dist/tag/0.27.0"
         },
         {
-            "id": "0.27.1",
+            "name": "0.27.1",
             "commitId": "20e91306ed3d8e565ccacc6cf011210b72ea2fce",
             "dependencies": {
                 "typescript": "^5.2.2"
@@ -248,10 +294,16 @@
                 "helpers/sqlite.d.ts",
                 "helpers/sqlite.js"
             ],
+            "dialects": [
+                "postgres",
+                "mysql",
+                "mssql",
+                "sqlite"
+            ],
             "dir": "dist/tag/0.27.1"
         },
         {
-            "id": "0.27.2",
+            "name": "0.27.2",
             "commitId": "5091048ddb4147f17fe33564cb4f3f313bc75adb",
             "dependencies": {
                 "typescript": "^5.2.2"
@@ -278,12 +330,18 @@
                 "helpers/sqlite.d.ts",
                 "helpers/sqlite.js"
             ],
+            "dialects": [
+                "postgres",
+                "mysql",
+                "mssql",
+                "sqlite"
+            ],
             "dir": "dist/tag/0.27.2"
         }
     ],
     "branches": [
         {
-            "id": "master",
+            "name": "master",
             "commitId": "93630057467f8d78b1688e6b002bb312aeccce68",
             "dependencies": {
                 "typescript": "^5.3.3"
@@ -309,6 +367,12 @@
                 "helpers/postgres.js",
                 "helpers/sqlite.d.ts",
                 "helpers/sqlite.js"
+            ],
+            "dialects": [
+                "postgres",
+                "mysql",
+                "mssql",
+                "sqlite"
             ],
             "dir": "dist/branch/master"
         }
