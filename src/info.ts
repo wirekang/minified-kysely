@@ -1,5 +1,4 @@
-//@ts-ignore
-import fs from "node:fs/promises";
+import { fs } from "./node-types";
 import { INFO_JSON_PATH } from "./constants";
 import type { Info } from "./info-type";
 

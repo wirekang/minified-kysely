@@ -12,7 +12,7 @@ Generated files are stored in the same repository: [/dist](https://github.com/wi
 #### info.json
 Contains informations about generated files.  See [the type definition](https://github.com/wirekang/minified-kysely/tree/main/src/info-type.ts).
 
-#### (branch|tag)/{id}/
+#### (branch|tag)/{name}/
 
 Examples:
  * [dist/branch/master/](https://github.com/wirekang/minified-kysely/tree/main/dist/branch/master)

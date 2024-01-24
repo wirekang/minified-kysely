@@ -1,14 +1,11 @@
 import { loadInfo, saveInfo } from "./info";
-import { createTempDir, escapeBranchName, execAsync, removePathSuffix } from "./utils";
-//@ts-ignore
-import path from "node:path/posix";
-//@ts-ignore
-import fs from "node:fs/promises";
+import { createTempDir, escapeBranchName, execAsync, getDialects, removePathSuffix } from "./utils";
 import { BRANCHES, DEV_DEPENDENCIES, DIST_DIR } from "./constants";
 import { bundle } from "./bundle";
 import { patchFiles } from "./patch";
 import { checkout, clone, getCommits, restore } from "./git";
 import { Module } from "./info-type";
+import { path, fs } from "./node-types";
 
 (async () => {
   const dir = await createTempDir("kysely");
@@ -48,33 +45,34 @@ async function go(
   dir: string,
   modules: Array<Module>,
   type: string,
-  id: string,
+  name: string,
   commitId: string,
   commitIds: Array<string>
 ) {
-  let module = modules.find((it) => it.id === id);
+  let module = modules.find((it) => it.name === name);
 
   if (module === undefined) {
-    console.log(`New ${type} ${id}`);
+    console.log(`New ${type} ${name}`);
     const newModule: Module = {
-      id,
+      name: name,
       commitId,
       dependencies: {},
       exports: [],
       files: [],
+      dialects: getDialects(commitId, commitIds),
       dir: "",
     };
     modules.push(newModule);
     module = newModule;
   } else if (module.commitId === commitId) {
-    console.log(`Skip unchanged ${type} ${id}`);
+    console.log(`Skip unchanged ${type} ${name}`);
     return;
   }
-  console.log(`Update ${type} ${id}`);
-  module.dir = removePathSuffix(path.join(DIST_DIR, type, escapeBranchName(id)));
+  console.log(`Update ${type} ${name}`);
+  module.dir = removePathSuffix(path.join(DIST_DIR, type, escapeBranchName(name)));
   module.commitId = commitId;
 
-  console.log(`Checkout ${id}(${commitId})`);
+  console.log(`Checkout ${name}(${commitId})`);
   await restore(dir);
   await checkout(dir, commitId);
   await patchFiles(dir, commitId, commitIds);

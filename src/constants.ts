@@ -1,5 +1,4 @@
-//@ts-ignore
-import path from "node:path/posix";
+import { path } from "./node-types";
 
 export const KYSELY_GIT_URL = "https://github.com/kysely-org/kysely.git";
 export const GIT_SEPERATOR = "!@{#";
@@ -8,6 +7,15 @@ export const INFO_JSON_PATH = path.join(DIST_DIR, "info.json");
 export const DEV_DEPENDENCIES = ["typescript"];
 export const BRANCHES = ["master"];
 export const START_COMMIT = "501ea488807b0f6a0750d61a53f9bc4c3c965cac";
+export const DIALECTS: Array<DialectDef> = [
+  {
+    since: "04f9a9e2dac00c70ba959c56d980ba7b87dbadf6",
+    dialects: ["postgres", "mysql", "mssql", "sqlite"],
+  },
+  {
+    dialects: ["postgres", "mysql", "sqlite"],
+  },
+];
 
 export const JSON_PATCHES: Record<string, Array<JsonPatch>> = {
   "package.json": [
@@ -70,4 +78,9 @@ type JsonPatch = {
   since?: string;
   until?: string;
   patch: any;
+};
+
+type DialectDef = {
+  since?: string;
+  dialects: Array<string>;
 };

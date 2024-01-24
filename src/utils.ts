@@ -1,11 +1,5 @@
-//@ts-ignore
-import { exec } from "node:child_process";
-//@ts-ignore
-import os from "node:os";
-//@ts-ignore
-import path from "node:path/posix";
-//@ts-ignore
-import fs from "node:fs/promises";
+import { path, fs, os, exec } from "./node-types";
+import { DIALECTS } from "./constants";
 
 export async function createTempDir(name: string) {
   // const parent = os.tmpdir();
@@ -49,4 +43,37 @@ export function nestedAssign(target: any, source: any) {
   });
 
   return target;
+}
+
+export function checkCommitRange(
+  commitId: string,
+  commitIds: Array<string>,
+  range: { since?: string; until?: string }
+): boolean {
+  const currentIndex = getCommitIndex(commitId, commitIds);
+  if (range.since !== undefined) {
+    if (currentIndex < getCommitIndex(range.since, commitIds)) {
+      return false;
+    }
+  }
+  if (range.until !== undefined) {
+    if (currentIndex > getCommitIndex(range.until, commitIds)) {
+      return false;
+    }
+  }
+  return true;
+}
+
+function getCommitIndex(commitId: string, commitIds: Array<string>): number {
+  const i = commitIds.indexOf(commitId);
+  if (i === -1) {
+    throw new Error(`[UNREACHABLE] Commit ${commitId} not exists in list. This exception should filtered earlier.`);
+  }
+  return i;
+}
+
+export function getDialects(commitId: string, commitIds: Array<string>): Array<string> {
+  return DIALECTS.find((dialect) => {
+    return checkCommitRange(commitId, commitIds, dialect);
+  })!.dialects;
 }
