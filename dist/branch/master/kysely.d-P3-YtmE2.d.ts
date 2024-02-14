@@ -357,6 +357,7 @@ interface ColumnDefinitionNode extends OperationNode {
     readonly frontModifiers?: ReadonlyArray<OperationNode>;
     readonly endModifiers?: ReadonlyArray<OperationNode>;
     readonly nullsNotDistinct?: boolean;
+    readonly identity?: boolean;
 }
 /**
  * @internal
@@ -1970,6 +1971,14 @@ declare class ColumnDefinitionBuilder implements OperationNodeSource {
      */
     autoIncrement(): ColumnDefinitionBuilder;
     /**
+     * Makes the column an identity column.
+     *
+     * This only works on some dialects like MS SQL Server (MSSQL).
+     *
+     * For PostgreSQL's `generated always as identity` use {@link generatedAlwaysAsIdentity}.
+     */
+    identity(): ColumnDefinitionBuilder;
+    /**
      * Makes the column the primary key.
      *
      * If you want to specify a composite primary key use the
@@ -2092,7 +2101,11 @@ declare class ColumnDefinitionBuilder implements OperationNodeSource {
      */
     generatedAlwaysAs(expression: Expression<any>): ColumnDefinitionBuilder;
     /**
-     * Adds the `generated always as identity` specifier on supported dialects.
+     * Adds the `generated always as identity` specifier.
+     *
+     * This only works on some dialects like PostgreSQL.
+     *
+     * For MS SQL Server (MSSQL)'s identity column use {@link identity}.
      */
     generatedAlwaysAsIdentity(): ColumnDefinitionBuilder;
     /**
