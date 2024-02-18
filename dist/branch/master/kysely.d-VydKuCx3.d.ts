@@ -1458,6 +1458,7 @@ interface UpdateQueryNode extends OperationNode {
     readonly returning?: ReturningNode;
     readonly with?: WithNode;
     readonly explain?: ExplainNode;
+    readonly limit?: LimitNode;
 }
 /**
  * @internal
@@ -1468,6 +1469,7 @@ declare const UpdateQueryNode: Readonly<{
     createWithoutTable(): UpdateQueryNode;
     cloneWithFromItems(updateQuery: UpdateQueryNode, fromItems: ReadonlyArray<OperationNode>): UpdateQueryNode;
     cloneWithUpdates(updateQuery: UpdateQueryNode, updates: ReadonlyArray<ColumnUpdateNode>): UpdateQueryNode;
+    cloneWithLimit(updateQuery: UpdateQueryNode, limit: LimitNode): UpdateQueryNode;
 }>;
 
 interface UsingNode extends OperationNode {
@@ -12517,6 +12519,26 @@ declare class UpdateQueryBuilder<DB, UT extends keyof DB, TB extends keyof DB, O
      */
     fullJoin<TE extends TableExpression<DB, TB>, K1 extends JoinReferenceExpression<DB, TB, TE>, K2 extends JoinReferenceExpression<DB, TB, TE>>(table: TE, k1: K1, k2: K2): UpdateQueryBuilderWithFullJoin<DB, UT, TB, O, TE>;
     fullJoin<TE extends TableExpression<DB, TB>, FN extends JoinCallbackExpression<DB, TB, TE>>(table: TE, callback: FN): UpdateQueryBuilderWithFullJoin<DB, UT, TB, O, TE>;
+    /**
+     * Adds a limit clause to the update query for supported databases, such as MySQL.
+     *
+     * ### Examples
+     *
+     * Update the first 2 rows in the 'person' table:
+     *
+     * ```ts
+     * return await db
+     *   .updateTable('person')
+     *   .set({ first_name: 'Foo' })
+     *   .limit(2);
+     * ```
+     *
+     * The generated SQL (MySQL):
+     * ```sql
+     * update `person` set `first_name` = 'Foo' limit 2
+     * ```
+     */
+    limit(limit: ValueExpression<DB, TB, number>): UpdateQueryBuilder<DB, UT, TB, O>;
     /**
      * Sets the values to update for an {@link Kysely.updateTable | update} query.
      *
