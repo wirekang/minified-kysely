@@ -221,7 +221,7 @@ type ShallowRecord<K extends keyof any, T> = DrainOuterGeneric<{
     [P in K]: T;
 }>;
 
-type OperationNodeKind = 'IdentifierNode' | 'SchemableIdentifierNode' | 'RawNode' | 'SelectQueryNode' | 'SelectionNode' | 'ReferenceNode' | 'ColumnNode' | 'TableNode' | 'AliasNode' | 'FromNode' | 'SelectAllNode' | 'AndNode' | 'OrNode' | 'ParensNode' | 'ValueNode' | 'ValueListNode' | 'PrimitiveValueListNode' | 'JoinNode' | 'OperatorNode' | 'WhereNode' | 'InsertQueryNode' | 'DeleteQueryNode' | 'ReturningNode' | 'CreateTableNode' | 'ColumnDefinitionNode' | 'AddColumnNode' | 'DropTableNode' | 'DataTypeNode' | 'OrderByNode' | 'OrderByItemNode' | 'GroupByNode' | 'GroupByItemNode' | 'UpdateQueryNode' | 'ColumnUpdateNode' | 'LimitNode' | 'OffsetNode' | 'OnConflictNode' | 'OnDuplicateKeyNode' | 'CreateIndexNode' | 'DropIndexNode' | 'ListNode' | 'ReferencesNode' | 'PrimaryKeyConstraintNode' | 'UniqueConstraintNode' | 'CheckConstraintNode' | 'ForeignKeyConstraintNode' | 'WithNode' | 'CommonTableExpressionNode' | 'HavingNode' | 'CreateSchemaNode' | 'DropSchemaNode' | 'AlterTableNode' | 'ModifyColumnNode' | 'DropColumnNode' | 'RenameColumnNode' | 'AlterColumnNode' | 'AddConstraintNode' | 'DropConstraintNode' | 'CreateViewNode' | 'DropViewNode' | 'GeneratedNode' | 'DefaultValueNode' | 'OnNode' | 'ValuesNode' | 'CommonTableExpressionNameNode' | 'SelectModifierNode' | 'CreateTypeNode' | 'DropTypeNode' | 'ExplainNode' | 'DefaultInsertValueNode' | 'AggregateFunctionNode' | 'OverNode' | 'PartitionByNode' | 'PartitionByItemNode' | 'SetOperationNode' | 'BinaryOperationNode' | 'UnaryOperationNode' | 'UsingNode' | 'FunctionNode' | 'CaseNode' | 'WhenNode' | 'JSONReferenceNode' | 'JSONPathNode' | 'JSONPathLegNode' | 'JSONOperatorChainNode' | 'TupleNode' | 'MergeQueryNode' | 'MatchedNode' | 'AddIndexNode' | 'CastNode';
+type OperationNodeKind = 'IdentifierNode' | 'SchemableIdentifierNode' | 'RawNode' | 'SelectQueryNode' | 'SelectionNode' | 'ReferenceNode' | 'ColumnNode' | 'TableNode' | 'AliasNode' | 'FromNode' | 'SelectAllNode' | 'AndNode' | 'OrNode' | 'ParensNode' | 'ValueNode' | 'ValueListNode' | 'PrimitiveValueListNode' | 'JoinNode' | 'OperatorNode' | 'WhereNode' | 'InsertQueryNode' | 'DeleteQueryNode' | 'ReturningNode' | 'CreateTableNode' | 'ColumnDefinitionNode' | 'AddColumnNode' | 'DropTableNode' | 'DataTypeNode' | 'OrderByNode' | 'OrderByItemNode' | 'GroupByNode' | 'GroupByItemNode' | 'UpdateQueryNode' | 'ColumnUpdateNode' | 'LimitNode' | 'OffsetNode' | 'OnConflictNode' | 'OnDuplicateKeyNode' | 'CreateIndexNode' | 'DropIndexNode' | 'ListNode' | 'ReferencesNode' | 'PrimaryKeyConstraintNode' | 'UniqueConstraintNode' | 'CheckConstraintNode' | 'ForeignKeyConstraintNode' | 'WithNode' | 'CommonTableExpressionNode' | 'HavingNode' | 'CreateSchemaNode' | 'DropSchemaNode' | 'AlterTableNode' | 'ModifyColumnNode' | 'DropColumnNode' | 'RenameColumnNode' | 'AlterColumnNode' | 'AddConstraintNode' | 'DropConstraintNode' | 'CreateViewNode' | 'DropViewNode' | 'GeneratedNode' | 'DefaultValueNode' | 'OnNode' | 'ValuesNode' | 'CommonTableExpressionNameNode' | 'SelectModifierNode' | 'CreateTypeNode' | 'DropTypeNode' | 'ExplainNode' | 'DefaultInsertValueNode' | 'AggregateFunctionNode' | 'OverNode' | 'PartitionByNode' | 'PartitionByItemNode' | 'SetOperationNode' | 'BinaryOperationNode' | 'UnaryOperationNode' | 'UsingNode' | 'FunctionNode' | 'CaseNode' | 'WhenNode' | 'JSONReferenceNode' | 'JSONPathNode' | 'JSONPathLegNode' | 'JSONOperatorChainNode' | 'TupleNode' | 'MergeQueryNode' | 'MatchedNode' | 'AddIndexNode' | 'CastNode' | 'FetchNode';
 interface OperationNode {
     readonly kind: OperationNodeKind;
 }
@@ -1183,6 +1183,34 @@ declare const SetOperationNode: Readonly<{
     create(operator: SetOperator, expression: OperationNode, all: boolean): SetOperationNode;
 }>;
 
+interface ValueNode extends OperationNode {
+    readonly kind: 'ValueNode';
+    readonly value: unknown;
+    readonly immediate?: boolean;
+}
+/**
+ * @internal
+ */
+declare const ValueNode: Readonly<{
+    is(node: OperationNode): node is ValueNode;
+    create(value: unknown): ValueNode;
+    createImmediate(value: unknown): ValueNode;
+}>;
+
+type FetchModifier = 'only' | 'with ties';
+interface FetchNode extends OperationNode {
+    readonly kind: 'FetchNode';
+    readonly rowCount: ValueNode;
+    readonly modifier: FetchModifier;
+}
+/**
+ * @internal
+ */
+declare const FetchNode: {
+    is(node: OperationNode): node is FetchNode;
+    create(rowCount: number | bigint, modifier: FetchModifier): FetchNode;
+};
+
 interface SelectQueryNode extends OperationNode {
     readonly kind: 'SelectQueryNode';
     readonly from?: FromNode;
@@ -1200,6 +1228,7 @@ interface SelectQueryNode extends OperationNode {
     readonly having?: HavingNode;
     readonly explain?: ExplainNode;
     readonly setOperations?: ReadonlyArray<SetOperationNode>;
+    readonly fetch?: FetchNode;
 }
 /**
  * @internal
@@ -1216,6 +1245,7 @@ declare const SelectQueryNode: Readonly<{
     cloneWithGroupByItems(selectNode: SelectQueryNode, items: ReadonlyArray<GroupByItemNode>): SelectQueryNode;
     cloneWithLimit(selectNode: SelectQueryNode, limit: LimitNode): SelectQueryNode;
     cloneWithOffset(selectNode: SelectQueryNode, offset: OffsetNode): SelectQueryNode;
+    cloneWithFetch(selectNode: SelectQueryNode, fetch: FetchNode): SelectQueryNode;
     cloneWithHaving(selectNode: SelectQueryNode, operation: OperationNode): SelectQueryNode;
     cloneWithSetOperations(selectNode: SelectQueryNode, setOperations: ReadonlyArray<SetOperationNode>): SelectQueryNode;
     cloneWithoutSelections(select: SelectQueryNode): SelectQueryNode;
@@ -2401,20 +2431,6 @@ declare function isBinaryOperator(op: unknown): op is BinaryOperator;
 declare function isComparisonOperator(op: unknown): op is ComparisonOperator;
 declare function isArithmeticOperator(op: unknown): op is ArithmeticOperator;
 declare function isJSONOperator(op: unknown): op is JSONOperator;
-
-interface ValueNode extends OperationNode {
-    readonly kind: 'ValueNode';
-    readonly value: unknown;
-    readonly immediate?: boolean;
-}
-/**
- * @internal
- */
-declare const ValueNode: Readonly<{
-    is(node: OperationNode): node is ValueNode;
-    create(value: unknown): ValueNode;
-    createImmediate(value: unknown): ValueNode;
-}>;
 
 type ValueExpression<DB, TB extends keyof DB, V> = V | ExpressionOrFactory<DB, TB, V>;
 type ValueExpressionOrList<DB, TB extends keyof DB, V> = ValueExpression<DB, TB, V> | ReadonlyArray<ValueExpression<DB, TB, V>>;
@@ -4855,9 +4871,9 @@ interface SelectQueryBuilder<DB, TB extends keyof DB, O> extends WhereInterface<
      *   .limit(10)
      * ```
      */
-    limit(limit: ValueExpression<DB, TB, number>): SelectQueryBuilder<DB, TB, O>;
+    limit(limit: ValueExpression<DB, TB, number | bigint>): SelectQueryBuilder<DB, TB, O>;
     /**
-     * Adds an offset clause to the query.
+     * Adds an `offset` clause to the query.
      *
      * ### Examples
      *
@@ -4867,11 +4883,39 @@ interface SelectQueryBuilder<DB, TB extends keyof DB, O> extends WhereInterface<
      * return await db
      *   .selectFrom('person')
      *   .select('first_name')
-     *   .offset(10)
      *   .limit(10)
+     *   .offset(10)
      * ```
      */
-    offset(offset: ValueExpression<DB, TB, number>): SelectQueryBuilder<DB, TB, O>;
+    offset(offset: ValueExpression<DB, TB, number | bigint>): SelectQueryBuilder<DB, TB, O>;
+    /**
+     * Adds a `fetch` clause to the query.
+     *
+     * This clause is only supported by some dialects like PostgreSQL or MS SQL Server.
+     *
+     * ### Examples
+     *
+     * ```ts
+     * return await db
+     *   .selectFrom('person')
+     *   .select('first_name')
+     *   .orderBy('first_name')
+     *   .offset(0)
+     *   .fetch(10)
+     *   .execute()
+     * ```
+     *
+     * The generated SQL (MS SQL Server):
+     *
+     * ```sql
+     * select "first_name"
+     * from "person"
+     * order by "first_name"
+     * offset 0 rows
+     * fetch next 10 rows only
+     * ```
+     */
+    fetch(rowCount: number | bigint, modifier?: FetchModifier): SelectQueryBuilder<DB, TB, O>;
     /**
      * Combines another select query or raw expression to this query using `union`.
      *
@@ -14510,4 +14554,4 @@ interface TransactionBuilderProps extends KyselyProps {
     readonly isolationLevel?: IsolationLevel;
 }
 
-export { HavingNode as $, AliasNode as A, CreateIndexNode as B, CompiledQuery as C, type DialectAdapter as D, DropIndexNode as E, FromNode as F, GroupByNode as G, type PrimaryKeyConstraintNode as H, InsertQueryNode as I, JoinNode as J, type KyselyPlugin as K, LimitNode as L, UniqueConstraintNode as M, ReferencesNode as N, type OperationNode as O, PrimitiveValueListNode as P, type QueryExecutor as Q, type RawBuilder as R, SelectQueryNode as S, TableNode as T, UpdateQueryNode as U, ValueListNode as V, WhereNode as W, CheckConstraintNode as X, WithNode as Y, CommonTableExpressionNode as Z, CommonTableExpressionNameNode as _, type RootOperationNode as a, type AnyAliasedColumnWithTable as a$, CreateSchemaNode as a0, DropSchemaNode as a1, AlterTableNode as a2, DropColumnNode as a3, RenameColumnNode as a4, AlterColumnNode as a5, ModifyColumnNode as a6, AddConstraintNode as a7, DropConstraintNode as a8, ForeignKeyConstraintNode as a9, JSONOperatorChainNode as aA, MergeQueryNode as aB, AddIndexNode as aC, type AlterTableColumnAlterationNode as aD, type Driver as aE, Kysely as aF, type MigrationLockOptions as aG, type Dialect as aH, type DatabaseIntrospector as aI, type SchemaMetadata as aJ, type DatabaseMetadataOptions as aK, type TableMetadata as aL, type DatabaseMetadata as aM, type TransactionSettings as aN, type PluginTransformQueryArgs as aO, type PluginTransformResultArgs as aP, type UnknownRow as aQ, type Compilable as aR, InsertResult as aS, UpdateResult as aT, DeleteResult as aU, MergeResult as aV, type Simplify as aW, type ExpressionOrFactory as aX, type ExpressionBuilder as aY, expressionBuilder as aZ, type AnyAliasedColumn as a_, DataTypeNode as aa, SelectAllNode as ab, IdentifierNode as ac, SchemableIdentifierNode as ad, ValueNode as ae, OperatorNode as af, CreateViewNode as ag, DropViewNode as ah, GeneratedNode as ai, DefaultValueNode as aj, OnNode as ak, SelectModifierNode as al, CreateTypeNode as am, DropTypeNode as an, ExplainNode as ao, AggregateFunctionNode as ap, OverNode as aq, PartitionByNode as ar, PartitionByItemNode as as, SetOperationNode as at, UsingNode as au, CaseNode as av, WhenNode as aw, JSONReferenceNode as ax, JSONPathNode as ay, JSONPathLegNode as az, type QueryId as b, UpdateQueryBuilder as b$, type AnyColumn as b0, type AnyColumnWithTable as b1, type Equals as b2, type SqlBool as b3, type Nullable as b4, type NotNull$1 as b5, type SelectExpression as b6, type SelectCallback as b7, type SelectArg as b8, type Selection as b9, type KyselyConfig as bA, ConnectionBuilder as bB, TransactionBuilder as bC, QueryCreator as bD, type QueryCreatorProps as bE, type Expression as bF, type AliasableExpression as bG, type AliasedExpression as bH, isExpression as bI, isAliasedExpression as bJ, ExpressionWrapper as bK, AliasedExpressionWrapper as bL, OrWrapper as bM, AndWrapper as bN, type WhereInterface as bO, type ReturningInterface as bP, type HavingInterface as bQ, type SelectQueryBuilder as bR, createSelectQueryBuilder as bS, type SelectQueryBuilderProps as bT, type AliasedSelectQueryBuilder as bU, type SelectQueryBuilderWithInnerJoin as bV, type SelectQueryBuilderWithLeftJoin as bW, type SelectQueryBuilderWithRightJoin as bX, type SelectQueryBuilderWithFullJoin as bY, InsertQueryBuilder as bZ, type InsertQueryBuilderProps as b_, type CallbackSelection as ba, type ReferenceExpression as bb, type ReferenceExpressionOrList as bc, type SimpleReferenceExpression as bd, type StringReference as be, type ExtractTypeFromStringReference as bf, type ExtractTypeFromReferenceExpression as bg, type ValueExpression as bh, type ValueExpressionOrList as bi, type SimpleTableReference as bj, type TableExpression as bk, type TableExpressionOrList as bl, type JoinReferenceExpression as bm, type JoinCallbackExpression as bn, type InsertObject as bo, type UpdateObject as bp, type OrderByExpression as bq, type OrderByDirectionExpression as br, type ComparisonOperatorExpression as bs, type OperandValueExpression as bt, type OperandValueExpressionOrList as bu, type FilterObject as bv, type OperandExpression as bw, Transaction as bx, type KyselyProps as by, isKyselyProps as bz, type DatabaseConnection as c, type DropSchemaBuilderProps as c$, type UpdateQueryBuilderProps as c0, type UpdateQueryBuilderWithInnerJoin as c1, type UpdateQueryBuilderWithLeftJoin as c2, type UpdateQueryBuilderWithRightJoin as c3, type UpdateQueryBuilderWithFullJoin as c4, DeleteQueryBuilder as c5, type DeleteQueryBuilderProps as c6, type DeleteQueryBuilderWithInnerJoin as c7, type DeleteQueryBuilderWithLeftJoin as c8, type DeleteQueryBuilderWithRightJoin as c9, type MergeQueryBuilderProps as cA, WheneableMergeQueryBuilder as cB, MatchedThenableMergeQueryBuilder as cC, NotMatchedThenableMergeQueryBuilder as cD, type ExtractWheneableMergeQueryBuilder as cE, type RawBuilderProps as cF, createRawBuilder as cG, type AliasedRawBuilder as cH, type QueryExecutorProvider as cI, SchemaModule as cJ, CreateTableBuilder as cK, type CreateTableBuilderProps as cL, type ColumnBuilderCallback as cM, type ForeignKeyConstraintBuilderCallback as cN, CreateTypeBuilder as cO, type CreateTypeBuilderProps as cP, DropTableBuilder as cQ, type DropTableBuilderProps as cR, DropTypeBuilder as cS, type DropTypeBuilderProps as cT, CreateIndexBuilder as cU, type CreateIndexBuilderProps as cV, DropIndexBuilder as cW, type DropIndexBuilderProps as cX, CreateSchemaBuilder as cY, type CreateSchemaBuilderProps as cZ, DropSchemaBuilder as c_, type DeleteQueryBuilderWithFullJoin as ca, type NoResultErrorConstructor as cb, NoResultError as cc, isNoResultErrorConstructor as cd, JoinBuilder as ce, type JoinBuilderProps as cf, type FunctionModule as cg, createFunctionModule as ch, OnConflictBuilder as ci, type OnConflictBuilderProps as cj, type OnConflictDatabase as ck, type OnConflictTables as cl, OnConflictDoNothingBuilder as cm, OnConflictUpdateBuilder as cn, AggregateFunctionBuilder as co, AliasedAggregateFunctionBuilder as cp, type AggregateFunctionBuilderProps as cq, type OverBuilderCallback as cr, CaseBuilder as cs, CaseThenBuilder as ct, CaseWhenBuilder as cu, CaseEndBuilder as cv, JSONPathBuilder as cw, TraversedJSONPathBuilder as cx, AliasedJSONPathBuilder as cy, MergeQueryBuilder as cz, type QueryResult as d, type UnaryOperator as d$, ColumnDefinitionBuilder as d0, type ColumnDefinitionBuilderCallback as d1, type ForeignKeyConstraintBuilderInterface as d2, ForeignKeyConstraintBuilder as d3, AlterTableBuilder as d4, type AlterTableBuilderProps as d5, type ColumnAlteringInterface as d6, AlterTableColumnAlteringBuilder as d7, type AlterTableColumnAlteringBuilderProps as d8, CreateViewBuilder as d9, type DropConstraintNodeProps as dA, type DropIndexNodeProps as dB, type DropSchemaNodeParams as dC, type DropTablexNodeParams as dD, type DropTypeNodeParams as dE, type DropViewNodeParams as dF, type ForeignKeyConstraintNodeProps as dG, type GeneratedNodeParams as dH, type InsertQueryNodeProps as dI, type JoinType as dJ, type OnConflictNodeProps as dK, type OnDuplicateKeyNodeProps as dL, type OperationNodeSource as dM, isOperationNodeSource as dN, type OperationNodeKind as dO, COMPARISON_OPERATORS as dP, ARITHMETIC_OPERATORS as dQ, JSON_OPERATORS as dR, BINARY_OPERATORS as dS, UNARY_FILTER_OPERATORS as dT, UNARY_OPERATORS as dU, OPERATORS as dV, type ComparisonOperator as dW, type ArithmeticOperator as dX, type JSONOperator as dY, type JSONOperatorWith$ as dZ, type BinaryOperator as d_, type CreateViewBuilderProps as da, DropViewBuilder as db, type DropViewBuilderProps as dc, AlterColumnBuilder as dd, AlteredColumnBuilder as de, type AlterColumnBuilderCallback as df, DynamicModule as dg, TRANSACTION_ISOLATION_LEVELS as dh, type IsolationLevel as di, type ColumnMetadata as dj, type AlterColumnNodeProps as dk, type AlterTableNodeTableProps as dl, type ColumnDefinitionNodeProps as dm, type ConstraintNode as dn, type CreateIndexNodeProps as dp, type IndexType as dq, type CreateSchemaNodeParams as dr, ON_COMMIT_ACTIONS as ds, type OnCommitAction as dt, type CreateTableNodeParams as du, type CreateTypeNodeParams as dv, type CreateViewNodeParams as dw, type ColumnDataType as dx, type DataTypeParams as dy, isColumnDataType as dz, type ConnectionProvider as e, type UnaryFilterOperator as e0, type Operator as e1, isOperator as e2, isBinaryOperator as e3, isComparisonOperator as e4, isArithmeticOperator as e5, isJSONOperator as e6, PrimaryConstraintNode as e7, QueryNode as e8, ON_MODIFY_FOREIGN_ACTIONS as e9, type ErrorLogEvent as eA, type LogEvent as eB, type Logger as eC, type LogConfig as eD, Log as eE, type SelectQueryBuilderExpression as eF, type OnModifyForeignAction as ea, type UniqueConstraintNodeProps as eb, type UpdateValuesNode as ec, type WithNodeParams as ed, type SetOperator as ee, type JSONPathLegType as ef, type ColumnType as eg, type Generated as eh, type GeneratedAlways as ei, type JSONColumnType as ej, type SelectType as ek, type InsertType as el, type UpdateType as em, type NullableInsertKeys as en, type NonNullableInsertKeys as eo, type UpdateKeys as ep, type Selectable as eq, type Insertable as er, type Updateable as es, isCompilable as et, type ExplainFormat as eu, type Explainable as ev, type Streamable as ew, LOG_LEVELS as ex, type LogLevel as ey, type QueryLogEvent as ez, type QueryCompiler as f, SelectionNode as g, ColumnNode as h, ReferenceNode as i, AndNode as j, OrNode as k, ParensNode as l, RawNode as m, DeleteQueryNode as n, ReturningNode as o, CreateTableNode as p, AddColumnNode as q, ColumnDefinitionNode as r, DropTableNode as s, OrderByNode as t, OrderByItemNode as u, GroupByItemNode as v, ColumnUpdateNode as w, OffsetNode as x, OnConflictNode as y, OnDuplicateKeyNode as z };
+export { HavingNode as $, AliasNode as A, CreateIndexNode as B, CompiledQuery as C, type DialectAdapter as D, DropIndexNode as E, FromNode as F, GroupByNode as G, type PrimaryKeyConstraintNode as H, InsertQueryNode as I, JoinNode as J, type KyselyPlugin as K, LimitNode as L, UniqueConstraintNode as M, ReferencesNode as N, type OperationNode as O, PrimitiveValueListNode as P, type QueryExecutor as Q, type RawBuilder as R, SelectQueryNode as S, TableNode as T, UpdateQueryNode as U, ValueListNode as V, WhereNode as W, CheckConstraintNode as X, WithNode as Y, CommonTableExpressionNode as Z, CommonTableExpressionNameNode as _, type RootOperationNode as a, type AnyAliasedColumn as a$, CreateSchemaNode as a0, DropSchemaNode as a1, AlterTableNode as a2, DropColumnNode as a3, RenameColumnNode as a4, AlterColumnNode as a5, ModifyColumnNode as a6, AddConstraintNode as a7, DropConstraintNode as a8, ForeignKeyConstraintNode as a9, JSONOperatorChainNode as aA, MergeQueryNode as aB, AddIndexNode as aC, FetchNode as aD, type AlterTableColumnAlterationNode as aE, type Driver as aF, Kysely as aG, type MigrationLockOptions as aH, type Dialect as aI, type DatabaseIntrospector as aJ, type SchemaMetadata as aK, type DatabaseMetadataOptions as aL, type TableMetadata as aM, type DatabaseMetadata as aN, type TransactionSettings as aO, type PluginTransformQueryArgs as aP, type PluginTransformResultArgs as aQ, type UnknownRow as aR, type Compilable as aS, InsertResult as aT, UpdateResult as aU, DeleteResult as aV, MergeResult as aW, type Simplify as aX, type ExpressionOrFactory as aY, type ExpressionBuilder as aZ, expressionBuilder as a_, DataTypeNode as aa, SelectAllNode as ab, IdentifierNode as ac, SchemableIdentifierNode as ad, ValueNode as ae, OperatorNode as af, CreateViewNode as ag, DropViewNode as ah, GeneratedNode as ai, DefaultValueNode as aj, OnNode as ak, SelectModifierNode as al, CreateTypeNode as am, DropTypeNode as an, ExplainNode as ao, AggregateFunctionNode as ap, OverNode as aq, PartitionByNode as ar, PartitionByItemNode as as, SetOperationNode as at, UsingNode as au, CaseNode as av, WhenNode as aw, JSONReferenceNode as ax, JSONPathNode as ay, JSONPathLegNode as az, type QueryId as b, type InsertQueryBuilderProps as b$, type AnyAliasedColumnWithTable as b0, type AnyColumn as b1, type AnyColumnWithTable as b2, type Equals as b3, type SqlBool as b4, type Nullable as b5, type NotNull$1 as b6, type SelectExpression as b7, type SelectCallback as b8, type SelectArg as b9, isKyselyProps as bA, type KyselyConfig as bB, ConnectionBuilder as bC, TransactionBuilder as bD, QueryCreator as bE, type QueryCreatorProps as bF, type Expression as bG, type AliasableExpression as bH, type AliasedExpression as bI, isExpression as bJ, isAliasedExpression as bK, ExpressionWrapper as bL, AliasedExpressionWrapper as bM, OrWrapper as bN, AndWrapper as bO, type WhereInterface as bP, type ReturningInterface as bQ, type HavingInterface as bR, type SelectQueryBuilder as bS, createSelectQueryBuilder as bT, type SelectQueryBuilderProps as bU, type AliasedSelectQueryBuilder as bV, type SelectQueryBuilderWithInnerJoin as bW, type SelectQueryBuilderWithLeftJoin as bX, type SelectQueryBuilderWithRightJoin as bY, type SelectQueryBuilderWithFullJoin as bZ, InsertQueryBuilder as b_, type Selection as ba, type CallbackSelection as bb, type ReferenceExpression as bc, type ReferenceExpressionOrList as bd, type SimpleReferenceExpression as be, type StringReference as bf, type ExtractTypeFromStringReference as bg, type ExtractTypeFromReferenceExpression as bh, type ValueExpression as bi, type ValueExpressionOrList as bj, type SimpleTableReference as bk, type TableExpression as bl, type TableExpressionOrList as bm, type JoinReferenceExpression as bn, type JoinCallbackExpression as bo, type InsertObject as bp, type UpdateObject as bq, type OrderByExpression as br, type OrderByDirectionExpression as bs, type ComparisonOperatorExpression as bt, type OperandValueExpression as bu, type OperandValueExpressionOrList as bv, type FilterObject as bw, type OperandExpression as bx, Transaction as by, type KyselyProps as bz, type DatabaseConnection as c, DropSchemaBuilder as c$, UpdateQueryBuilder as c0, type UpdateQueryBuilderProps as c1, type UpdateQueryBuilderWithInnerJoin as c2, type UpdateQueryBuilderWithLeftJoin as c3, type UpdateQueryBuilderWithRightJoin as c4, type UpdateQueryBuilderWithFullJoin as c5, DeleteQueryBuilder as c6, type DeleteQueryBuilderProps as c7, type DeleteQueryBuilderWithInnerJoin as c8, type DeleteQueryBuilderWithLeftJoin as c9, MergeQueryBuilder as cA, type MergeQueryBuilderProps as cB, WheneableMergeQueryBuilder as cC, MatchedThenableMergeQueryBuilder as cD, NotMatchedThenableMergeQueryBuilder as cE, type ExtractWheneableMergeQueryBuilder as cF, type RawBuilderProps as cG, createRawBuilder as cH, type AliasedRawBuilder as cI, type QueryExecutorProvider as cJ, SchemaModule as cK, CreateTableBuilder as cL, type CreateTableBuilderProps as cM, type ColumnBuilderCallback as cN, type ForeignKeyConstraintBuilderCallback as cO, CreateTypeBuilder as cP, type CreateTypeBuilderProps as cQ, DropTableBuilder as cR, type DropTableBuilderProps as cS, DropTypeBuilder as cT, type DropTypeBuilderProps as cU, CreateIndexBuilder as cV, type CreateIndexBuilderProps as cW, DropIndexBuilder as cX, type DropIndexBuilderProps as cY, CreateSchemaBuilder as cZ, type CreateSchemaBuilderProps as c_, type DeleteQueryBuilderWithRightJoin as ca, type DeleteQueryBuilderWithFullJoin as cb, type NoResultErrorConstructor as cc, NoResultError as cd, isNoResultErrorConstructor as ce, JoinBuilder as cf, type JoinBuilderProps as cg, type FunctionModule as ch, createFunctionModule as ci, OnConflictBuilder as cj, type OnConflictBuilderProps as ck, type OnConflictDatabase as cl, type OnConflictTables as cm, OnConflictDoNothingBuilder as cn, OnConflictUpdateBuilder as co, AggregateFunctionBuilder as cp, AliasedAggregateFunctionBuilder as cq, type AggregateFunctionBuilderProps as cr, type OverBuilderCallback as cs, CaseBuilder as ct, CaseThenBuilder as cu, CaseWhenBuilder as cv, CaseEndBuilder as cw, JSONPathBuilder as cx, TraversedJSONPathBuilder as cy, AliasedJSONPathBuilder as cz, type QueryResult as d, type BinaryOperator as d$, type DropSchemaBuilderProps as d0, ColumnDefinitionBuilder as d1, type ColumnDefinitionBuilderCallback as d2, type ForeignKeyConstraintBuilderInterface as d3, ForeignKeyConstraintBuilder as d4, AlterTableBuilder as d5, type AlterTableBuilderProps as d6, type ColumnAlteringInterface as d7, AlterTableColumnAlteringBuilder as d8, type AlterTableColumnAlteringBuilderProps as d9, isColumnDataType as dA, type DropConstraintNodeProps as dB, type DropIndexNodeProps as dC, type DropSchemaNodeParams as dD, type DropTablexNodeParams as dE, type DropTypeNodeParams as dF, type DropViewNodeParams as dG, type ForeignKeyConstraintNodeProps as dH, type GeneratedNodeParams as dI, type InsertQueryNodeProps as dJ, type JoinType as dK, type OnConflictNodeProps as dL, type OnDuplicateKeyNodeProps as dM, type OperationNodeSource as dN, isOperationNodeSource as dO, type OperationNodeKind as dP, COMPARISON_OPERATORS as dQ, ARITHMETIC_OPERATORS as dR, JSON_OPERATORS as dS, BINARY_OPERATORS as dT, UNARY_FILTER_OPERATORS as dU, UNARY_OPERATORS as dV, OPERATORS as dW, type ComparisonOperator as dX, type ArithmeticOperator as dY, type JSONOperator as dZ, type JSONOperatorWith$ as d_, CreateViewBuilder as da, type CreateViewBuilderProps as db, DropViewBuilder as dc, type DropViewBuilderProps as dd, AlterColumnBuilder as de, AlteredColumnBuilder as df, type AlterColumnBuilderCallback as dg, DynamicModule as dh, TRANSACTION_ISOLATION_LEVELS as di, type IsolationLevel as dj, type ColumnMetadata as dk, type AlterColumnNodeProps as dl, type AlterTableNodeTableProps as dm, type ColumnDefinitionNodeProps as dn, type ConstraintNode as dp, type CreateIndexNodeProps as dq, type IndexType as dr, type CreateSchemaNodeParams as ds, ON_COMMIT_ACTIONS as dt, type OnCommitAction as du, type CreateTableNodeParams as dv, type CreateTypeNodeParams as dw, type CreateViewNodeParams as dx, type ColumnDataType as dy, type DataTypeParams as dz, type ConnectionProvider as e, type UnaryOperator as e0, type UnaryFilterOperator as e1, type Operator as e2, isOperator as e3, isBinaryOperator as e4, isComparisonOperator as e5, isArithmeticOperator as e6, isJSONOperator as e7, PrimaryConstraintNode as e8, QueryNode as e9, type LogLevel as eA, type QueryLogEvent as eB, type ErrorLogEvent as eC, type LogEvent as eD, type Logger as eE, type LogConfig as eF, Log as eG, type SelectQueryBuilderExpression as eH, ON_MODIFY_FOREIGN_ACTIONS as ea, type OnModifyForeignAction as eb, type UniqueConstraintNodeProps as ec, type UpdateValuesNode as ed, type WithNodeParams as ee, type SetOperator as ef, type JSONPathLegType as eg, type FetchModifier as eh, type ColumnType as ei, type Generated as ej, type GeneratedAlways as ek, type JSONColumnType as el, type SelectType as em, type InsertType as en, type UpdateType as eo, type NullableInsertKeys as ep, type NonNullableInsertKeys as eq, type UpdateKeys as er, type Selectable as es, type Insertable as et, type Updateable as eu, isCompilable as ev, type ExplainFormat as ew, type Explainable as ex, type Streamable as ey, LOG_LEVELS as ez, type QueryCompiler as f, SelectionNode as g, ColumnNode as h, ReferenceNode as i, AndNode as j, OrNode as k, ParensNode as l, RawNode as m, DeleteQueryNode as n, ReturningNode as o, CreateTableNode as p, AddColumnNode as q, ColumnDefinitionNode as r, DropTableNode as s, OrderByNode as t, OrderByItemNode as u, GroupByItemNode as v, ColumnUpdateNode as w, OffsetNode as x, OnConflictNode as y, OnDuplicateKeyNode as z };
