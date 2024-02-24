@@ -221,7 +221,7 @@ type ShallowRecord<K extends keyof any, T> = DrainOuterGeneric<{
     [P in K]: T;
 }>;
 
-type OperationNodeKind = 'IdentifierNode' | 'SchemableIdentifierNode' | 'RawNode' | 'SelectQueryNode' | 'SelectionNode' | 'ReferenceNode' | 'ColumnNode' | 'TableNode' | 'AliasNode' | 'FromNode' | 'SelectAllNode' | 'AndNode' | 'OrNode' | 'ParensNode' | 'ValueNode' | 'ValueListNode' | 'PrimitiveValueListNode' | 'JoinNode' | 'OperatorNode' | 'WhereNode' | 'InsertQueryNode' | 'DeleteQueryNode' | 'ReturningNode' | 'CreateTableNode' | 'ColumnDefinitionNode' | 'AddColumnNode' | 'DropTableNode' | 'DataTypeNode' | 'OrderByNode' | 'OrderByItemNode' | 'GroupByNode' | 'GroupByItemNode' | 'UpdateQueryNode' | 'ColumnUpdateNode' | 'LimitNode' | 'OffsetNode' | 'OnConflictNode' | 'OnDuplicateKeyNode' | 'CreateIndexNode' | 'DropIndexNode' | 'ListNode' | 'ReferencesNode' | 'PrimaryKeyConstraintNode' | 'UniqueConstraintNode' | 'CheckConstraintNode' | 'ForeignKeyConstraintNode' | 'WithNode' | 'CommonTableExpressionNode' | 'HavingNode' | 'CreateSchemaNode' | 'DropSchemaNode' | 'AlterTableNode' | 'ModifyColumnNode' | 'DropColumnNode' | 'RenameColumnNode' | 'AlterColumnNode' | 'AddConstraintNode' | 'DropConstraintNode' | 'CreateViewNode' | 'DropViewNode' | 'GeneratedNode' | 'DefaultValueNode' | 'OnNode' | 'ValuesNode' | 'CommonTableExpressionNameNode' | 'SelectModifierNode' | 'CreateTypeNode' | 'DropTypeNode' | 'ExplainNode' | 'DefaultInsertValueNode' | 'AggregateFunctionNode' | 'OverNode' | 'PartitionByNode' | 'PartitionByItemNode' | 'SetOperationNode' | 'BinaryOperationNode' | 'UnaryOperationNode' | 'UsingNode' | 'FunctionNode' | 'CaseNode' | 'WhenNode' | 'JSONReferenceNode' | 'JSONPathNode' | 'JSONPathLegNode' | 'JSONOperatorChainNode' | 'TupleNode' | 'MergeQueryNode' | 'MatchedNode' | 'AddIndexNode' | 'CastNode' | 'FetchNode';
+type OperationNodeKind = 'IdentifierNode' | 'SchemableIdentifierNode' | 'RawNode' | 'SelectQueryNode' | 'SelectionNode' | 'ReferenceNode' | 'ColumnNode' | 'TableNode' | 'AliasNode' | 'FromNode' | 'SelectAllNode' | 'AndNode' | 'OrNode' | 'ParensNode' | 'ValueNode' | 'ValueListNode' | 'PrimitiveValueListNode' | 'JoinNode' | 'OperatorNode' | 'WhereNode' | 'InsertQueryNode' | 'DeleteQueryNode' | 'ReturningNode' | 'CreateTableNode' | 'ColumnDefinitionNode' | 'AddColumnNode' | 'DropTableNode' | 'DataTypeNode' | 'OrderByNode' | 'OrderByItemNode' | 'GroupByNode' | 'GroupByItemNode' | 'UpdateQueryNode' | 'ColumnUpdateNode' | 'LimitNode' | 'OffsetNode' | 'OnConflictNode' | 'OnDuplicateKeyNode' | 'CreateIndexNode' | 'DropIndexNode' | 'ListNode' | 'ReferencesNode' | 'PrimaryKeyConstraintNode' | 'UniqueConstraintNode' | 'CheckConstraintNode' | 'ForeignKeyConstraintNode' | 'WithNode' | 'CommonTableExpressionNode' | 'HavingNode' | 'CreateSchemaNode' | 'DropSchemaNode' | 'AlterTableNode' | 'ModifyColumnNode' | 'DropColumnNode' | 'RenameColumnNode' | 'AlterColumnNode' | 'AddConstraintNode' | 'DropConstraintNode' | 'CreateViewNode' | 'DropViewNode' | 'GeneratedNode' | 'DefaultValueNode' | 'OnNode' | 'ValuesNode' | 'CommonTableExpressionNameNode' | 'SelectModifierNode' | 'CreateTypeNode' | 'DropTypeNode' | 'ExplainNode' | 'DefaultInsertValueNode' | 'AggregateFunctionNode' | 'OverNode' | 'PartitionByNode' | 'PartitionByItemNode' | 'SetOperationNode' | 'BinaryOperationNode' | 'UnaryOperationNode' | 'UsingNode' | 'FunctionNode' | 'CaseNode' | 'WhenNode' | 'JSONReferenceNode' | 'JSONPathNode' | 'JSONPathLegNode' | 'JSONOperatorChainNode' | 'TupleNode' | 'MergeQueryNode' | 'MatchedNode' | 'AddIndexNode' | 'CastNode' | 'FetchNode' | 'TopNode';
 interface OperationNode {
     readonly kind: OperationNodeKind;
 }
@@ -1211,6 +1211,20 @@ declare const FetchNode: {
     create(rowCount: number | bigint, modifier: FetchModifier): FetchNode;
 };
 
+type TopModifier = 'percent' | 'with ties' | 'percent with ties';
+interface TopNode extends OperationNode {
+    readonly kind: 'TopNode';
+    readonly expression: number | bigint;
+    readonly modifiers?: TopModifier;
+}
+/**
+ * @internal
+ */
+declare const TopNode: Readonly<{
+    is(node: OperationNode): node is TopNode;
+    create(expression: number | bigint, modifiers?: TopModifier): TopNode;
+}>;
+
 interface SelectQueryNode extends OperationNode {
     readonly kind: 'SelectQueryNode';
     readonly from?: FromNode;
@@ -1229,6 +1243,7 @@ interface SelectQueryNode extends OperationNode {
     readonly explain?: ExplainNode;
     readonly setOperations?: ReadonlyArray<SetOperationNode>;
     readonly fetch?: FetchNode;
+    readonly top?: TopNode;
 }
 /**
  * @internal
@@ -1358,6 +1373,7 @@ interface MergeQueryNode extends OperationNode {
     readonly using?: JoinNode;
     readonly whens?: ReadonlyArray<WhenNode>;
     readonly with?: WithNode;
+    readonly top?: TopNode;
 }
 /**
  * @internal
@@ -1449,6 +1465,7 @@ interface InsertQueryNode extends OperationNode {
     readonly replace?: boolean;
     readonly explain?: ExplainNode;
     readonly defaultValues?: boolean;
+    readonly top?: TopNode;
 }
 /**
  * @internal
@@ -1489,6 +1506,7 @@ interface UpdateQueryNode extends OperationNode {
     readonly with?: WithNode;
     readonly explain?: ExplainNode;
     readonly limit?: LimitNode;
+    readonly top?: TopNode;
 }
 /**
  * @internal
@@ -1526,6 +1544,7 @@ interface DeleteQueryNode extends OperationNode {
     readonly orderBy?: OrderByNode;
     readonly limit?: LimitNode;
     readonly explain?: ExplainNode;
+    readonly top?: TopNode;
 }
 /**
  * @internal
@@ -1552,6 +1571,9 @@ type HasReturning = {
 type HasExplain = {
     explain?: ExplainNode;
 };
+type HasTop = {
+    top?: TopNode;
+};
 type QueryNode = SelectQueryNode | InsertQueryNode | UpdateQueryNode | DeleteQueryNode | MergeQueryNode;
 /**
  * @internal
@@ -1564,6 +1586,7 @@ declare const QueryNode: Readonly<{
     cloneWithoutReturning<T_3 extends HasReturning>(node: T_3): T_3;
     cloneWithoutWhere<T_4 extends HasWhere>(node: T_4): T_4;
     cloneWithExplain<T_5 extends HasExplain>(node: T_5, format: ExplainFormat | undefined, options: Expression<any> | undefined): T_5;
+    cloneWithTop<T_6 extends HasTop>(node: T_6, top: TopNode): T_6;
 }>;
 
 type RootOperationNode = QueryNode | CreateTableNode | CreateIndexNode | CreateSchemaNode | CreateViewNode | DropTableNode | DropIndexNode | DropSchemaNode | DropViewNode | AlterTableNode | RawNode | CreateTypeNode | DropTypeNode | MergeQueryNode;
@@ -4859,6 +4882,13 @@ interface SelectQueryBuilder<DB, TB extends keyof DB, O> extends WhereInterface<
      *   .selectFrom('person')
      *   .select('first_name')
      *   .limit(10)
+     *   .execute()
+     * ```
+     *
+     * The generated SQL (PostgreSQL):
+     *
+     * ```sql
+     * select "first_name" from "person" limit $1
      * ```
      *
      * Select rows from index 10 to index 19 of the result:
@@ -4867,8 +4897,15 @@ interface SelectQueryBuilder<DB, TB extends keyof DB, O> extends WhereInterface<
      * return await db
      *   .selectFrom('person')
      *   .select('first_name')
-     *   .offset(10)
      *   .limit(10)
+     *   .offset(10)
+     *   .execute()
+     * ```
+     *
+     * The generated SQL (PostgreSQL):
+     *
+     * ```sql
+     * select "first_name" from "person" limit $1 offset $2
      * ```
      */
     limit(limit: ValueExpression<DB, TB, number | bigint>): SelectQueryBuilder<DB, TB, O>;
@@ -4885,6 +4922,13 @@ interface SelectQueryBuilder<DB, TB extends keyof DB, O> extends WhereInterface<
      *   .select('first_name')
      *   .limit(10)
      *   .offset(10)
+     *   .execute()
+     * ```
+     *
+     * The generated SQL (PostgreSQL):
+     *
+     * ```sql
+     * select "first_name" from "person" limit $1 offset $2
      * ```
      */
     offset(offset: ValueExpression<DB, TB, number | bigint>): SelectQueryBuilder<DB, TB, O>;
@@ -4916,6 +4960,47 @@ interface SelectQueryBuilder<DB, TB extends keyof DB, O> extends WhereInterface<
      * ```
      */
     fetch(rowCount: number | bigint, modifier?: FetchModifier): SelectQueryBuilder<DB, TB, O>;
+    /**
+     * Adds a `top` clause to the query.
+     *
+     * This clause is only supported by some dialects like MS SQL Server.
+     *
+     * ### Examples
+     *
+     * Select 10 biggest ages:
+     *
+     * ```ts
+     * return await db
+     *   .selectFrom('person')
+     *   .select('age')
+     *   .top(10)
+     *   .orderBy('age desc')
+     *   .execute()
+     * ```
+     *
+     * The generated SQL (MS SQL Server):
+     *
+     * ```sql
+     * select top(10) "age" from "person" order by "age" desc
+     * ```
+     *
+     * Select 10% first rows:
+     *
+     * ```ts
+     * return await db
+     *  .selectFrom('person')
+     *  .selectAll()
+     *  .top(10, 'percent')
+     *  .execute()
+     * ```
+     *
+     * The generated SQL (MS SQL Server):
+     *
+     * ```sql
+     * select top(10) percent * from "person"
+     * ```
+     */
+    top(expression: number | bigint, modifiers?: TopModifier): SelectQueryBuilder<DB, TB, O>;
     /**
      * Combines another select query or raw expression to this query using `union`.
      *
@@ -10414,6 +10499,50 @@ declare class InsertQueryBuilder<DB, TB extends keyof DB, O> implements Returnin
      */
     ignore(): InsertQueryBuilder<DB, TB, O>;
     /**
+     * Changes an `insert into` query to an `insert top into` query.
+     *
+     * `top` clause is only supported by some dialects like MS SQL Server.
+     *
+     * ### Examples
+     *
+     * Insert the first 5 rows:
+     *
+     * ```ts
+     * await db.insertInto('person')
+     *   .top(5)
+     *   .columns(['first_name', 'gender'])
+     *   .expression(
+     *     (eb) => eb.selectFrom('pet').select(['name', sql.lit('other').as('gender')])
+     *   )
+     *   .execute()
+     * ```
+     *
+     * The generated SQL (MS SQL Server):
+     *
+     * ```sql
+     * insert top(5) into "person" ("first_name", "gender") select "name", 'other' as "gender" from "pet"
+     * ```
+     *
+     * Insert the first 50 percent of rows:
+     *
+     * ```ts
+     * await db.insertInto('person')
+     *   .top(50, 'percent')
+     *   .columns(['first_name', 'gender'])
+     *   .expression(
+     *     (eb) => eb.selectFrom('pet').select(['name', sql.lit('other').as('gender')])
+     *   )
+     *   .execute()
+     * ```
+     *
+     * The generated SQL (MS SQL Server):
+     *
+     * ```sql
+     * insert top(50) percent into "person" ("first_name", "gender") select "name", 'other' as "gender" from "pet"
+     * ```
+     */
+    top(expression: number | bigint, modifiers?: 'percent'): InsertQueryBuilder<DB, TB, O>;
+    /**
      * Adds an `on conflict` clause to the query.
      *
      * `on conflict` is only supported by some dialects like PostgreSQL and SQLite. On MySQL
@@ -11291,6 +11420,46 @@ declare class DeleteQueryBuilder<DB, TB extends keyof DB, O> implements WhereInt
      * ```
      */
     clearWhere(): DeleteQueryBuilder<DB, TB, O>;
+    /**
+     * Changes a `delete from` query into a `delete top from` query.
+     *
+     * `top` clause is only supported by some dialects like MS SQL Server.
+     *
+     * ### Examples
+     *
+     * Delete the first 5 rows:
+     *
+     * ```ts
+     * await db
+     *   .deleteFrom('person')
+     *   .top(5)
+     *   .where('age', '>', 18)
+     *   .executeTakeFirstOrThrow()
+     * ```
+     *
+     * The generated SQL (MS SQL Server):
+     *
+     * ```sql
+     * delete top(5) from "person" where "age" > @1
+     * ```
+     *
+     * Delete the first 50% of rows:
+     *
+     * ```ts
+     * await db
+     *   .deleteFrom('person')
+     *   .top(50, 'percent')
+     *   .where('age', '>', 18)
+     *   .executeTakeFirstOrThrow()
+     * ```
+     *
+     * The generated SQL (MS SQL Server):
+     *
+     * ```sql
+     * delete top(50) percent from "person" where "age" > @1
+     * ```
+     */
+    top(expression: number | bigint, modifiers?: 'percent'): DeleteQueryBuilder<DB, TB, O>;
     /**
      * Adds a `using` clause to the query.
      *
@@ -12409,6 +12578,46 @@ declare class UpdateQueryBuilder<DB, UT extends keyof DB, TB extends keyof DB, O
      */
     clearWhere(): UpdateQueryBuilder<DB, UT, TB, O>;
     /**
+     * Changes an `update` query into a `update top` query.
+     *
+     * `top` clause is only supported by some dialects like MS SQL Server.
+     *
+     * ### Examples
+     *
+     * Update the first row:
+     *
+     * ```ts
+     * await db.updateTable('person')
+     *   .top(1)
+     *   .set({ first_name: 'Foo' })
+     *   .where('age', '>', 18)
+     *   .executeTakeFirstOrThrow()
+     * ```
+     *
+     * The generated SQL (MS SQL Server):
+     *
+     * ```sql
+     * update top(1) "person" set "first_name" = @1 where "age" > @2
+     * ```
+     *
+     * Update the 50% first rows:
+     *
+     * ```ts
+     * await db.updateTable('person')
+     *   .top(50, 'percent')
+     *   .set({ first_name: 'Foo' })
+     *   .where('age', '>', 18)
+     *   .executeTakeFirstOrThrow()
+     * ```
+     *
+     * The generated SQL (MS SQL Server):
+     *
+     * ```sql
+     * update top(50) percent "person" set "first_name" = @1 where "age" > @2
+     * ```
+     */
+    top(expression: number | bigint, modifiers?: 'percent'): UpdateQueryBuilder<DB, UT, TB, O>;
+    /**
      * Adds a from clause to the update query.
      *
      * This is supported only on some databases like PostgreSQL.
@@ -13143,6 +13352,54 @@ declare class MergeQueryBuilder<DB, TT extends keyof DB, O> {
     #private;
     constructor(props: MergeQueryBuilderProps);
     /**
+     * Changes a `merge into` query to an `merge top into` query.
+     *
+     * `top` clause is only supported by some dialects like MS SQL Server.
+     *
+     * ### Examples
+     *
+     * Affect 5 matched rows at most:
+     *
+     * ```ts
+     * await db.mergeInto('person')
+     *   .top(5)
+     *   .using('pet', 'person.id', 'pet.owner_id')
+     *   .whenMatched()
+     *   .thenDelete()
+     *   .execute()
+     * ```
+     *
+     * The generated SQL (MS SQL Server):
+     *
+     * ```sql
+     * merge top(5) into "person"
+     * using "pet" on "person"."id" = "pet"."owner_id"
+     * when matched then
+     *   delete
+     * ```
+     *
+     * Affect 50% of matched rows:
+     *
+     * ```ts
+     * await db.mergeInto('person')
+     *   .top(50, 'percent')
+     *   .using('pet', 'person.id', 'pet.owner_id')
+     *   .whenMatched()
+     *   .thenDelete()
+     *   .execute()
+     * ```
+     *
+     * The generated SQL (MS SQL Server):
+     *
+     * ```sql
+     * merge top(50) percent into "person"
+     * using "pet" on "person"."id" = "pet"."owner_id"
+     * when matched then
+     *   delete
+     * ```
+     */
+    top(expression: number | bigint, modifiers?: 'percent'): MergeQueryBuilder<DB, TT, O>;
+    /**
      * Adds the `using` clause to the query.
      *
      * This method is similar to {@link SelectQueryBuilder.innerJoin}, so see the
@@ -13178,6 +13435,10 @@ interface MergeQueryBuilderProps {
 declare class WheneableMergeQueryBuilder<DB, TT extends keyof DB, ST extends keyof DB, O> implements Compilable<O>, OperationNodeSource {
     #private;
     constructor(props: MergeQueryBuilderProps);
+    /**
+     * See {@link MergeQueryBuilder.top}.
+     */
+    top(expression: number | bigint, modifiers?: 'percent'): WheneableMergeQueryBuilder<DB, TT, ST, O>;
     /**
      * Adds a simple `when matched` clause to the query.
      *
@@ -14554,4 +14815,4 @@ interface TransactionBuilderProps extends KyselyProps {
     readonly isolationLevel?: IsolationLevel;
 }
 
-export { HavingNode as $, AliasNode as A, CreateIndexNode as B, CompiledQuery as C, type DialectAdapter as D, DropIndexNode as E, FromNode as F, GroupByNode as G, type PrimaryKeyConstraintNode as H, InsertQueryNode as I, JoinNode as J, type KyselyPlugin as K, LimitNode as L, UniqueConstraintNode as M, ReferencesNode as N, type OperationNode as O, PrimitiveValueListNode as P, type QueryExecutor as Q, type RawBuilder as R, SelectQueryNode as S, TableNode as T, UpdateQueryNode as U, ValueListNode as V, WhereNode as W, CheckConstraintNode as X, WithNode as Y, CommonTableExpressionNode as Z, CommonTableExpressionNameNode as _, type RootOperationNode as a, type AnyAliasedColumn as a$, CreateSchemaNode as a0, DropSchemaNode as a1, AlterTableNode as a2, DropColumnNode as a3, RenameColumnNode as a4, AlterColumnNode as a5, ModifyColumnNode as a6, AddConstraintNode as a7, DropConstraintNode as a8, ForeignKeyConstraintNode as a9, JSONOperatorChainNode as aA, MergeQueryNode as aB, AddIndexNode as aC, FetchNode as aD, type AlterTableColumnAlterationNode as aE, type Driver as aF, Kysely as aG, type MigrationLockOptions as aH, type Dialect as aI, type DatabaseIntrospector as aJ, type SchemaMetadata as aK, type DatabaseMetadataOptions as aL, type TableMetadata as aM, type DatabaseMetadata as aN, type TransactionSettings as aO, type PluginTransformQueryArgs as aP, type PluginTransformResultArgs as aQ, type UnknownRow as aR, type Compilable as aS, InsertResult as aT, UpdateResult as aU, DeleteResult as aV, MergeResult as aW, type Simplify as aX, type ExpressionOrFactory as aY, type ExpressionBuilder as aZ, expressionBuilder as a_, DataTypeNode as aa, SelectAllNode as ab, IdentifierNode as ac, SchemableIdentifierNode as ad, ValueNode as ae, OperatorNode as af, CreateViewNode as ag, DropViewNode as ah, GeneratedNode as ai, DefaultValueNode as aj, OnNode as ak, SelectModifierNode as al, CreateTypeNode as am, DropTypeNode as an, ExplainNode as ao, AggregateFunctionNode as ap, OverNode as aq, PartitionByNode as ar, PartitionByItemNode as as, SetOperationNode as at, UsingNode as au, CaseNode as av, WhenNode as aw, JSONReferenceNode as ax, JSONPathNode as ay, JSONPathLegNode as az, type QueryId as b, type InsertQueryBuilderProps as b$, type AnyAliasedColumnWithTable as b0, type AnyColumn as b1, type AnyColumnWithTable as b2, type Equals as b3, type SqlBool as b4, type Nullable as b5, type NotNull$1 as b6, type SelectExpression as b7, type SelectCallback as b8, type SelectArg as b9, isKyselyProps as bA, type KyselyConfig as bB, ConnectionBuilder as bC, TransactionBuilder as bD, QueryCreator as bE, type QueryCreatorProps as bF, type Expression as bG, type AliasableExpression as bH, type AliasedExpression as bI, isExpression as bJ, isAliasedExpression as bK, ExpressionWrapper as bL, AliasedExpressionWrapper as bM, OrWrapper as bN, AndWrapper as bO, type WhereInterface as bP, type ReturningInterface as bQ, type HavingInterface as bR, type SelectQueryBuilder as bS, createSelectQueryBuilder as bT, type SelectQueryBuilderProps as bU, type AliasedSelectQueryBuilder as bV, type SelectQueryBuilderWithInnerJoin as bW, type SelectQueryBuilderWithLeftJoin as bX, type SelectQueryBuilderWithRightJoin as bY, type SelectQueryBuilderWithFullJoin as bZ, InsertQueryBuilder as b_, type Selection as ba, type CallbackSelection as bb, type ReferenceExpression as bc, type ReferenceExpressionOrList as bd, type SimpleReferenceExpression as be, type StringReference as bf, type ExtractTypeFromStringReference as bg, type ExtractTypeFromReferenceExpression as bh, type ValueExpression as bi, type ValueExpressionOrList as bj, type SimpleTableReference as bk, type TableExpression as bl, type TableExpressionOrList as bm, type JoinReferenceExpression as bn, type JoinCallbackExpression as bo, type InsertObject as bp, type UpdateObject as bq, type OrderByExpression as br, type OrderByDirectionExpression as bs, type ComparisonOperatorExpression as bt, type OperandValueExpression as bu, type OperandValueExpressionOrList as bv, type FilterObject as bw, type OperandExpression as bx, Transaction as by, type KyselyProps as bz, type DatabaseConnection as c, DropSchemaBuilder as c$, UpdateQueryBuilder as c0, type UpdateQueryBuilderProps as c1, type UpdateQueryBuilderWithInnerJoin as c2, type UpdateQueryBuilderWithLeftJoin as c3, type UpdateQueryBuilderWithRightJoin as c4, type UpdateQueryBuilderWithFullJoin as c5, DeleteQueryBuilder as c6, type DeleteQueryBuilderProps as c7, type DeleteQueryBuilderWithInnerJoin as c8, type DeleteQueryBuilderWithLeftJoin as c9, MergeQueryBuilder as cA, type MergeQueryBuilderProps as cB, WheneableMergeQueryBuilder as cC, MatchedThenableMergeQueryBuilder as cD, NotMatchedThenableMergeQueryBuilder as cE, type ExtractWheneableMergeQueryBuilder as cF, type RawBuilderProps as cG, createRawBuilder as cH, type AliasedRawBuilder as cI, type QueryExecutorProvider as cJ, SchemaModule as cK, CreateTableBuilder as cL, type CreateTableBuilderProps as cM, type ColumnBuilderCallback as cN, type ForeignKeyConstraintBuilderCallback as cO, CreateTypeBuilder as cP, type CreateTypeBuilderProps as cQ, DropTableBuilder as cR, type DropTableBuilderProps as cS, DropTypeBuilder as cT, type DropTypeBuilderProps as cU, CreateIndexBuilder as cV, type CreateIndexBuilderProps as cW, DropIndexBuilder as cX, type DropIndexBuilderProps as cY, CreateSchemaBuilder as cZ, type CreateSchemaBuilderProps as c_, type DeleteQueryBuilderWithRightJoin as ca, type DeleteQueryBuilderWithFullJoin as cb, type NoResultErrorConstructor as cc, NoResultError as cd, isNoResultErrorConstructor as ce, JoinBuilder as cf, type JoinBuilderProps as cg, type FunctionModule as ch, createFunctionModule as ci, OnConflictBuilder as cj, type OnConflictBuilderProps as ck, type OnConflictDatabase as cl, type OnConflictTables as cm, OnConflictDoNothingBuilder as cn, OnConflictUpdateBuilder as co, AggregateFunctionBuilder as cp, AliasedAggregateFunctionBuilder as cq, type AggregateFunctionBuilderProps as cr, type OverBuilderCallback as cs, CaseBuilder as ct, CaseThenBuilder as cu, CaseWhenBuilder as cv, CaseEndBuilder as cw, JSONPathBuilder as cx, TraversedJSONPathBuilder as cy, AliasedJSONPathBuilder as cz, type QueryResult as d, type BinaryOperator as d$, type DropSchemaBuilderProps as d0, ColumnDefinitionBuilder as d1, type ColumnDefinitionBuilderCallback as d2, type ForeignKeyConstraintBuilderInterface as d3, ForeignKeyConstraintBuilder as d4, AlterTableBuilder as d5, type AlterTableBuilderProps as d6, type ColumnAlteringInterface as d7, AlterTableColumnAlteringBuilder as d8, type AlterTableColumnAlteringBuilderProps as d9, isColumnDataType as dA, type DropConstraintNodeProps as dB, type DropIndexNodeProps as dC, type DropSchemaNodeParams as dD, type DropTablexNodeParams as dE, type DropTypeNodeParams as dF, type DropViewNodeParams as dG, type ForeignKeyConstraintNodeProps as dH, type GeneratedNodeParams as dI, type InsertQueryNodeProps as dJ, type JoinType as dK, type OnConflictNodeProps as dL, type OnDuplicateKeyNodeProps as dM, type OperationNodeSource as dN, isOperationNodeSource as dO, type OperationNodeKind as dP, COMPARISON_OPERATORS as dQ, ARITHMETIC_OPERATORS as dR, JSON_OPERATORS as dS, BINARY_OPERATORS as dT, UNARY_FILTER_OPERATORS as dU, UNARY_OPERATORS as dV, OPERATORS as dW, type ComparisonOperator as dX, type ArithmeticOperator as dY, type JSONOperator as dZ, type JSONOperatorWith$ as d_, CreateViewBuilder as da, type CreateViewBuilderProps as db, DropViewBuilder as dc, type DropViewBuilderProps as dd, AlterColumnBuilder as de, AlteredColumnBuilder as df, type AlterColumnBuilderCallback as dg, DynamicModule as dh, TRANSACTION_ISOLATION_LEVELS as di, type IsolationLevel as dj, type ColumnMetadata as dk, type AlterColumnNodeProps as dl, type AlterTableNodeTableProps as dm, type ColumnDefinitionNodeProps as dn, type ConstraintNode as dp, type CreateIndexNodeProps as dq, type IndexType as dr, type CreateSchemaNodeParams as ds, ON_COMMIT_ACTIONS as dt, type OnCommitAction as du, type CreateTableNodeParams as dv, type CreateTypeNodeParams as dw, type CreateViewNodeParams as dx, type ColumnDataType as dy, type DataTypeParams as dz, type ConnectionProvider as e, type UnaryOperator as e0, type UnaryFilterOperator as e1, type Operator as e2, isOperator as e3, isBinaryOperator as e4, isComparisonOperator as e5, isArithmeticOperator as e6, isJSONOperator as e7, PrimaryConstraintNode as e8, QueryNode as e9, type LogLevel as eA, type QueryLogEvent as eB, type ErrorLogEvent as eC, type LogEvent as eD, type Logger as eE, type LogConfig as eF, Log as eG, type SelectQueryBuilderExpression as eH, ON_MODIFY_FOREIGN_ACTIONS as ea, type OnModifyForeignAction as eb, type UniqueConstraintNodeProps as ec, type UpdateValuesNode as ed, type WithNodeParams as ee, type SetOperator as ef, type JSONPathLegType as eg, type FetchModifier as eh, type ColumnType as ei, type Generated as ej, type GeneratedAlways as ek, type JSONColumnType as el, type SelectType as em, type InsertType as en, type UpdateType as eo, type NullableInsertKeys as ep, type NonNullableInsertKeys as eq, type UpdateKeys as er, type Selectable as es, type Insertable as et, type Updateable as eu, isCompilable as ev, type ExplainFormat as ew, type Explainable as ex, type Streamable as ey, LOG_LEVELS as ez, type QueryCompiler as f, SelectionNode as g, ColumnNode as h, ReferenceNode as i, AndNode as j, OrNode as k, ParensNode as l, RawNode as m, DeleteQueryNode as n, ReturningNode as o, CreateTableNode as p, AddColumnNode as q, ColumnDefinitionNode as r, DropTableNode as s, OrderByNode as t, OrderByItemNode as u, GroupByItemNode as v, ColumnUpdateNode as w, OffsetNode as x, OnConflictNode as y, OnDuplicateKeyNode as z };
+export { HavingNode as $, AliasNode as A, CreateIndexNode as B, CompiledQuery as C, type DialectAdapter as D, DropIndexNode as E, FromNode as F, GroupByNode as G, type PrimaryKeyConstraintNode as H, InsertQueryNode as I, JoinNode as J, type KyselyPlugin as K, LimitNode as L, UniqueConstraintNode as M, ReferencesNode as N, type OperationNode as O, PrimitiveValueListNode as P, type QueryExecutor as Q, type RawBuilder as R, SelectQueryNode as S, TableNode as T, UpdateQueryNode as U, ValueListNode as V, WhereNode as W, CheckConstraintNode as X, WithNode as Y, CommonTableExpressionNode as Z, CommonTableExpressionNameNode as _, type RootOperationNode as a, expressionBuilder as a$, CreateSchemaNode as a0, DropSchemaNode as a1, AlterTableNode as a2, DropColumnNode as a3, RenameColumnNode as a4, AlterColumnNode as a5, ModifyColumnNode as a6, AddConstraintNode as a7, DropConstraintNode as a8, ForeignKeyConstraintNode as a9, JSONOperatorChainNode as aA, MergeQueryNode as aB, AddIndexNode as aC, FetchNode as aD, TopNode as aE, type AlterTableColumnAlterationNode as aF, type Driver as aG, Kysely as aH, type MigrationLockOptions as aI, type Dialect as aJ, type DatabaseIntrospector as aK, type SchemaMetadata as aL, type DatabaseMetadataOptions as aM, type TableMetadata as aN, type DatabaseMetadata as aO, type TransactionSettings as aP, type PluginTransformQueryArgs as aQ, type PluginTransformResultArgs as aR, type UnknownRow as aS, type Compilable as aT, InsertResult as aU, UpdateResult as aV, DeleteResult as aW, MergeResult as aX, type Simplify as aY, type ExpressionOrFactory as aZ, type ExpressionBuilder as a_, DataTypeNode as aa, SelectAllNode as ab, IdentifierNode as ac, SchemableIdentifierNode as ad, ValueNode as ae, OperatorNode as af, CreateViewNode as ag, DropViewNode as ah, GeneratedNode as ai, DefaultValueNode as aj, OnNode as ak, SelectModifierNode as al, CreateTypeNode as am, DropTypeNode as an, ExplainNode as ao, AggregateFunctionNode as ap, OverNode as aq, PartitionByNode as ar, PartitionByItemNode as as, SetOperationNode as at, UsingNode as au, CaseNode as av, WhenNode as aw, JSONReferenceNode as ax, JSONPathNode as ay, JSONPathLegNode as az, type QueryId as b, InsertQueryBuilder as b$, type AnyAliasedColumn as b0, type AnyAliasedColumnWithTable as b1, type AnyColumn as b2, type AnyColumnWithTable as b3, type Equals as b4, type SqlBool as b5, type Nullable as b6, type NotNull$1 as b7, type SelectExpression as b8, type SelectCallback as b9, type KyselyProps as bA, isKyselyProps as bB, type KyselyConfig as bC, ConnectionBuilder as bD, TransactionBuilder as bE, QueryCreator as bF, type QueryCreatorProps as bG, type Expression as bH, type AliasableExpression as bI, type AliasedExpression as bJ, isExpression as bK, isAliasedExpression as bL, ExpressionWrapper as bM, AliasedExpressionWrapper as bN, OrWrapper as bO, AndWrapper as bP, type WhereInterface as bQ, type ReturningInterface as bR, type HavingInterface as bS, type SelectQueryBuilder as bT, createSelectQueryBuilder as bU, type SelectQueryBuilderProps as bV, type AliasedSelectQueryBuilder as bW, type SelectQueryBuilderWithInnerJoin as bX, type SelectQueryBuilderWithLeftJoin as bY, type SelectQueryBuilderWithRightJoin as bZ, type SelectQueryBuilderWithFullJoin as b_, type SelectArg as ba, type Selection as bb, type CallbackSelection as bc, type ReferenceExpression as bd, type ReferenceExpressionOrList as be, type SimpleReferenceExpression as bf, type StringReference as bg, type ExtractTypeFromStringReference as bh, type ExtractTypeFromReferenceExpression as bi, type ValueExpression as bj, type ValueExpressionOrList as bk, type SimpleTableReference as bl, type TableExpression as bm, type TableExpressionOrList as bn, type JoinReferenceExpression as bo, type JoinCallbackExpression as bp, type InsertObject as bq, type UpdateObject as br, type OrderByExpression as bs, type OrderByDirectionExpression as bt, type ComparisonOperatorExpression as bu, type OperandValueExpression as bv, type OperandValueExpressionOrList as bw, type FilterObject as bx, type OperandExpression as by, Transaction as bz, type DatabaseConnection as c, type CreateSchemaBuilderProps as c$, type InsertQueryBuilderProps as c0, UpdateQueryBuilder as c1, type UpdateQueryBuilderProps as c2, type UpdateQueryBuilderWithInnerJoin as c3, type UpdateQueryBuilderWithLeftJoin as c4, type UpdateQueryBuilderWithRightJoin as c5, type UpdateQueryBuilderWithFullJoin as c6, DeleteQueryBuilder as c7, type DeleteQueryBuilderProps as c8, type DeleteQueryBuilderWithInnerJoin as c9, AliasedJSONPathBuilder as cA, MergeQueryBuilder as cB, type MergeQueryBuilderProps as cC, WheneableMergeQueryBuilder as cD, MatchedThenableMergeQueryBuilder as cE, NotMatchedThenableMergeQueryBuilder as cF, type ExtractWheneableMergeQueryBuilder as cG, type RawBuilderProps as cH, createRawBuilder as cI, type AliasedRawBuilder as cJ, type QueryExecutorProvider as cK, SchemaModule as cL, CreateTableBuilder as cM, type CreateTableBuilderProps as cN, type ColumnBuilderCallback as cO, type ForeignKeyConstraintBuilderCallback as cP, CreateTypeBuilder as cQ, type CreateTypeBuilderProps as cR, DropTableBuilder as cS, type DropTableBuilderProps as cT, DropTypeBuilder as cU, type DropTypeBuilderProps as cV, CreateIndexBuilder as cW, type CreateIndexBuilderProps as cX, DropIndexBuilder as cY, type DropIndexBuilderProps as cZ, CreateSchemaBuilder as c_, type DeleteQueryBuilderWithLeftJoin as ca, type DeleteQueryBuilderWithRightJoin as cb, type DeleteQueryBuilderWithFullJoin as cc, type NoResultErrorConstructor as cd, NoResultError as ce, isNoResultErrorConstructor as cf, JoinBuilder as cg, type JoinBuilderProps as ch, type FunctionModule as ci, createFunctionModule as cj, OnConflictBuilder as ck, type OnConflictBuilderProps as cl, type OnConflictDatabase as cm, type OnConflictTables as cn, OnConflictDoNothingBuilder as co, OnConflictUpdateBuilder as cp, AggregateFunctionBuilder as cq, AliasedAggregateFunctionBuilder as cr, type AggregateFunctionBuilderProps as cs, type OverBuilderCallback as ct, CaseBuilder as cu, CaseThenBuilder as cv, CaseWhenBuilder as cw, CaseEndBuilder as cx, JSONPathBuilder as cy, TraversedJSONPathBuilder as cz, type QueryResult as d, type JSONOperatorWith$ as d$, DropSchemaBuilder as d0, type DropSchemaBuilderProps as d1, ColumnDefinitionBuilder as d2, type ColumnDefinitionBuilderCallback as d3, type ForeignKeyConstraintBuilderInterface as d4, ForeignKeyConstraintBuilder as d5, AlterTableBuilder as d6, type AlterTableBuilderProps as d7, type ColumnAlteringInterface as d8, AlterTableColumnAlteringBuilder as d9, type DataTypeParams as dA, isColumnDataType as dB, type DropConstraintNodeProps as dC, type DropIndexNodeProps as dD, type DropSchemaNodeParams as dE, type DropTablexNodeParams as dF, type DropTypeNodeParams as dG, type DropViewNodeParams as dH, type ForeignKeyConstraintNodeProps as dI, type GeneratedNodeParams as dJ, type InsertQueryNodeProps as dK, type JoinType as dL, type OnConflictNodeProps as dM, type OnDuplicateKeyNodeProps as dN, type OperationNodeSource as dO, isOperationNodeSource as dP, type OperationNodeKind as dQ, COMPARISON_OPERATORS as dR, ARITHMETIC_OPERATORS as dS, JSON_OPERATORS as dT, BINARY_OPERATORS as dU, UNARY_FILTER_OPERATORS as dV, UNARY_OPERATORS as dW, OPERATORS as dX, type ComparisonOperator as dY, type ArithmeticOperator as dZ, type JSONOperator as d_, type AlterTableColumnAlteringBuilderProps as da, CreateViewBuilder as db, type CreateViewBuilderProps as dc, DropViewBuilder as dd, type DropViewBuilderProps as de, AlterColumnBuilder as df, AlteredColumnBuilder as dg, type AlterColumnBuilderCallback as dh, DynamicModule as di, TRANSACTION_ISOLATION_LEVELS as dj, type IsolationLevel as dk, type ColumnMetadata as dl, type AlterColumnNodeProps as dm, type AlterTableNodeTableProps as dn, type ColumnDefinitionNodeProps as dp, type ConstraintNode as dq, type CreateIndexNodeProps as dr, type IndexType as ds, type CreateSchemaNodeParams as dt, ON_COMMIT_ACTIONS as du, type OnCommitAction as dv, type CreateTableNodeParams as dw, type CreateTypeNodeParams as dx, type CreateViewNodeParams as dy, type ColumnDataType as dz, type ConnectionProvider as e, type BinaryOperator as e0, type UnaryOperator as e1, type UnaryFilterOperator as e2, type Operator as e3, isOperator as e4, isBinaryOperator as e5, isComparisonOperator as e6, isArithmeticOperator as e7, isJSONOperator as e8, PrimaryConstraintNode as e9, type Streamable as eA, LOG_LEVELS as eB, type LogLevel as eC, type QueryLogEvent as eD, type ErrorLogEvent as eE, type LogEvent as eF, type Logger as eG, type LogConfig as eH, Log as eI, type SelectQueryBuilderExpression as eJ, QueryNode as ea, ON_MODIFY_FOREIGN_ACTIONS as eb, type OnModifyForeignAction as ec, type UniqueConstraintNodeProps as ed, type UpdateValuesNode as ee, type WithNodeParams as ef, type SetOperator as eg, type JSONPathLegType as eh, type FetchModifier as ei, type TopModifier as ej, type ColumnType as ek, type Generated as el, type GeneratedAlways as em, type JSONColumnType as en, type SelectType as eo, type InsertType as ep, type UpdateType as eq, type NullableInsertKeys as er, type NonNullableInsertKeys as es, type UpdateKeys as et, type Selectable as eu, type Insertable as ev, type Updateable as ew, isCompilable as ex, type ExplainFormat as ey, type Explainable as ez, type QueryCompiler as f, SelectionNode as g, ColumnNode as h, ReferenceNode as i, AndNode as j, OrNode as k, ParensNode as l, RawNode as m, DeleteQueryNode as n, ReturningNode as o, CreateTableNode as p, AddColumnNode as q, ColumnDefinitionNode as r, DropTableNode as s, OrderByNode as t, OrderByItemNode as u, GroupByItemNode as v, ColumnUpdateNode as w, OffsetNode as x, OnConflictNode as y, OnDuplicateKeyNode as z };
