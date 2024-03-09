@@ -2417,9 +2417,9 @@ type From<DB, TE> = DrainOuterGeneric<{
     [C in keyof DB | ExtractAliasFromTableExpression<DB, TE>]: C extends ExtractAliasFromTableExpression<DB, TE> ? ExtractRowTypeFromTableExpression<DB, TE, C> : C extends keyof DB ? DB[C] : never;
 }>;
 type FromTables<DB, TB extends keyof DB, TE> = DrainOuterGeneric<TB | ExtractAliasFromTableExpression<DB, TE>>;
-type ExtractTableAlias<DB, TE> = TE extends `${string} as ${infer TA}` ? TA : TE extends keyof DB ? TE : never;
+type ExtractTableAlias<DB, TE> = TE extends `${string} as ${infer TA}` ? TA extends keyof DB ? TA : never : TE extends keyof DB ? TE : never;
 type PickTableWithAlias<DB, T extends AnyAliasedTable<DB>> = T extends `${infer TB} as ${infer A}` ? TB extends keyof DB ? ShallowRecord<A, DB[TB]> : never : never;
-type ExtractAliasFromTableExpression<DB, TE> = TE extends string ? ExtractTableAlias<DB, TE> : TE extends AliasedExpression<any, infer QA> ? QA : TE extends (qb: any) => AliasedExpression<any, infer QA> ? QA : never;
+type ExtractAliasFromTableExpression<DB, TE> = TE extends string ? TE extends `${string} as ${infer TA}` ? TA : TE extends keyof DB ? TE : never : TE extends AliasedExpression<any, infer QA> ? QA : TE extends (qb: any) => AliasedExpression<any, infer QA> ? QA : never;
 type ExtractRowTypeFromTableExpression<DB, TE, A extends keyof any> = TE extends `${infer T} as ${infer TA}` ? TA extends A ? T extends keyof DB ? DB[T] : never : never : TE extends A ? TE extends keyof DB ? DB[TE] : never : TE extends AliasedExpression<infer O, infer QA> ? QA extends A ? O : never : TE extends (qb: any) => AliasedExpression<infer O, infer QA> ? QA extends A ? O : never : never;
 type AnyTable<DB> = keyof DB & string;
 
@@ -7319,7 +7319,7 @@ interface ExpressionBuilder<DB, TB extends keyof DB> {
     selectFrom<TE extends keyof DB & string>(from: TE[]): SelectQueryBuilder<DB, TB | ExtractTableAlias<DB, TE>, {}>;
     selectFrom<TE extends TableExpression<DB, TB>>(from: TE[]): SelectQueryBuilder<From<DB, TE>, FromTables<DB, TB, TE>, {}>;
     selectFrom<TE extends keyof DB & string>(from: TE): SelectQueryBuilder<DB, TB | ExtractTableAlias<DB, TE>, {}>;
-    selectFrom<TE extends AnyAliasedTable<DB>>(from: TE): SelectQueryBuilder<DB & PickTableWithAlias<DB, TE>, TB | ExtractTableAlias<DB, TE>, {}>;
+    selectFrom<TE extends AnyAliasedTable<DB>>(from: TE): SelectQueryBuilder<DB & PickTableWithAlias<DB, TE>, TB | ExtractTableAlias<DB & PickTableWithAlias<DB, TE>, TE>, {}>;
     selectFrom<TE extends TableExpression<DB, TB>>(from: TE): SelectQueryBuilder<From<DB, TE>, FromTables<DB, TB, TE>, {}>;
     /**
      * Creates a `case` statement/operator.
@@ -13998,7 +13998,7 @@ declare class QueryCreator<DB> {
     selectFrom<TE extends keyof DB & string>(from: TE[]): SelectQueryBuilder<DB, ExtractTableAlias<DB, TE>, {}>;
     selectFrom<TE extends TableExpression<DB, keyof DB>>(from: TE[]): SelectQueryBuilder<From<DB, TE>, FromTables<DB, never, TE>, {}>;
     selectFrom<TE extends keyof DB & string>(from: TE): SelectQueryBuilder<DB, ExtractTableAlias<DB, TE>, {}>;
-    selectFrom<TE extends AnyAliasedTable<DB>>(from: TE): SelectQueryBuilder<DB & PickTableWithAlias<DB, TE>, ExtractTableAlias<DB, TE>, {}>;
+    selectFrom<TE extends AnyAliasedTable<DB>>(from: TE): SelectQueryBuilder<DB & PickTableWithAlias<DB, TE>, ExtractTableAlias<DB & PickTableWithAlias<DB, TE>, TE>, {}>;
     selectFrom<TE extends TableExpression<DB, keyof DB>>(from: TE): SelectQueryBuilder<From<DB, TE>, FromTables<DB, never, TE>, {}>;
     /**
      * Creates a `select` query builder without a `from` clause.
@@ -14193,7 +14193,7 @@ declare class QueryCreator<DB> {
      * ```
      */
     updateTable<TR extends keyof DB & string>(table: TR): UpdateQueryBuilder<DB, ExtractTableAlias<DB, TR>, ExtractTableAlias<DB, TR>, UpdateResult>;
-    updateTable<TR extends AnyAliasedTable<DB>>(table: TR): UpdateQueryBuilder<DB & PickTableWithAlias<DB, TR>, ExtractTableAlias<DB, TR>, ExtractTableAlias<DB, TR>, UpdateResult>;
+    updateTable<TR extends AnyAliasedTable<DB>>(table: TR): UpdateQueryBuilder<DB & PickTableWithAlias<DB, TR>, ExtractTableAlias<DB & PickTableWithAlias<DB, TR>, TR>, ExtractTableAlias<DB & PickTableWithAlias<DB, TR>, TR>, UpdateResult>;
     updateTable<TR extends TableReference<DB>>(table: TR): UpdateQueryBuilder<From<DB, TR>, FromTables<DB, never, TR>, FromTables<DB, never, TR>, UpdateResult>;
     /**
      * Creates a merge query.
@@ -14230,7 +14230,7 @@ declare class QueryCreator<DB> {
      * ```
      */
     mergeInto<TR extends keyof DB & string>(targetTable: TR): MergeQueryBuilder<DB, TR, MergeResult>;
-    mergeInto<TR extends AnyAliasedTable<DB>>(targetTable: TR): MergeQueryBuilder<DB & PickTableWithAlias<DB, TR>, ExtractTableAlias<DB, TR>, MergeResult>;
+    mergeInto<TR extends AnyAliasedTable<DB>>(targetTable: TR): MergeQueryBuilder<DB & PickTableWithAlias<DB, TR>, ExtractTableAlias<DB & PickTableWithAlias<DB, TR>, TR>, MergeResult>;
     /**
      * Creates a `with` query (Common Table Expression).
      *

@@ -1,4 +1,4 @@
-import { eJ as SelectQueryBuilderExpression, R as RawBuilder, aY as Simplify, bH as Expression } from '../kysely.d-GYo6XAIe.js';
+import { eJ as SelectQueryBuilderExpression, R as RawBuilder, aY as Simplify, bH as Expression } from '../kysely.d-47h6BtAd.js';
 
 /**
  * A SQLite helper for aggregating a subquery into a JSON array.
