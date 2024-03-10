@@ -358,6 +358,7 @@ interface ColumnDefinitionNode extends OperationNode {
     readonly endModifiers?: ReadonlyArray<OperationNode>;
     readonly nullsNotDistinct?: boolean;
     readonly identity?: boolean;
+    readonly ifNotExists?: boolean;
 }
 /**
  * @internal
@@ -2231,6 +2232,11 @@ declare class ColumnDefinitionBuilder implements OperationNodeSource {
      * ```
      */
     nullsNotDistinct(): ColumnDefinitionBuilder;
+    /**
+     * Adds `if not exists` specifier.
+     * This only works for PostgreSQL.
+     */
+    ifNotExists(): ColumnDefinitionBuilder;
     /**
      * This can be used to add any additional SQL to the end of the column definition.
      *
