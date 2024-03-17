@@ -1,9 +1,9 @@
 # minified-kysely
 
 Kysely runs in the browser without any problem, just `import from "kysely"` will works well in most enviroments.
-`minified-kysely` is for the rare cases where using Kysely directly without passing through any bundler(like Webpack or Rollup).
+`minified-kysely` is for the rare cases where using Kysely dynamically without passing through any bundler(like Webpack or Rollup).
 
-Multiple version of Kyselys are built from `git` commits.
+Multiple version of Kyselys are built from Git commits.
 All tagged commits, and [tracking branches](https://github.com/wirekang/minified-kysely/blob/main/src/constants.ts#L9) are targets.
 Generated files are stored in the same repository: [/dist](https://github.com/wirekang/minified-kysely/tree/main/dist).
 
