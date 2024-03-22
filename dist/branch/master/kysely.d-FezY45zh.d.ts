@@ -4557,7 +4557,10 @@ interface SelectQueryBuilder<DB, TB extends keyof DB, O> extends WhereInterface<
      *     (join) => join
      *       .onRef('pet.owner_id', '=', 'person.id')
      *       .on('pet.name', '=', 'Doggo')
-     *       .on((eb) => eb.or([eb("person.age", ">", 18), eb("person.age", "<", 100)]))
+     *       .on((eb) => eb.or([
+     *         eb('person.age', '>', 18),
+     *         eb('person.age', '<', 100)
+     *       ]))
      *   )
      *   .selectAll()
      *   .execute()
@@ -4571,6 +4574,10 @@ interface SelectQueryBuilder<DB, TB extends keyof DB, O> extends WhereInterface<
      * inner join "pet"
      * on "pet"."owner_id" = "person"."id"
      * and "pet"."name" = $1
+     * and (
+     *   "person"."age" > $2 OR
+     *   "person"."age" < $3
+     * )
      * ```
      *
      * <!-- siteExample("join", "Subquery join", 40) -->
