@@ -3003,7 +3003,7 @@ interface WhereInterface<DB, TB extends keyof DB> {
      *   .selectFrom('person')
      *   .selectAll()
      *   .where(
-     *     sql`coalesce(first_name, last_name)`,
+     *     sql<string>`coalesce(first_name, last_name)`,
      *     'like',
      *     '%' + name + '%',
      *   )
@@ -4024,7 +4024,7 @@ interface SelectQueryBuilder<DB, TB extends keyof DB, O> extends WhereInterface<
      *   .selectFrom('person')
      *   .selectAll()
      *   .where(
-     *     sql`coalesce(first_name, last_name)`,
+     *     sql<string>`coalesce(first_name, last_name)`,
      *     'like',
      *     '%' + name + '%',
      *   )
@@ -4776,7 +4776,7 @@ interface SelectQueryBuilder<DB, TB extends keyof DB, O> extends WhereInterface<
      *     .limit(1)
      *   )
      *   .orderBy(
-     *     sql`concat(first_name, last_name)`
+     *     sql<string>`concat(first_name, last_name)`
      *   )
      *   .execute()
      * ```
@@ -4835,7 +4835,7 @@ interface SelectQueryBuilder<DB, TB extends keyof DB, O> extends WhereInterface<
      *   .selectFrom('person')
      *   .select([
      *     'first_name',
-     *     sql`max(id)`.as('max_id')
+     *     sql<string>`max(id)`.as('max_id')
      *   ])
      *   .groupBy('first_name')
      *   .execute()
@@ -4859,7 +4859,7 @@ interface SelectQueryBuilder<DB, TB extends keyof DB, O> extends WhereInterface<
      *   .select([
      *     'first_name',
      *     'last_name',
-     *     sql`max(id)`.as('max_id')
+     *     sql<string>`max(id)`.as('max_id')
      *   ])
      *   .groupBy([
      *     'first_name',
@@ -4887,10 +4887,10 @@ interface SelectQueryBuilder<DB, TB extends keyof DB, O> extends WhereInterface<
      *   .select([
      *     'first_name',
      *     'last_name',
-     *     sql`max(id)`.as('max_id')
+     *     sql<string>`max(id)`.as('max_id')
      *   ])
      *   .groupBy([
-     *     sql`concat(first_name, last_name)`,
+     *     sql<string>`concat(first_name, last_name)`,
      *     (qb) => qb.selectFrom('pet').select('id').limit(1)
      *   ])
      *   .execute()
@@ -6191,7 +6191,7 @@ interface FunctionModule<DB, TB extends keyof DB> {
      * ```ts
      * db.selectFrom('person')
      *   .selectAll('person')
-     *   .where(sql`upper(first_name)`, '=', 'JENNIFER')
+     *   .where(sql<string>`upper(first_name)`, '=', 'JENNIFER')
      * ```
      */
     <O, RE extends ReferenceExpression<DB, TB> = ReferenceExpression<DB, TB>>(name: string, args?: ReadonlyArray<RE>): ExpressionWrapper<DB, TB, O>;
@@ -7469,7 +7469,7 @@ interface ExpressionBuilder<DB, TB extends keyof DB> {
      *
      * ```ts
      * db.update('pet').set((eb) => ({
-     *   name: sql`concat(${eb.ref('pet.name')}, ${suffix})`
+     *   name: sql<string>`concat(${eb.ref('pet.name')}, ${suffix})`
      * }))
      * ```
      *
@@ -8090,7 +8090,7 @@ declare class AlterTableAddIndexBuilder implements OperationNodeSource, Compilab
      * await db.schema
      *   .alterTable('person')
      *   .addIndex('person_first_name_index')
-     *   .expression(sql`(first_name < 'Sami')`)
+     *   .expression(sql<boolean>`(first_name < 'Sami')`)
      *   .execute()
      * ```
      *
@@ -9763,7 +9763,7 @@ declare class OnConflictBuilder<DB, TB extends keyof DB> implements WhereInterfa
      *   .selectFrom('person')
      *   .selectAll()
      *   .where(
-     *     sql`coalesce(first_name, last_name)`,
+     *     sql<string>`coalesce(first_name, last_name)`,
      *     'like',
      *     '%' + name + '%',
      *   )
@@ -10227,7 +10227,7 @@ declare class OnConflictUpdateBuilder<DB, TB extends keyof DB> implements WhereI
      *   .selectFrom('person')
      *   .selectAll()
      *   .where(
-     *     sql`coalesce(first_name, last_name)`,
+     *     sql<string>`coalesce(first_name, last_name)`,
      *     'like',
      *     '%' + name + '%',
      *   )
@@ -10420,7 +10420,7 @@ declare class InsertQueryBuilder<DB, TB extends keyof DB, O> implements Returnin
      *   .insertInto('person')
      *   .values(({ ref, selectFrom, fn }) => ({
      *     first_name: 'Jennifer',
-     *     last_name: sql`concat(${ani}, ${ston})`,
+     *     last_name: sql<string>`>concat(${ani}, ${ston})`,
      *     middle_name: ref('first_name'),
      *     age: selectFrom('person')
      *       .select(fn.avg<number>('age').as('avg_age')),
@@ -10664,7 +10664,7 @@ declare class InsertQueryBuilder<DB, TB extends keyof DB, O> implements Returnin
      *     species: 'cat',
      *   })
      *   .onConflict((oc) => oc
-     *     .expression(sql`lower(name)`)
+     *     .expression(sql<string>`lower(name)`)
      *     .doUpdateSet({ species: 'hamster' })
      *   )
      *   .execute()
@@ -11363,7 +11363,7 @@ declare class DeleteQueryBuilder<DB, TB extends keyof DB, O> implements WhereInt
      *   .selectFrom('person')
      *   .selectAll()
      *   .where(
-     *     sql`coalesce(first_name, last_name)`,
+     *     sql<string>`coalesce(first_name, last_name)`,
      *     'like',
      *     '%' + name + '%',
      *   )
@@ -12520,7 +12520,7 @@ declare class UpdateQueryBuilder<DB, UT extends keyof DB, TB extends keyof DB, O
      *   .selectFrom('person')
      *   .selectAll()
      *   .where(
-     *     sql`coalesce(first_name, last_name)`,
+     *     sql<string>`coalesce(first_name, last_name)`,
      *     'like',
      *     '%' + name + '%',
      *   )
@@ -12925,7 +12925,7 @@ declare class UpdateQueryBuilder<DB, UT extends keyof DB, TB extends keyof DB, O
      *   .set('first_name', 'Foo')
      *   // As always, both arguments can be arbitrary expressions or
      *   // callbacks that give you access to an expression builder:
-     *   .set(sql`address['postalCode']`, (eb) => eb.val('61710))
+     *   .set(sql<string>`address['postalCode']`, (eb) => eb.val('61710))
      *   .where('id', '=', '1')
      *   .executeTakeFirst()
      * ```
@@ -12966,7 +12966,7 @@ declare class UpdateQueryBuilder<DB, UT extends keyof DB, TB extends keyof DB, O
      *     first_name: selectFrom('person').select('first_name').limit(1),
      *     middle_name: ref('first_name'),
      *     age: eb('age', '+', 1),
-     *     last_name: sql`${'Ani'} || ${'ston'}`,
+     *     last_name: sql<string>`${'Ani'} || ${'ston'}`,
      *   }))
      *   .where('id', '=', 1)
      *   .executeTakeFirst()
