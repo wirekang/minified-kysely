@@ -1268,6 +1268,7 @@ declare const SelectQueryNode: Readonly<{
     cloneWithoutLimit(select: SelectQueryNode): SelectQueryNode;
     cloneWithoutOffset(select: SelectQueryNode): SelectQueryNode;
     cloneWithoutOrderBy(select: SelectQueryNode): SelectQueryNode;
+    cloneWithoutGroupBy(select: SelectQueryNode): SelectQueryNode;
 }>;
 
 type CreateViewNodeParams = Omit<Partial<CreateViewNode>, 'kind' | 'name'>;
@@ -5357,6 +5358,25 @@ interface SelectQueryBuilder<DB, TB extends keyof DB, O> extends WhereInterface<
      * ```
      */
     clearOrderBy(): SelectQueryBuilder<DB, TB, O>;
+    /**
+     * Clears `group by` clause from the query.
+     *
+     * ### Examples
+     *
+     * ```ts
+     * db.selectFrom('person')
+     *   .selectAll()
+     *   .groupBy('id')
+     *   .clearGroupBy()
+     * ```
+     *
+     * The generated SQL(PostgreSQL):
+     *
+     * ```sql
+     * select * from "person"
+     * ```
+     */
+    clearGroupBy(): SelectQueryBuilder<DB, TB, O>;
     /**
      * Simply calls the provided function passing `this` as the only argument. `$call` returns
      * what the provided function returns.
