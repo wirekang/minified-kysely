@@ -221,7 +221,7 @@ type ShallowRecord<K extends keyof any, T> = DrainOuterGeneric<{
     [P in K]: T;
 }>;
 
-type OperationNodeKind = 'IdentifierNode' | 'SchemableIdentifierNode' | 'RawNode' | 'SelectQueryNode' | 'SelectionNode' | 'ReferenceNode' | 'ColumnNode' | 'TableNode' | 'AliasNode' | 'FromNode' | 'SelectAllNode' | 'AndNode' | 'OrNode' | 'ParensNode' | 'ValueNode' | 'ValueListNode' | 'PrimitiveValueListNode' | 'JoinNode' | 'OperatorNode' | 'WhereNode' | 'InsertQueryNode' | 'DeleteQueryNode' | 'ReturningNode' | 'CreateTableNode' | 'ColumnDefinitionNode' | 'AddColumnNode' | 'DropTableNode' | 'DataTypeNode' | 'OrderByNode' | 'OrderByItemNode' | 'GroupByNode' | 'GroupByItemNode' | 'UpdateQueryNode' | 'ColumnUpdateNode' | 'LimitNode' | 'OffsetNode' | 'OnConflictNode' | 'OnDuplicateKeyNode' | 'CreateIndexNode' | 'DropIndexNode' | 'ListNode' | 'ReferencesNode' | 'PrimaryKeyConstraintNode' | 'UniqueConstraintNode' | 'CheckConstraintNode' | 'ForeignKeyConstraintNode' | 'WithNode' | 'CommonTableExpressionNode' | 'HavingNode' | 'CreateSchemaNode' | 'DropSchemaNode' | 'AlterTableNode' | 'ModifyColumnNode' | 'DropColumnNode' | 'RenameColumnNode' | 'AlterColumnNode' | 'AddConstraintNode' | 'DropConstraintNode' | 'CreateViewNode' | 'DropViewNode' | 'GeneratedNode' | 'DefaultValueNode' | 'OnNode' | 'ValuesNode' | 'CommonTableExpressionNameNode' | 'SelectModifierNode' | 'CreateTypeNode' | 'DropTypeNode' | 'ExplainNode' | 'DefaultInsertValueNode' | 'AggregateFunctionNode' | 'OverNode' | 'PartitionByNode' | 'PartitionByItemNode' | 'SetOperationNode' | 'BinaryOperationNode' | 'UnaryOperationNode' | 'UsingNode' | 'FunctionNode' | 'CaseNode' | 'WhenNode' | 'JSONReferenceNode' | 'JSONPathNode' | 'JSONPathLegNode' | 'JSONOperatorChainNode' | 'TupleNode' | 'MergeQueryNode' | 'MatchedNode' | 'AddIndexNode' | 'CastNode' | 'FetchNode' | 'TopNode';
+type OperationNodeKind = 'IdentifierNode' | 'SchemableIdentifierNode' | 'RawNode' | 'SelectQueryNode' | 'SelectionNode' | 'ReferenceNode' | 'ColumnNode' | 'TableNode' | 'AliasNode' | 'FromNode' | 'SelectAllNode' | 'AndNode' | 'OrNode' | 'ParensNode' | 'ValueNode' | 'ValueListNode' | 'PrimitiveValueListNode' | 'JoinNode' | 'OperatorNode' | 'WhereNode' | 'InsertQueryNode' | 'DeleteQueryNode' | 'ReturningNode' | 'CreateTableNode' | 'ColumnDefinitionNode' | 'AddColumnNode' | 'DropTableNode' | 'DataTypeNode' | 'OrderByNode' | 'OrderByItemNode' | 'GroupByNode' | 'GroupByItemNode' | 'UpdateQueryNode' | 'ColumnUpdateNode' | 'LimitNode' | 'OffsetNode' | 'OnConflictNode' | 'OnDuplicateKeyNode' | 'CreateIndexNode' | 'DropIndexNode' | 'ListNode' | 'ReferencesNode' | 'PrimaryKeyConstraintNode' | 'UniqueConstraintNode' | 'CheckConstraintNode' | 'ForeignKeyConstraintNode' | 'WithNode' | 'CommonTableExpressionNode' | 'HavingNode' | 'CreateSchemaNode' | 'DropSchemaNode' | 'AlterTableNode' | 'ModifyColumnNode' | 'DropColumnNode' | 'RenameColumnNode' | 'AlterColumnNode' | 'AddConstraintNode' | 'DropConstraintNode' | 'CreateViewNode' | 'DropViewNode' | 'GeneratedNode' | 'DefaultValueNode' | 'OnNode' | 'ValuesNode' | 'CommonTableExpressionNameNode' | 'SelectModifierNode' | 'CreateTypeNode' | 'DropTypeNode' | 'ExplainNode' | 'DefaultInsertValueNode' | 'AggregateFunctionNode' | 'OverNode' | 'PartitionByNode' | 'PartitionByItemNode' | 'SetOperationNode' | 'BinaryOperationNode' | 'UnaryOperationNode' | 'UsingNode' | 'FunctionNode' | 'CaseNode' | 'WhenNode' | 'JSONReferenceNode' | 'JSONPathNode' | 'JSONPathLegNode' | 'JSONOperatorChainNode' | 'TupleNode' | 'MergeQueryNode' | 'MatchedNode' | 'AddIndexNode' | 'CastNode' | 'FetchNode' | 'TopNode' | 'OutputNode';
 interface OperationNode {
     readonly kind: OperationNodeKind;
 }
@@ -1354,6 +1354,19 @@ declare const DropViewNode: Readonly<{
     cloneWith(dropView: DropViewNode, params: DropViewNodeParams): DropViewNode;
 }>;
 
+interface OutputNode extends OperationNode {
+    readonly kind: 'OutputNode';
+    readonly selections: ReadonlyArray<OperationNode>;
+}
+/**
+ * @internal
+ */
+declare const OutputNode: Readonly<{
+    is(node: OperationNode): node is OutputNode;
+    create(selections: ReadonlyArray<OperationNode>): OutputNode;
+    cloneWithSelections(output: OutputNode, selections: ReadonlyArray<OperationNode>): OutputNode;
+}>;
+
 interface WhenNode extends OperationNode {
     readonly kind: 'WhenNode';
     readonly condition: OperationNode;
@@ -1375,6 +1388,7 @@ interface MergeQueryNode extends OperationNode {
     readonly whens?: ReadonlyArray<WhenNode>;
     readonly with?: WithNode;
     readonly top?: TopNode;
+    readonly output?: OutputNode;
 }
 /**
  * @internal
@@ -1467,6 +1481,7 @@ interface InsertQueryNode extends OperationNode {
     readonly explain?: ExplainNode;
     readonly defaultValues?: boolean;
     readonly top?: TopNode;
+    readonly output?: OutputNode;
 }
 /**
  * @internal
@@ -1508,6 +1523,7 @@ interface UpdateQueryNode extends OperationNode {
     readonly explain?: ExplainNode;
     readonly limit?: LimitNode;
     readonly top?: TopNode;
+    readonly output?: OutputNode;
 }
 /**
  * @internal
@@ -1546,6 +1562,7 @@ interface DeleteQueryNode extends OperationNode {
     readonly limit?: LimitNode;
     readonly explain?: ExplainNode;
     readonly top?: TopNode;
+    readonly output?: OutputNode;
 }
 /**
  * @internal
@@ -1575,6 +1592,9 @@ type HasExplain = {
 type HasTop = {
     top?: TopNode;
 };
+type HasOutput = {
+    output?: OutputNode;
+};
 type QueryNode = SelectQueryNode | InsertQueryNode | UpdateQueryNode | DeleteQueryNode | MergeQueryNode;
 /**
  * @internal
@@ -1588,6 +1608,7 @@ declare const QueryNode: Readonly<{
     cloneWithoutWhere<T_4 extends HasWhere>(node: T_4): T_4;
     cloneWithExplain<T_5 extends HasExplain>(node: T_5, format: ExplainFormat | undefined, options: Expression<any> | undefined): T_5;
     cloneWithTop<T_6 extends HasTop>(node: T_6, top: TopNode): T_6;
+    cloneWithOutput<T_7 extends HasOutput>(node: T_7, selections: ReadonlyArray<SelectionNode>): T_7;
 }>;
 
 type RootOperationNode = QueryNode | CreateTableNode | CreateIndexNode | CreateSchemaNode | CreateViewNode | DropTableNode | DropIndexNode | DropSchemaNode | DropViewNode | AlterTableNode | RawNode | CreateTypeNode | DropTypeNode | MergeQueryNode;
@@ -1778,6 +1799,11 @@ interface DialectAdapter {
      * updates and deletes.
      */
     readonly supportsReturning: boolean;
+    /**
+     * Whether or not this dialect supports the `output` clause in inserts
+     * updates and deletes.
+     */
+    readonly supportsOutput?: boolean;
     /**
      * This method is used to acquire a lock for the migrations so that
      * it's not possible for two migration operations to run in parallel.
@@ -9394,9 +9420,9 @@ type UpdateObjectFactory<DB, TB extends keyof DB, UT extends keyof DB> = (eb: Ex
 type UpdateObjectExpression<DB, TB extends keyof DB, UT extends keyof DB = TB> = UpdateObject<DB, TB, UT> | UpdateObjectFactory<DB, TB, UT>;
 type ExtractUpdateTypeFromReferenceExpression<DB, TB extends keyof DB, RE, DV = unknown> = UpdateType<ExtractRawTypeFromReferenceExpression<DB, TB, RE, DV>>;
 
-type ReturningRow<DB, TB extends keyof DB, O, SE> = O extends InsertResult ? Selection<DB, TB, SE> : O extends DeleteResult ? Selection<DB, TB, SE> : O extends UpdateResult ? Selection<DB, TB, SE> : O & Selection<DB, TB, SE>;
-type ReturningCallbackRow<DB, TB extends keyof DB, O, CB> = O extends InsertResult ? CallbackSelection<DB, TB, CB> : O extends DeleteResult ? CallbackSelection<DB, TB, CB> : O extends UpdateResult ? CallbackSelection<DB, TB, CB> : O & CallbackSelection<DB, TB, CB>;
-type ReturningAllRow<DB, TB extends keyof DB, O> = O extends InsertResult ? AllSelection<DB, TB> : O extends DeleteResult ? AllSelection<DB, TB> : O extends UpdateResult ? AllSelection<DB, TB> : O & AllSelection<DB, TB>;
+type ReturningRow<DB, TB extends keyof DB, O, SE> = O extends InsertResult | DeleteResult | UpdateResult | MergeResult ? Selection<DB, TB, SE> : O & Selection<DB, TB, SE>;
+type ReturningCallbackRow<DB, TB extends keyof DB, O, CB> = O extends InsertResult | DeleteResult | UpdateResult | MergeResult ? CallbackSelection<DB, TB, CB> : O & CallbackSelection<DB, TB, CB>;
+type ReturningAllRow<DB, TB extends keyof DB, O> = O extends InsertResult | DeleteResult | UpdateResult | MergeResult ? AllSelection<DB, TB> : O & AllSelection<DB, TB>;
 
 interface ReturningInterface<DB, TB extends keyof DB, O> {
     /**
@@ -9464,6 +9490,8 @@ interface ReturningInterface<DB, TB extends keyof DB, O> {
     /**
      * Adds a `returning *` to an insert/update/delete query on databases
      * that support `returning` such as PostgreSQL.
+     *
+     * Also see the {@link returning} method.
      */
     returningAll(): ReturningInterface<DB, TB, Selectable<DB[TB]>>;
 }
@@ -10298,7 +10326,99 @@ declare class OnConflictUpdateBuilder<DB, TB extends keyof DB> implements WhereI
     toOperationNode(): OnConflictNode;
 }
 
-declare class InsertQueryBuilder<DB, TB extends keyof DB, O> implements ReturningInterface<DB, TB, O>, OperationNodeSource, Compilable<O>, Explainable, Streamable<O> {
+interface OutputInterface<DB, TB extends keyof DB, O, OP extends OutputPrefix = OutputPrefix> {
+    /**
+     * Allows you to return data from modified rows.
+     *
+     * On supported databases like MS SQL Server (MSSQL), this method can be chained
+     * to `insert`, `update`, `delete` and `merge` queries to return data.
+     *
+     * Also see the {@link outputAll} method.
+     *
+     * ### Examples
+     *
+     * Return one column:
+     *
+     * ```ts
+     * const { id } = await db
+     *   .insertInto('person')
+     *   .output('inserted.id')
+     *   .values({
+     *     first_name: 'Jennifer',
+     *     last_name: 'Aniston'
+     *   })
+     *   .executeTakeFirst()
+     * ```
+     *
+     * Return multiple columns:
+     *
+     * ```ts
+     * const { id, first_name } = await db
+     *   .updateTable('person')
+     *   .set({ first_name: 'John', last_name: 'Doe' })
+     *   .output([
+     *     'deleted.first_name as old_first_name',
+     *     'deleted.last_name as old_last_name',
+     *     'inserted.first_name as new_first_name',
+     *     'inserted.last_name as new_last_name',
+     *   ])
+     *   .where('created_at', '<', new Date())
+     *   .executeTakeFirst()
+     * ```
+     *
+     * Return arbitrary expressions:
+     *
+     * ```ts
+     * import { sql } from 'kysely'
+     *
+     * const { id, full_name } = await db
+     *   .deleteFrom('person')
+     *   .output((eb) => sql<string>`concat(${eb.ref('deleted.first_name')}, ' ', ${eb.ref('deleted.last_name')})`.as('full_name')
+     *   .where('created_at', '<', new Date())
+     *   .executeTakeFirst()
+     * ```
+     *
+     * Return the action performed on the row:
+     *
+     * ```ts
+     * await db
+     *   .mergeInto('person')
+     *   .using('pet', 'pet.owner_id', 'person.id')
+     *   .whenMatched()
+     *   .thenDelete()
+     *   .whenNotMatched()
+     *   .thenInsertValues({
+     *     first_name: 'John',
+     *     last_name: 'Doe',
+     *     gender: 'male'
+     *   })
+     *   .output([
+     *     'inserted.id as inserted_id',
+     *     'deleted.id as deleted_id',
+     *   ])
+     * ```
+     */
+    output<OE extends OutputExpression<DB, TB, OP>>(selections: ReadonlyArray<OE>): OutputInterface<DB, TB, ReturningRow<DB, TB, O, SelectExpressionFromOutputExpression<OE>>, OP>;
+    output<CB extends OutputCallback<DB, TB, OP>>(callback: CB): OutputInterface<DB, TB, ReturningRow<DB, TB, O, SelectExpressionFromOutputCallback<CB>>, OP>;
+    output<OE extends OutputExpression<DB, TB, OP>>(selection: OE): OutputInterface<DB, TB, ReturningRow<DB, TB, O, SelectExpressionFromOutputExpression<OE>>, OP>;
+    /**
+     * Adds an `output {prefix}.*` to an `insert`/`update`/`delete`/`merge` query on databases
+     * that support `output` such as MS SQL Server (MSSQL).
+     *
+     * Also see the {@link output} method.
+     */
+    outputAll(table: OP): OutputInterface<DB, TB, ReturningAllRow<DB, TB, O>, OP>;
+}
+type OutputPrefix = 'deleted' | 'inserted';
+type OutputDatabase<DB, TB extends keyof DB, OP extends OutputPrefix = OutputPrefix> = {
+    [K in OP]: DB[TB];
+};
+type OutputExpression<DB, TB extends keyof DB, OP extends OutputPrefix = OutputPrefix, ODB = OutputDatabase<DB, TB, OP>, OTB extends keyof ODB = keyof ODB> = AnyAliasedColumnWithTable<ODB, OTB> | AnyColumnWithTable<ODB, OTB> | AliasedExpressionOrFactory<ODB, OTB>;
+type OutputCallback<DB, TB extends keyof DB, OP extends OutputPrefix = OutputPrefix> = (eb: ExpressionBuilder<OutputDatabase<DB, TB, OP>, OP>) => ReadonlyArray<OutputExpression<DB, TB, OP>>;
+type SelectExpressionFromOutputExpression<OE> = OE extends `${OutputPrefix}.${infer C}` ? C : OE;
+type SelectExpressionFromOutputCallback<CB> = CB extends (eb: ExpressionBuilder<any, any>) => ReadonlyArray<infer OE> ? SelectExpressionFromOutputExpression<OE> : never;
+
+declare class InsertQueryBuilder<DB, TB extends keyof DB, O> implements ReturningInterface<DB, TB, O>, OutputInterface<DB, TB, O, 'inserted'>, OperationNodeSource, Compilable<O>, Explainable, Streamable<O> {
     #private;
     constructor(props: InsertQueryBuilderProps);
     /**
@@ -10831,8 +10951,91 @@ declare class InsertQueryBuilder<DB, TB extends keyof DB, O> implements Returnin
     /**
      * Adds a `returning *` to an insert/update/delete query on databases
      * that support `returning` such as PostgreSQL.
+     *
+     * Also see the {@link returning} method.
      */
     returningAll(): InsertQueryBuilder<DB, TB, Selectable<DB[TB]>>;
+    /**
+     * Allows you to return data from modified rows.
+     *
+     * On supported databases like MS SQL Server (MSSQL), this method can be chained
+     * to `insert`, `update`, `delete` and `merge` queries to return data.
+     *
+     * Also see the {@link outputAll} method.
+     *
+     * ### Examples
+     *
+     * Return one column:
+     *
+     * ```ts
+     * const { id } = await db
+     *   .insertInto('person')
+     *   .output('inserted.id')
+     *   .values({
+     *     first_name: 'Jennifer',
+     *     last_name: 'Aniston'
+     *   })
+     *   .executeTakeFirst()
+     * ```
+     *
+     * Return multiple columns:
+     *
+     * ```ts
+     * const { id, first_name } = await db
+     *   .updateTable('person')
+     *   .set({ first_name: 'John', last_name: 'Doe' })
+     *   .output([
+     *     'deleted.first_name as old_first_name',
+     *     'deleted.last_name as old_last_name',
+     *     'inserted.first_name as new_first_name',
+     *     'inserted.last_name as new_last_name',
+     *   ])
+     *   .where('created_at', '<', new Date())
+     *   .executeTakeFirst()
+     * ```
+     *
+     * Return arbitrary expressions:
+     *
+     * ```ts
+     * import { sql } from 'kysely'
+     *
+     * const { id, full_name } = await db
+     *   .deleteFrom('person')
+     *   .output((eb) => sql<string>`concat(${eb.ref('deleted.first_name')}, ' ', ${eb.ref('deleted.last_name')})`.as('full_name')
+     *   .where('created_at', '<', new Date())
+     *   .executeTakeFirst()
+     * ```
+     *
+     * Return the action performed on the row:
+     *
+     * ```ts
+     * await db
+     *   .mergeInto('person')
+     *   .using('pet', 'pet.owner_id', 'person.id')
+     *   .whenMatched()
+     *   .thenDelete()
+     *   .whenNotMatched()
+     *   .thenInsertValues({
+     *     first_name: 'John',
+     *     last_name: 'Doe',
+     *     gender: 'male'
+     *   })
+     *   .output([
+     *     'inserted.id as inserted_id',
+     *     'deleted.id as deleted_id',
+     *   ])
+     * ```
+     */
+    output<OE extends OutputExpression<DB, TB, 'inserted'>>(selections: readonly OE[]): InsertQueryBuilder<DB, TB, ReturningRow<DB, TB, O, SelectExpressionFromOutputExpression<OE>>>;
+    output<CB extends OutputCallback<DB, TB, 'inserted'>>(callback: CB): InsertQueryBuilder<DB, TB, ReturningRow<DB, TB, O, SelectExpressionFromOutputCallback<CB>>>;
+    output<OE extends OutputExpression<DB, TB, 'inserted'>>(selection: OE): InsertQueryBuilder<DB, TB, ReturningRow<DB, TB, O, SelectExpressionFromOutputExpression<OE>>>;
+    /**
+     * Adds an `output {prefix}.*` to an `insert`/`update`/`delete`/`merge` query on databases
+     * that support `output` such as MS SQL Server (MSSQL).
+     *
+     * Also see the {@link output} method.
+     */
+    outputAll(table: 'inserted'): InsertQueryBuilder<DB, TB, ReturningAllRow<DB, TB, O>>;
     /**
      * Clears all `returning` clauses from the query.
      *
@@ -11098,7 +11301,7 @@ interface InsertQueryBuilderProps {
     readonly executor: QueryExecutor;
 }
 
-declare class DeleteQueryBuilder<DB, TB extends keyof DB, O> implements WhereInterface<DB, TB>, ReturningInterface<DB, TB, O>, OperationNodeSource, Compilable<O>, Explainable, Streamable<O> {
+declare class DeleteQueryBuilder<DB, TB extends keyof DB, O> implements WhereInterface<DB, TB>, ReturningInterface<DB, TB, O>, OutputInterface<DB, TB, O, 'deleted'>, OperationNodeSource, Compilable<O>, Explainable, Streamable<O> {
     #private;
     constructor(props: DeleteQueryBuilderProps);
     /**
@@ -11873,9 +12076,92 @@ declare class DeleteQueryBuilder<DB, TB extends keyof DB, O> implements WhereInt
     /**
      * Adds a `returning *` to an insert/update/delete query on databases
      * that support `returning` such as PostgreSQL.
+     *
+     * Also see the {@link returning} method.
      */
     returningAll<T extends TB>(table: T): DeleteQueryBuilder<DB, TB, ReturningAllRow<DB, T, O>>;
     returningAll(): DeleteQueryBuilder<DB, TB, ReturningAllRow<DB, TB, O>>;
+    /**
+     * Allows you to return data from modified rows.
+     *
+     * On supported databases like MS SQL Server (MSSQL), this method can be chained
+     * to `insert`, `update`, `delete` and `merge` queries to return data.
+     *
+     * Also see the {@link outputAll} method.
+     *
+     * ### Examples
+     *
+     * Return one column:
+     *
+     * ```ts
+     * const { id } = await db
+     *   .insertInto('person')
+     *   .output('inserted.id')
+     *   .values({
+     *     first_name: 'Jennifer',
+     *     last_name: 'Aniston'
+     *   })
+     *   .executeTakeFirst()
+     * ```
+     *
+     * Return multiple columns:
+     *
+     * ```ts
+     * const { id, first_name } = await db
+     *   .updateTable('person')
+     *   .set({ first_name: 'John', last_name: 'Doe' })
+     *   .output([
+     *     'deleted.first_name as old_first_name',
+     *     'deleted.last_name as old_last_name',
+     *     'inserted.first_name as new_first_name',
+     *     'inserted.last_name as new_last_name',
+     *   ])
+     *   .where('created_at', '<', new Date())
+     *   .executeTakeFirst()
+     * ```
+     *
+     * Return arbitrary expressions:
+     *
+     * ```ts
+     * import { sql } from 'kysely'
+     *
+     * const { id, full_name } = await db
+     *   .deleteFrom('person')
+     *   .output((eb) => sql<string>`concat(${eb.ref('deleted.first_name')}, ' ', ${eb.ref('deleted.last_name')})`.as('full_name')
+     *   .where('created_at', '<', new Date())
+     *   .executeTakeFirst()
+     * ```
+     *
+     * Return the action performed on the row:
+     *
+     * ```ts
+     * await db
+     *   .mergeInto('person')
+     *   .using('pet', 'pet.owner_id', 'person.id')
+     *   .whenMatched()
+     *   .thenDelete()
+     *   .whenNotMatched()
+     *   .thenInsertValues({
+     *     first_name: 'John',
+     *     last_name: 'Doe',
+     *     gender: 'male'
+     *   })
+     *   .output([
+     *     'inserted.id as inserted_id',
+     *     'deleted.id as deleted_id',
+     *   ])
+     * ```
+     */
+    output<OE extends OutputExpression<DB, TB, 'deleted'>>(selections: readonly OE[]): DeleteQueryBuilder<DB, TB, ReturningRow<DB, TB, O, SelectExpressionFromOutputExpression<OE>>>;
+    output<CB extends OutputCallback<DB, TB, 'deleted'>>(callback: CB): DeleteQueryBuilder<DB, TB, ReturningRow<DB, TB, O, SelectExpressionFromOutputCallback<CB>>>;
+    output<OE extends OutputExpression<DB, TB, 'deleted'>>(selection: OE): DeleteQueryBuilder<DB, TB, ReturningRow<DB, TB, O, SelectExpressionFromOutputExpression<OE>>>;
+    /**
+     * Adds an `output {prefix}.*` to an `insert`/`update`/`delete`/`merge` query on databases
+     * that support `output` such as MS SQL Server (MSSQL).
+     *
+     * Also see the {@link output} method.
+     */
+    outputAll(table: 'deleted'): DeleteQueryBuilder<DB, TB, ReturningAllRow<DB, TB, O>>;
     /**
      * Clears all `returning` clauses from the query.
      *
@@ -12255,7 +12541,7 @@ type OuterJoinedBuilderDB$1<DB, TB extends keyof DB, A extends keyof any, R> = D
     [C in keyof DB | A]: C extends A ? Nullable<R> : C extends TB ? Nullable<DB[C]> : C extends keyof DB ? DB[C] : never;
 }>;
 
-declare class UpdateQueryBuilder<DB, UT extends keyof DB, TB extends keyof DB, O> implements WhereInterface<DB, TB>, ReturningInterface<DB, TB, O>, OperationNodeSource, Compilable<O>, Explainable, Streamable<O> {
+declare class UpdateQueryBuilder<DB, UT extends keyof DB, TB extends keyof DB, O> implements WhereInterface<DB, TB>, ReturningInterface<DB, TB, O>, OutputInterface<DB, TB, O>, OperationNodeSource, Compilable<O>, Explainable, Streamable<O> {
     #private;
     constructor(props: UpdateQueryBuilderProps);
     /**
@@ -13052,8 +13338,91 @@ declare class UpdateQueryBuilder<DB, UT extends keyof DB, TB extends keyof DB, O
     /**
      * Adds a `returning *` to an insert/update/delete query on databases
      * that support `returning` such as PostgreSQL.
+     *
+     * Also see the {@link returning} method.
      */
     returningAll(): UpdateQueryBuilder<DB, UT, TB, Selectable<DB[TB]>>;
+    /**
+     * Allows you to return data from modified rows.
+     *
+     * On supported databases like MS SQL Server (MSSQL), this method can be chained
+     * to `insert`, `update`, `delete` and `merge` queries to return data.
+     *
+     * Also see the {@link outputAll} method.
+     *
+     * ### Examples
+     *
+     * Return one column:
+     *
+     * ```ts
+     * const { id } = await db
+     *   .insertInto('person')
+     *   .output('inserted.id')
+     *   .values({
+     *     first_name: 'Jennifer',
+     *     last_name: 'Aniston'
+     *   })
+     *   .executeTakeFirst()
+     * ```
+     *
+     * Return multiple columns:
+     *
+     * ```ts
+     * const { id, first_name } = await db
+     *   .updateTable('person')
+     *   .set({ first_name: 'John', last_name: 'Doe' })
+     *   .output([
+     *     'deleted.first_name as old_first_name',
+     *     'deleted.last_name as old_last_name',
+     *     'inserted.first_name as new_first_name',
+     *     'inserted.last_name as new_last_name',
+     *   ])
+     *   .where('created_at', '<', new Date())
+     *   .executeTakeFirst()
+     * ```
+     *
+     * Return arbitrary expressions:
+     *
+     * ```ts
+     * import { sql } from 'kysely'
+     *
+     * const { id, full_name } = await db
+     *   .deleteFrom('person')
+     *   .output((eb) => sql<string>`concat(${eb.ref('deleted.first_name')}, ' ', ${eb.ref('deleted.last_name')})`.as('full_name')
+     *   .where('created_at', '<', new Date())
+     *   .executeTakeFirst()
+     * ```
+     *
+     * Return the action performed on the row:
+     *
+     * ```ts
+     * await db
+     *   .mergeInto('person')
+     *   .using('pet', 'pet.owner_id', 'person.id')
+     *   .whenMatched()
+     *   .thenDelete()
+     *   .whenNotMatched()
+     *   .thenInsertValues({
+     *     first_name: 'John',
+     *     last_name: 'Doe',
+     *     gender: 'male'
+     *   })
+     *   .output([
+     *     'inserted.id as inserted_id',
+     *     'deleted.id as deleted_id',
+     *   ])
+     * ```
+     */
+    output<OE extends OutputExpression<DB, UT>>(selections: readonly OE[]): UpdateQueryBuilder<DB, UT, TB, ReturningRow<DB, TB, O, SelectExpressionFromOutputExpression<OE>>>;
+    output<CB extends OutputCallback<DB, TB>>(callback: CB): UpdateQueryBuilder<DB, UT, TB, ReturningRow<DB, TB, O, SelectExpressionFromOutputCallback<CB>>>;
+    output<OE extends OutputExpression<DB, TB>>(selection: OE): UpdateQueryBuilder<DB, UT, TB, ReturningRow<DB, TB, O, SelectExpressionFromOutputExpression<OE>>>;
+    /**
+     * Adds an `output {prefix}.*` to an `insert`/`update`/`delete`/`merge` query on databases
+     * that support `output` such as MS SQL Server (MSSQL).
+     *
+     * Also see the {@link output} method.
+     */
+    outputAll(table: OutputPrefix): UpdateQueryBuilder<DB, UT, TB, ReturningAllRow<DB, TB, O>>;
     /**
      * Clears all `returning` clauses from the query.
      *
@@ -13401,7 +13770,7 @@ type ExtractRowFromCommonTableExpressionName<CN extends string> = CN extends `${
  */
 type ExtractColumnNamesFromColumnList<R extends string> = R extends `${infer C}, ${infer RS}` ? C | ExtractColumnNamesFromColumnList<RS> : R;
 
-declare class MergeQueryBuilder<DB, TT extends keyof DB, O> {
+declare class MergeQueryBuilder<DB, TT extends keyof DB, O> implements OutputInterface<DB, TT, O> {
     #private;
     constructor(props: MergeQueryBuilderProps);
     /**
@@ -13479,13 +13848,94 @@ declare class MergeQueryBuilder<DB, TT extends keyof DB, O> {
      */
     using<TE extends TableExpression<DB, TT>, K1 extends JoinReferenceExpression<DB, TT, TE>, K2 extends JoinReferenceExpression<DB, TT, TE>>(sourceTable: TE, k1: K1, k2: K2): ExtractWheneableMergeQueryBuilder<DB, TT, TE, O>;
     using<TE extends TableExpression<DB, TT>, FN extends JoinCallbackExpression<DB, TT, TE>>(sourceTable: TE, callback: FN): ExtractWheneableMergeQueryBuilder<DB, TT, TE, O>;
+    /**
+     * Allows you to return data from modified rows.
+     *
+     * On supported databases like MS SQL Server (MSSQL), this method can be chained
+     * to `insert`, `update`, `delete` and `merge` queries to return data.
+     *
+     * Also see the {@link outputAll} method.
+     *
+     * ### Examples
+     *
+     * Return one column:
+     *
+     * ```ts
+     * const { id } = await db
+     *   .insertInto('person')
+     *   .output('inserted.id')
+     *   .values({
+     *     first_name: 'Jennifer',
+     *     last_name: 'Aniston'
+     *   })
+     *   .executeTakeFirst()
+     * ```
+     *
+     * Return multiple columns:
+     *
+     * ```ts
+     * const { id, first_name } = await db
+     *   .updateTable('person')
+     *   .set({ first_name: 'John', last_name: 'Doe' })
+     *   .output([
+     *     'deleted.first_name as old_first_name',
+     *     'deleted.last_name as old_last_name',
+     *     'inserted.first_name as new_first_name',
+     *     'inserted.last_name as new_last_name',
+     *   ])
+     *   .where('created_at', '<', new Date())
+     *   .executeTakeFirst()
+     * ```
+     *
+     * Return arbitrary expressions:
+     *
+     * ```ts
+     * import { sql } from 'kysely'
+     *
+     * const { id, full_name } = await db
+     *   .deleteFrom('person')
+     *   .output((eb) => sql<string>`concat(${eb.ref('deleted.first_name')}, ' ', ${eb.ref('deleted.last_name')})`.as('full_name')
+     *   .where('created_at', '<', new Date())
+     *   .executeTakeFirst()
+     * ```
+     *
+     * Return the action performed on the row:
+     *
+     * ```ts
+     * await db
+     *   .mergeInto('person')
+     *   .using('pet', 'pet.owner_id', 'person.id')
+     *   .whenMatched()
+     *   .thenDelete()
+     *   .whenNotMatched()
+     *   .thenInsertValues({
+     *     first_name: 'John',
+     *     last_name: 'Doe',
+     *     gender: 'male'
+     *   })
+     *   .output([
+     *     'inserted.id as inserted_id',
+     *     'deleted.id as deleted_id',
+     *   ])
+     * ```
+     */
+    output<OE extends OutputExpression<DB, TT>>(selections: readonly OE[]): MergeQueryBuilder<DB, TT, ReturningRow<DB, TT, O, SelectExpressionFromOutputExpression<OE>>>;
+    output<CB extends OutputCallback<DB, TT>>(callback: CB): MergeQueryBuilder<DB, TT, ReturningRow<DB, TT, O, SelectExpressionFromOutputCallback<CB>>>;
+    output<OE extends OutputExpression<DB, TT>>(selection: OE): MergeQueryBuilder<DB, TT, ReturningRow<DB, TT, O, SelectExpressionFromOutputExpression<OE>>>;
+    /**
+     * Adds an `output {prefix}.*` to an `insert`/`update`/`delete`/`merge` query on databases
+     * that support `output` such as MS SQL Server (MSSQL).
+     *
+     * Also see the {@link output} method.
+     */
+    outputAll(table: OutputPrefix): MergeQueryBuilder<DB, TT, ReturningAllRow<DB, TT, O>>;
 }
 interface MergeQueryBuilderProps {
     readonly queryId: QueryId;
     readonly queryNode: MergeQueryNode;
     readonly executor: QueryExecutor;
 }
-declare class WheneableMergeQueryBuilder<DB, TT extends keyof DB, ST extends keyof DB, O> implements Compilable<O>, OperationNodeSource {
+declare class WheneableMergeQueryBuilder<DB, TT extends keyof DB, ST extends keyof DB, O> implements Compilable<O>, OutputInterface<DB, TT, O>, OperationNodeSource {
     #private;
     constructor(props: MergeQueryBuilderProps);
     /**
@@ -13658,6 +14108,87 @@ declare class WheneableMergeQueryBuilder<DB, TT extends keyof DB, ST extends key
      * the target table, and not from source table and returns a {@link MatchedThenableMergeQueryBuilder}.
      */
     whenNotMatchedBySourceAndRef<LRE extends ReferenceExpression<DB, TT>, RRE extends ReferenceExpression<DB, TT>>(lhs: LRE, op: ComparisonOperatorExpression, rhs: RRE): MatchedThenableMergeQueryBuilder<DB, TT, ST, TT, O>;
+    /**
+     * Allows you to return data from modified rows.
+     *
+     * On supported databases like MS SQL Server (MSSQL), this method can be chained
+     * to `insert`, `update`, `delete` and `merge` queries to return data.
+     *
+     * Also see the {@link outputAll} method.
+     *
+     * ### Examples
+     *
+     * Return one column:
+     *
+     * ```ts
+     * const { id } = await db
+     *   .insertInto('person')
+     *   .output('inserted.id')
+     *   .values({
+     *     first_name: 'Jennifer',
+     *     last_name: 'Aniston'
+     *   })
+     *   .executeTakeFirst()
+     * ```
+     *
+     * Return multiple columns:
+     *
+     * ```ts
+     * const { id, first_name } = await db
+     *   .updateTable('person')
+     *   .set({ first_name: 'John', last_name: 'Doe' })
+     *   .output([
+     *     'deleted.first_name as old_first_name',
+     *     'deleted.last_name as old_last_name',
+     *     'inserted.first_name as new_first_name',
+     *     'inserted.last_name as new_last_name',
+     *   ])
+     *   .where('created_at', '<', new Date())
+     *   .executeTakeFirst()
+     * ```
+     *
+     * Return arbitrary expressions:
+     *
+     * ```ts
+     * import { sql } from 'kysely'
+     *
+     * const { id, full_name } = await db
+     *   .deleteFrom('person')
+     *   .output((eb) => sql<string>`concat(${eb.ref('deleted.first_name')}, ' ', ${eb.ref('deleted.last_name')})`.as('full_name')
+     *   .where('created_at', '<', new Date())
+     *   .executeTakeFirst()
+     * ```
+     *
+     * Return the action performed on the row:
+     *
+     * ```ts
+     * await db
+     *   .mergeInto('person')
+     *   .using('pet', 'pet.owner_id', 'person.id')
+     *   .whenMatched()
+     *   .thenDelete()
+     *   .whenNotMatched()
+     *   .thenInsertValues({
+     *     first_name: 'John',
+     *     last_name: 'Doe',
+     *     gender: 'male'
+     *   })
+     *   .output([
+     *     'inserted.id as inserted_id',
+     *     'deleted.id as deleted_id',
+     *   ])
+     * ```
+     */
+    output<OE extends OutputExpression<DB, TT>>(selections: readonly OE[]): WheneableMergeQueryBuilder<DB, TT, ST, ReturningRow<DB, TT, O, SelectExpressionFromOutputExpression<OE>>>;
+    output<CB extends OutputCallback<DB, TT>>(callback: CB): WheneableMergeQueryBuilder<DB, TT, ST, ReturningRow<DB, TT, O, SelectExpressionFromOutputCallback<CB>>>;
+    output<OE extends OutputExpression<DB, TT>>(selection: OE): WheneableMergeQueryBuilder<DB, TT, ST, ReturningRow<DB, TT, O, SelectExpressionFromOutputExpression<OE>>>;
+    /**
+     * Adds an `output {prefix}.*` to an `insert`/`update`/`delete`/`merge` query on databases
+     * that support `output` such as MS SQL Server (MSSQL).
+     *
+     * Also see the {@link output} method.
+     */
+    outputAll(table: OutputPrefix): WheneableMergeQueryBuilder<DB, TT, ST, ReturningAllRow<DB, TT, O>>;
     /**
      * Simply calls the provided function passing `this` as the only argument. `$call` returns
      * what the provided function returns.
@@ -14868,4 +15399,4 @@ interface TransactionBuilderProps extends KyselyProps {
     readonly isolationLevel?: IsolationLevel;
 }
 
-export { HavingNode as $, AliasNode as A, CreateIndexNode as B, CompiledQuery as C, type DialectAdapter as D, DropIndexNode as E, FromNode as F, GroupByNode as G, type PrimaryKeyConstraintNode as H, InsertQueryNode as I, JoinNode as J, type KyselyPlugin as K, LimitNode as L, UniqueConstraintNode as M, ReferencesNode as N, type OperationNode as O, PrimitiveValueListNode as P, type QueryExecutor as Q, type RawBuilder as R, SelectQueryNode as S, TableNode as T, UpdateQueryNode as U, ValueListNode as V, WhereNode as W, CheckConstraintNode as X, WithNode as Y, CommonTableExpressionNode as Z, CommonTableExpressionNameNode as _, type RootOperationNode as a, expressionBuilder as a$, CreateSchemaNode as a0, DropSchemaNode as a1, AlterTableNode as a2, DropColumnNode as a3, RenameColumnNode as a4, AlterColumnNode as a5, ModifyColumnNode as a6, AddConstraintNode as a7, DropConstraintNode as a8, ForeignKeyConstraintNode as a9, JSONOperatorChainNode as aA, MergeQueryNode as aB, AddIndexNode as aC, FetchNode as aD, TopNode as aE, type AlterTableColumnAlterationNode as aF, type Driver as aG, Kysely as aH, type MigrationLockOptions as aI, type Dialect as aJ, type DatabaseIntrospector as aK, type SchemaMetadata as aL, type DatabaseMetadataOptions as aM, type TableMetadata as aN, type DatabaseMetadata as aO, type TransactionSettings as aP, type PluginTransformQueryArgs as aQ, type PluginTransformResultArgs as aR, type UnknownRow as aS, type Compilable as aT, InsertResult as aU, UpdateResult as aV, DeleteResult as aW, MergeResult as aX, type Simplify as aY, type ExpressionOrFactory as aZ, type ExpressionBuilder as a_, DataTypeNode as aa, SelectAllNode as ab, IdentifierNode as ac, SchemableIdentifierNode as ad, ValueNode as ae, OperatorNode as af, CreateViewNode as ag, DropViewNode as ah, GeneratedNode as ai, DefaultValueNode as aj, OnNode as ak, SelectModifierNode as al, CreateTypeNode as am, DropTypeNode as an, ExplainNode as ao, AggregateFunctionNode as ap, OverNode as aq, PartitionByNode as ar, PartitionByItemNode as as, SetOperationNode as at, UsingNode as au, CaseNode as av, WhenNode as aw, JSONReferenceNode as ax, JSONPathNode as ay, JSONPathLegNode as az, type QueryId as b, InsertQueryBuilder as b$, type AnyAliasedColumn as b0, type AnyAliasedColumnWithTable as b1, type AnyColumn as b2, type AnyColumnWithTable as b3, type Equals as b4, type SqlBool as b5, type Nullable as b6, type NotNull$1 as b7, type SelectExpression as b8, type SelectCallback as b9, type KyselyProps as bA, isKyselyProps as bB, type KyselyConfig as bC, ConnectionBuilder as bD, TransactionBuilder as bE, QueryCreator as bF, type QueryCreatorProps as bG, type Expression as bH, type AliasableExpression as bI, type AliasedExpression as bJ, isExpression as bK, isAliasedExpression as bL, ExpressionWrapper as bM, AliasedExpressionWrapper as bN, OrWrapper as bO, AndWrapper as bP, type WhereInterface as bQ, type ReturningInterface as bR, type HavingInterface as bS, type SelectQueryBuilder as bT, createSelectQueryBuilder as bU, type SelectQueryBuilderProps as bV, type AliasedSelectQueryBuilder as bW, type SelectQueryBuilderWithInnerJoin as bX, type SelectQueryBuilderWithLeftJoin as bY, type SelectQueryBuilderWithRightJoin as bZ, type SelectQueryBuilderWithFullJoin as b_, type SelectArg as ba, type Selection as bb, type CallbackSelection as bc, type ReferenceExpression as bd, type ReferenceExpressionOrList as be, type SimpleReferenceExpression as bf, type StringReference as bg, type ExtractTypeFromStringReference as bh, type ExtractTypeFromReferenceExpression as bi, type ValueExpression as bj, type ValueExpressionOrList as bk, type SimpleTableReference as bl, type TableExpression as bm, type TableExpressionOrList as bn, type JoinReferenceExpression as bo, type JoinCallbackExpression as bp, type InsertObject as bq, type UpdateObject as br, type OrderByExpression as bs, type OrderByDirectionExpression as bt, type ComparisonOperatorExpression as bu, type OperandValueExpression as bv, type OperandValueExpressionOrList as bw, type FilterObject as bx, type OperandExpression as by, Transaction as bz, type DatabaseConnection as c, type CreateSchemaBuilderProps as c$, type InsertQueryBuilderProps as c0, UpdateQueryBuilder as c1, type UpdateQueryBuilderProps as c2, type UpdateQueryBuilderWithInnerJoin as c3, type UpdateQueryBuilderWithLeftJoin as c4, type UpdateQueryBuilderWithRightJoin as c5, type UpdateQueryBuilderWithFullJoin as c6, DeleteQueryBuilder as c7, type DeleteQueryBuilderProps as c8, type DeleteQueryBuilderWithInnerJoin as c9, AliasedJSONPathBuilder as cA, MergeQueryBuilder as cB, type MergeQueryBuilderProps as cC, WheneableMergeQueryBuilder as cD, MatchedThenableMergeQueryBuilder as cE, NotMatchedThenableMergeQueryBuilder as cF, type ExtractWheneableMergeQueryBuilder as cG, type RawBuilderProps as cH, createRawBuilder as cI, type AliasedRawBuilder as cJ, type QueryExecutorProvider as cK, SchemaModule as cL, CreateTableBuilder as cM, type CreateTableBuilderProps as cN, type ColumnBuilderCallback as cO, type ForeignKeyConstraintBuilderCallback as cP, CreateTypeBuilder as cQ, type CreateTypeBuilderProps as cR, DropTableBuilder as cS, type DropTableBuilderProps as cT, DropTypeBuilder as cU, type DropTypeBuilderProps as cV, CreateIndexBuilder as cW, type CreateIndexBuilderProps as cX, DropIndexBuilder as cY, type DropIndexBuilderProps as cZ, CreateSchemaBuilder as c_, type DeleteQueryBuilderWithLeftJoin as ca, type DeleteQueryBuilderWithRightJoin as cb, type DeleteQueryBuilderWithFullJoin as cc, type NoResultErrorConstructor as cd, NoResultError as ce, isNoResultErrorConstructor as cf, JoinBuilder as cg, type JoinBuilderProps as ch, type FunctionModule as ci, createFunctionModule as cj, OnConflictBuilder as ck, type OnConflictBuilderProps as cl, type OnConflictDatabase as cm, type OnConflictTables as cn, OnConflictDoNothingBuilder as co, OnConflictUpdateBuilder as cp, AggregateFunctionBuilder as cq, AliasedAggregateFunctionBuilder as cr, type AggregateFunctionBuilderProps as cs, type OverBuilderCallback as ct, CaseBuilder as cu, CaseThenBuilder as cv, CaseWhenBuilder as cw, CaseEndBuilder as cx, JSONPathBuilder as cy, TraversedJSONPathBuilder as cz, type QueryResult as d, type JSONOperatorWith$ as d$, DropSchemaBuilder as d0, type DropSchemaBuilderProps as d1, ColumnDefinitionBuilder as d2, type ColumnDefinitionBuilderCallback as d3, type ForeignKeyConstraintBuilderInterface as d4, ForeignKeyConstraintBuilder as d5, AlterTableBuilder as d6, type AlterTableBuilderProps as d7, type ColumnAlteringInterface as d8, AlterTableColumnAlteringBuilder as d9, type DataTypeParams as dA, isColumnDataType as dB, type DropConstraintNodeProps as dC, type DropIndexNodeProps as dD, type DropSchemaNodeParams as dE, type DropTablexNodeParams as dF, type DropTypeNodeParams as dG, type DropViewNodeParams as dH, type ForeignKeyConstraintNodeProps as dI, type GeneratedNodeParams as dJ, type InsertQueryNodeProps as dK, type JoinType as dL, type OnConflictNodeProps as dM, type OnDuplicateKeyNodeProps as dN, type OperationNodeSource as dO, isOperationNodeSource as dP, type OperationNodeKind as dQ, COMPARISON_OPERATORS as dR, ARITHMETIC_OPERATORS as dS, JSON_OPERATORS as dT, BINARY_OPERATORS as dU, UNARY_FILTER_OPERATORS as dV, UNARY_OPERATORS as dW, OPERATORS as dX, type ComparisonOperator as dY, type ArithmeticOperator as dZ, type JSONOperator as d_, type AlterTableColumnAlteringBuilderProps as da, CreateViewBuilder as db, type CreateViewBuilderProps as dc, DropViewBuilder as dd, type DropViewBuilderProps as de, AlterColumnBuilder as df, AlteredColumnBuilder as dg, type AlterColumnBuilderCallback as dh, DynamicModule as di, TRANSACTION_ISOLATION_LEVELS as dj, type IsolationLevel as dk, type ColumnMetadata as dl, type AlterColumnNodeProps as dm, type AlterTableNodeTableProps as dn, type ColumnDefinitionNodeProps as dp, type ConstraintNode as dq, type CreateIndexNodeProps as dr, type IndexType as ds, type CreateSchemaNodeParams as dt, ON_COMMIT_ACTIONS as du, type OnCommitAction as dv, type CreateTableNodeParams as dw, type CreateTypeNodeParams as dx, type CreateViewNodeParams as dy, type ColumnDataType as dz, type ConnectionProvider as e, type BinaryOperator as e0, type UnaryOperator as e1, type UnaryFilterOperator as e2, type Operator as e3, isOperator as e4, isBinaryOperator as e5, isComparisonOperator as e6, isArithmeticOperator as e7, isJSONOperator as e8, PrimaryConstraintNode as e9, type Streamable as eA, LOG_LEVELS as eB, type LogLevel as eC, type QueryLogEvent as eD, type ErrorLogEvent as eE, type LogEvent as eF, type Logger as eG, type LogConfig as eH, Log as eI, type SelectQueryBuilderExpression as eJ, QueryNode as ea, ON_MODIFY_FOREIGN_ACTIONS as eb, type OnModifyForeignAction as ec, type UniqueConstraintNodeProps as ed, type UpdateValuesNode as ee, type WithNodeParams as ef, type SetOperator as eg, type JSONPathLegType as eh, type FetchModifier as ei, type TopModifier as ej, type ColumnType as ek, type Generated as el, type GeneratedAlways as em, type JSONColumnType as en, type SelectType as eo, type InsertType as ep, type UpdateType as eq, type NullableInsertKeys as er, type NonNullableInsertKeys as es, type UpdateKeys as et, type Selectable as eu, type Insertable as ev, type Updateable as ew, isCompilable as ex, type ExplainFormat as ey, type Explainable as ez, type QueryCompiler as f, SelectionNode as g, ColumnNode as h, ReferenceNode as i, AndNode as j, OrNode as k, ParensNode as l, RawNode as m, DeleteQueryNode as n, ReturningNode as o, CreateTableNode as p, AddColumnNode as q, ColumnDefinitionNode as r, DropTableNode as s, OrderByNode as t, OrderByItemNode as u, GroupByItemNode as v, ColumnUpdateNode as w, OffsetNode as x, OnConflictNode as y, OnDuplicateKeyNode as z };
+export { HavingNode as $, AliasNode as A, CreateIndexNode as B, CompiledQuery as C, type DialectAdapter as D, DropIndexNode as E, FromNode as F, GroupByNode as G, type PrimaryKeyConstraintNode as H, InsertQueryNode as I, JoinNode as J, type KyselyPlugin as K, LimitNode as L, UniqueConstraintNode as M, ReferencesNode as N, type OperationNode as O, PrimitiveValueListNode as P, type QueryExecutor as Q, type RawBuilder as R, SelectQueryNode as S, TableNode as T, UpdateQueryNode as U, ValueListNode as V, WhereNode as W, CheckConstraintNode as X, WithNode as Y, CommonTableExpressionNode as Z, CommonTableExpressionNameNode as _, type RootOperationNode as a, type ExpressionBuilder as a$, CreateSchemaNode as a0, DropSchemaNode as a1, AlterTableNode as a2, DropColumnNode as a3, RenameColumnNode as a4, AlterColumnNode as a5, ModifyColumnNode as a6, AddConstraintNode as a7, DropConstraintNode as a8, ForeignKeyConstraintNode as a9, JSONOperatorChainNode as aA, MergeQueryNode as aB, AddIndexNode as aC, FetchNode as aD, TopNode as aE, OutputNode as aF, type AlterTableColumnAlterationNode as aG, type Driver as aH, Kysely as aI, type MigrationLockOptions as aJ, type Dialect as aK, type DatabaseIntrospector as aL, type SchemaMetadata as aM, type DatabaseMetadataOptions as aN, type TableMetadata as aO, type DatabaseMetadata as aP, type TransactionSettings as aQ, type PluginTransformQueryArgs as aR, type PluginTransformResultArgs as aS, type UnknownRow as aT, type Compilable as aU, InsertResult as aV, UpdateResult as aW, DeleteResult as aX, MergeResult as aY, type Simplify as aZ, type ExpressionOrFactory as a_, DataTypeNode as aa, SelectAllNode as ab, IdentifierNode as ac, SchemableIdentifierNode as ad, ValueNode as ae, OperatorNode as af, CreateViewNode as ag, DropViewNode as ah, GeneratedNode as ai, DefaultValueNode as aj, OnNode as ak, SelectModifierNode as al, CreateTypeNode as am, DropTypeNode as an, ExplainNode as ao, AggregateFunctionNode as ap, OverNode as aq, PartitionByNode as ar, PartitionByItemNode as as, SetOperationNode as at, UsingNode as au, CaseNode as av, WhenNode as aw, JSONReferenceNode as ax, JSONPathNode as ay, JSONPathLegNode as az, type QueryId as b, type SelectQueryBuilder as b$, expressionBuilder as b0, type AnyAliasedColumn as b1, type AnyAliasedColumnWithTable as b2, type AnyColumn as b3, type AnyColumnWithTable as b4, type Equals as b5, type SqlBool as b6, type Nullable as b7, type NotNull$1 as b8, type SelectExpression as b9, Transaction as bA, type KyselyProps as bB, isKyselyProps as bC, type KyselyConfig as bD, ConnectionBuilder as bE, TransactionBuilder as bF, QueryCreator as bG, type QueryCreatorProps as bH, type Expression as bI, type AliasableExpression as bJ, type AliasedExpression as bK, isExpression as bL, isAliasedExpression as bM, ExpressionWrapper as bN, AliasedExpressionWrapper as bO, OrWrapper as bP, AndWrapper as bQ, type WhereInterface as bR, type ReturningInterface as bS, type OutputInterface as bT, type OutputPrefix as bU, type OutputDatabase as bV, type OutputExpression as bW, type OutputCallback as bX, type SelectExpressionFromOutputExpression as bY, type SelectExpressionFromOutputCallback as bZ, type HavingInterface as b_, type SelectCallback as ba, type SelectArg as bb, type Selection as bc, type CallbackSelection as bd, type ReferenceExpression as be, type ReferenceExpressionOrList as bf, type SimpleReferenceExpression as bg, type StringReference as bh, type ExtractTypeFromStringReference as bi, type ExtractTypeFromReferenceExpression as bj, type ValueExpression as bk, type ValueExpressionOrList as bl, type SimpleTableReference as bm, type TableExpression as bn, type TableExpressionOrList as bo, type JoinReferenceExpression as bp, type JoinCallbackExpression as bq, type InsertObject as br, type UpdateObject as bs, type OrderByExpression as bt, type OrderByDirectionExpression as bu, type ComparisonOperatorExpression as bv, type OperandValueExpression as bw, type OperandValueExpressionOrList as bx, type FilterObject as by, type OperandExpression as bz, type DatabaseConnection as c, type DropTableBuilderProps as c$, createSelectQueryBuilder as c0, type SelectQueryBuilderProps as c1, type AliasedSelectQueryBuilder as c2, type SelectQueryBuilderWithInnerJoin as c3, type SelectQueryBuilderWithLeftJoin as c4, type SelectQueryBuilderWithRightJoin as c5, type SelectQueryBuilderWithFullJoin as c6, InsertQueryBuilder as c7, type InsertQueryBuilderProps as c8, UpdateQueryBuilder as c9, type AggregateFunctionBuilderProps as cA, type OverBuilderCallback as cB, CaseBuilder as cC, CaseThenBuilder as cD, CaseWhenBuilder as cE, CaseEndBuilder as cF, JSONPathBuilder as cG, TraversedJSONPathBuilder as cH, AliasedJSONPathBuilder as cI, MergeQueryBuilder as cJ, type MergeQueryBuilderProps as cK, WheneableMergeQueryBuilder as cL, MatchedThenableMergeQueryBuilder as cM, NotMatchedThenableMergeQueryBuilder as cN, type ExtractWheneableMergeQueryBuilder as cO, type RawBuilderProps as cP, createRawBuilder as cQ, type AliasedRawBuilder as cR, type QueryExecutorProvider as cS, SchemaModule as cT, CreateTableBuilder as cU, type CreateTableBuilderProps as cV, type ColumnBuilderCallback as cW, type ForeignKeyConstraintBuilderCallback as cX, CreateTypeBuilder as cY, type CreateTypeBuilderProps as cZ, DropTableBuilder as c_, type UpdateQueryBuilderProps as ca, type UpdateQueryBuilderWithInnerJoin as cb, type UpdateQueryBuilderWithLeftJoin as cc, type UpdateQueryBuilderWithRightJoin as cd, type UpdateQueryBuilderWithFullJoin as ce, DeleteQueryBuilder as cf, type DeleteQueryBuilderProps as cg, type DeleteQueryBuilderWithInnerJoin as ch, type DeleteQueryBuilderWithLeftJoin as ci, type DeleteQueryBuilderWithRightJoin as cj, type DeleteQueryBuilderWithFullJoin as ck, type NoResultErrorConstructor as cl, NoResultError as cm, isNoResultErrorConstructor as cn, JoinBuilder as co, type JoinBuilderProps as cp, type FunctionModule as cq, createFunctionModule as cr, OnConflictBuilder as cs, type OnConflictBuilderProps as ct, type OnConflictDatabase as cu, type OnConflictTables as cv, OnConflictDoNothingBuilder as cw, OnConflictUpdateBuilder as cx, AggregateFunctionBuilder as cy, AliasedAggregateFunctionBuilder as cz, type QueryResult as d, JSON_OPERATORS as d$, DropTypeBuilder as d0, type DropTypeBuilderProps as d1, CreateIndexBuilder as d2, type CreateIndexBuilderProps as d3, DropIndexBuilder as d4, type DropIndexBuilderProps as d5, CreateSchemaBuilder as d6, type CreateSchemaBuilderProps as d7, DropSchemaBuilder as d8, type DropSchemaBuilderProps as d9, type IndexType as dA, type CreateSchemaNodeParams as dB, ON_COMMIT_ACTIONS as dC, type OnCommitAction as dD, type CreateTableNodeParams as dE, type CreateTypeNodeParams as dF, type CreateViewNodeParams as dG, type ColumnDataType as dH, type DataTypeParams as dI, isColumnDataType as dJ, type DropConstraintNodeProps as dK, type DropIndexNodeProps as dL, type DropSchemaNodeParams as dM, type DropTablexNodeParams as dN, type DropTypeNodeParams as dO, type DropViewNodeParams as dP, type ForeignKeyConstraintNodeProps as dQ, type GeneratedNodeParams as dR, type InsertQueryNodeProps as dS, type JoinType as dT, type OnConflictNodeProps as dU, type OnDuplicateKeyNodeProps as dV, type OperationNodeSource as dW, isOperationNodeSource as dX, type OperationNodeKind as dY, COMPARISON_OPERATORS as dZ, ARITHMETIC_OPERATORS as d_, ColumnDefinitionBuilder as da, type ColumnDefinitionBuilderCallback as db, type ForeignKeyConstraintBuilderInterface as dc, ForeignKeyConstraintBuilder as dd, AlterTableBuilder as de, type AlterTableBuilderProps as df, type ColumnAlteringInterface as dg, AlterTableColumnAlteringBuilder as dh, type AlterTableColumnAlteringBuilderProps as di, CreateViewBuilder as dj, type CreateViewBuilderProps as dk, DropViewBuilder as dl, type DropViewBuilderProps as dm, AlterColumnBuilder as dn, AlteredColumnBuilder as dp, type AlterColumnBuilderCallback as dq, DynamicModule as dr, TRANSACTION_ISOLATION_LEVELS as ds, type IsolationLevel as dt, type ColumnMetadata as du, type AlterColumnNodeProps as dv, type AlterTableNodeTableProps as dw, type ColumnDefinitionNodeProps as dx, type ConstraintNode as dy, type CreateIndexNodeProps as dz, type ConnectionProvider as e, BINARY_OPERATORS as e0, UNARY_FILTER_OPERATORS as e1, UNARY_OPERATORS as e2, OPERATORS as e3, type ComparisonOperator as e4, type ArithmeticOperator as e5, type JSONOperator as e6, type JSONOperatorWith$ as e7, type BinaryOperator as e8, type UnaryOperator as e9, type NonNullableInsertKeys as eA, type UpdateKeys as eB, type Selectable as eC, type Insertable as eD, type Updateable as eE, isCompilable as eF, type ExplainFormat as eG, type Explainable as eH, type Streamable as eI, LOG_LEVELS as eJ, type LogLevel as eK, type QueryLogEvent as eL, type ErrorLogEvent as eM, type LogEvent as eN, type Logger as eO, type LogConfig as eP, Log as eQ, type SelectQueryBuilderExpression as eR, type UnaryFilterOperator as ea, type Operator as eb, isOperator as ec, isBinaryOperator as ed, isComparisonOperator as ee, isArithmeticOperator as ef, isJSONOperator as eg, PrimaryConstraintNode as eh, QueryNode as ei, ON_MODIFY_FOREIGN_ACTIONS as ej, type OnModifyForeignAction as ek, type UniqueConstraintNodeProps as el, type UpdateValuesNode as em, type WithNodeParams as en, type SetOperator as eo, type JSONPathLegType as ep, type FetchModifier as eq, type TopModifier as er, type ColumnType as es, type Generated as et, type GeneratedAlways as eu, type JSONColumnType as ev, type SelectType as ew, type InsertType as ex, type UpdateType as ey, type NullableInsertKeys as ez, type QueryCompiler as f, SelectionNode as g, ColumnNode as h, ReferenceNode as i, AndNode as j, OrNode as k, ParensNode as l, RawNode as m, DeleteQueryNode as n, ReturningNode as o, CreateTableNode as p, AddColumnNode as q, ColumnDefinitionNode as r, DropTableNode as s, OrderByNode as t, OrderByItemNode as u, GroupByItemNode as v, ColumnUpdateNode as w, OffsetNode as x, OnConflictNode as y, OnDuplicateKeyNode as z };
