@@ -4304,9 +4304,9 @@ interface SelectQueryBuilder<DB, TB extends keyof DB, O> extends WhereInterface<
      *
      *  <!-- siteExample("select", "Not null", 51) -->
      *
-     * Sometimes you can be sure something's not null but Kysely isn't able to infer
+     * Sometimes you can be sure something's not null, but Kysely isn't able to infer
      * it. For example calling `where('last_name', 'is not', null)` doesn't make
-     * `last_name` not null in the result type but unless you have other where statements
+     * `last_name` not null in the result type, but unless you have other where statements
      * you can be sure it's never null.
      *
      * Kysely has a couple of helpers for dealing with these cases: `$notNull()` and `$narrowType`.
@@ -5404,7 +5404,7 @@ interface SelectQueryBuilder<DB, TB extends keyof DB, O> extends WhereInterface<
     /**
      * Call `func(this)` if `condition` is true.
      *
-     * NOTE: This method has an impact on typescript performance and it should only be used
+     * NOTE: This method has an impact on TypeScript performance and it should only be used
      * when necessary. Remember that you can call most methods like `where` conditionally
      * like this:
      *
@@ -5582,17 +5582,17 @@ interface SelectQueryBuilder<DB, TB extends keyof DB, O> extends WhereInterface<
     /**
      * Asserts that query's output row type equals the given type `T`.
      *
-     * This method can be used to simplify excessively complex types to make typescript happy
+     * This method can be used to simplify excessively complex types to make TypeScript happy
      * and much faster.
      *
      * Kysely uses complex type magic to achieve its type safety. This complexity is sometimes too much
-     * for typescript and you get errors like this:
+     * for TypeScript and you get errors like this:
      *
      * ```
      * error TS2589: Type instantiation is excessively deep and possibly infinite.
      * ```
      *
-     * In these case you can often use this method to help typescript a little bit. When you use this
+     * In these case you can often use this method to help TypeScript a little bit. When you use this
      * method to assert the output type of a query, Kysely can drop the complex output type that
      * consists of multiple nested helper types and replace it with the simple asserted type.
      *
@@ -6304,7 +6304,7 @@ interface FunctionModule<DB, TB extends keyof DB> {
      * If this function is used in a `select` statement, the type of the selected
      * expression will be `number | string` by default. This is because Kysely can't know the
      * type the db driver outputs. Sometimes the output can be larger than the largest
-     * javascript number and a string is returned instead. Most drivers allow you
+     * JavaScript number and a string is returned instead. Most drivers allow you
      * to configure the output type of large numbers and Kysely can't know if you've
      * done so.
      *
@@ -6423,7 +6423,7 @@ interface FunctionModule<DB, TB extends keyof DB> {
      * If this function is used in a `select` statement, the type of the selected
      * expression will be `number | string | bigint` by default. This is because
      * Kysely can't know the type the db driver outputs. Sometimes the output can
-     * be larger than the largest javascript number and a string is returned instead.
+     * be larger than the largest JavaScript number and a string is returned instead.
      * Most drivers allow you to configure the output type of large numbers and Kysely
      * can't know if you've done so.
      *
@@ -6475,7 +6475,7 @@ interface FunctionModule<DB, TB extends keyof DB> {
      * If this is used in a `select` statement, the type of the selected expression
      * will be `number | string | bigint` by default. This is because Kysely
      * can't know the type the db driver outputs. Sometimes the output can be larger
-     * than the largest javascript number and a string is returned instead. Most
+     * than the largest JavaScript number and a string is returned instead. Most
      * drivers allow you to configure the output type of large numbers and Kysely
      * can't know if you've done so.
      *
@@ -6644,7 +6644,7 @@ interface FunctionModule<DB, TB extends keyof DB> {
      * If this function is used in a `select` statement, the type of the selected
      * expression will be `number | string` by default. This is because Kysely can't know the
      * type the db driver outputs. Sometimes the output can be larger than the largest
-     * javascript number and a string is returned instead. Most drivers allow you
+     * JavaScript number and a string is returned instead. Most drivers allow you
      * to configure the output type of large numbers and Kysely can't know if you've
      * done so.
      *
@@ -8018,7 +8018,7 @@ interface ExpressionBuilder<DB, TB extends keyof DB> {
     /**
      * Creates a `cast(expr as dataType)` expression.
      *
-     * Since Kysely can't know the mapping between javascript and database types,
+     * Since Kysely can't know the mapping between JavaScript and database types,
      * you need to provide both explicitly.
      *
      * ### Examples
@@ -9341,7 +9341,7 @@ declare class DynamicModule {
      *
      * Kysely is built in a way that by default you can't refer to tables or columns
      * that are not actually visible in the current query and context. This is all
-     * done by typescript at compile time, which means that you need to know the
+     * done by TypeScript at compile time, which means that you need to know the
      * columns and tables at compile time. This is not always the case of course.
      *
      * This method is meant to be used in those cases where the column names
@@ -11186,17 +11186,17 @@ declare class InsertQueryBuilder<DB, TB extends keyof DB, O> implements Returnin
     /**
      * Asserts that query's output row type equals the given type `T`.
      *
-     * This method can be used to simplify excessively complex types to make typescript happy
+     * This method can be used to simplify excessively complex types to make TypeScript happy
      * and much faster.
      *
      * Kysely uses complex type magic to achieve its type safety. This complexity is sometimes too much
-     * for typescript and you get errors like this:
+     * for TypeScript and you get errors like this:
      *
      * ```
      * error TS2589: Type instantiation is excessively deep and possibly infinite.
      * ```
      *
-     * In these case you can often use this method to help typescript a little bit. When you use this
+     * In these case you can often use this method to help TypeScript a little bit. When you use this
      * method to assert the output type of a query, Kysely can drop the complex output type that
      * consists of multiple nested helper types and replace it with the simple asserted type.
      *
@@ -12406,17 +12406,17 @@ declare class DeleteQueryBuilder<DB, TB extends keyof DB, O> implements WhereInt
     /**
      * Asserts that query's output row type equals the given type `T`.
      *
-     * This method can be used to simplify excessively complex types to make typescript happy
+     * This method can be used to simplify excessively complex types to make TypeScript happy
      * and much faster.
      *
      * Kysely uses complex type magic to achieve its type safety. This complexity is sometimes too much
-     * for typescript and you get errors like this:
+     * for TypeScript and you get errors like this:
      *
      * ```
      * error TS2589: Type instantiation is excessively deep and possibly infinite.
      * ```
      *
-     * In these case you can often use this method to help typescript a little bit. When you use this
+     * In these case you can often use this method to help TypeScript a little bit. When you use this
      * method to assert the output type of a query, Kysely can drop the complex output type that
      * consists of multiple nested helper types and replace it with the simple asserted type.
      *
@@ -13579,17 +13579,17 @@ declare class UpdateQueryBuilder<DB, UT extends keyof DB, TB extends keyof DB, O
     /**
      * Asserts that query's output row type equals the given type `T`.
      *
-     * This method can be used to simplify excessively complex types to make typescript happy
+     * This method can be used to simplify excessively complex types to make TypeScript happy
      * and much faster.
      *
      * Kysely uses complex type magic to achieve its type safety. This complexity is sometimes too much
-     * for typescript and you get errors like this:
+     * for TypeScript and you get errors like this:
      *
      * ```
      * error TS2589: Type instantiation is excessively deep and possibly infinite.
      * ```
      *
-     * In these case you can often use this method to help typescript a little bit. When you use this
+     * In these case you can often use this method to help TypeScript a little bit. When you use this
      * method to assert the output type of a query, Kysely can drop the complex output type that
      * consists of multiple nested helper types and replace it with the simple asserted type.
      *
