@@ -14600,10 +14600,10 @@ declare class QueryCreator<DB> {
      * ```
      */
     selectFrom<TE extends keyof DB & string>(from: TE[]): SelectQueryBuilder<DB, ExtractTableAlias<DB, TE>, {}>;
-    selectFrom<TE extends TableExpression<DB, keyof DB>>(from: TE[]): SelectQueryBuilder<From<DB, TE>, FromTables<DB, never, TE>, {}>;
+    selectFrom<TE extends TableExpression<DB, never>>(from: TE[]): SelectQueryBuilder<From<DB, TE>, FromTables<DB, never, TE>, {}>;
     selectFrom<TE extends keyof DB & string>(from: TE): SelectQueryBuilder<DB, ExtractTableAlias<DB, TE>, {}>;
     selectFrom<TE extends AnyAliasedTable<DB>>(from: TE): SelectQueryBuilder<DB & PickTableWithAlias<DB, TE>, ExtractTableAlias<DB & PickTableWithAlias<DB, TE>, TE>, {}>;
-    selectFrom<TE extends TableExpression<DB, keyof DB>>(from: TE): SelectQueryBuilder<From<DB, TE>, FromTables<DB, never, TE>, {}>;
+    selectFrom<TE extends TableExpression<DB, never>>(from: TE): SelectQueryBuilder<From<DB, TE>, FromTables<DB, never, TE>, {}>;
     /**
      * Creates a `select` query builder without a `from` clause.
      *
