@@ -13361,7 +13361,9 @@ declare class UpdateQueryBuilder<DB, UT extends keyof DB, TB extends keyof DB, O
      *
      * Also see the {@link returning} method.
      */
-    returningAll(): UpdateQueryBuilder<DB, UT, TB, Selectable<DB[TB]>>;
+    returningAll<T extends TB>(tables: ReadonlyArray<T>): UpdateQueryBuilder<DB, UT, TB, ReturningAllRow<DB, T, O>>;
+    returningAll<T extends TB>(table: T): UpdateQueryBuilder<DB, UT, TB, ReturningAllRow<DB, T, O>>;
+    returningAll(): UpdateQueryBuilder<DB, UT, TB, ReturningAllRow<DB, TB, O>>;
     /**
      * Allows you to return data from modified rows.
      *
