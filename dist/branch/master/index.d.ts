@@ -1867,39 +1867,55 @@ interface MssqlDialectConfig {
 interface Tedious {
     connectionFactory: () => TediousConnection | Promise<TediousConnection>;
     ISOLATION_LEVEL: TediousIsolationLevel;
-    Request: typeof TediousRequest;
+    Request: TediousRequestClass;
     TYPES: TediousTypes;
 }
-type TediousIsolationLevel = Record<'NO_CHANGE' | 'READ_UNCOMMITTED' | 'READ_COMMITTED' | 'REPEATABLE_READ' | 'SERIALIZABLE' | 'SNAPSHOT', number>;
-type TediousTypes = Record<'BigInt' | 'Binary' | 'Bit' | 'Char' | 'Date' | 'DateTime' | 'DateTime2' | 'DateTimeOffset' | 'Decimal' | 'Float' | 'Image' | 'Int' | 'Money' | 'NChar' | 'NText' | 'Null' | 'Numeric' | 'NVarChar' | 'Real' | 'SmallDateTime' | 'SmallInt' | 'SmallMoney' | 'Text' | 'Time' | 'TinyInt' | 'TVP' | 'UDT' | 'UniqueIdentifier' | 'VarBinary' | 'VarChar' | 'Xml', {
-    name: string;
-    type: string;
-}>;
-interface TediousType {
-    name: string;
-    type: string;
-}
 interface TediousConnection {
-    beginTransaction(callback: (error?: Error) => void, transactionId?: string | undefined, isolationLevel?: number | undefined): void;
-    cancel(): void;
-    close(): void;
-    commitTransaction(callback: (error?: Error) => void): void;
-    connect(callback: (error?: Error) => void): void;
+    beginTransaction(callback: (error?: Error | null, transactionDescriptor?: any) => void, name?: string, isolationLevel?: number): void;
+    commitTransaction(callback: (error?: Error | null) => void, name?: string): void;
     execSql(request: TediousRequest): void;
-    reset(callback: (error?: Error) => void): void;
-    rollbackTransaction(callback: (error?: Error) => void): void;
-    once(event: 'end', listener: () => void): void;
+    rollbackTransaction(callback: (error?: Error | null) => void, name?: string): void;
+    saveTransaction(callback: (error?: Error | null) => void, name: string): void;
+    cancel(): boolean;
+    reset(callback: (error?: Error | null) => void): void;
+    close(): void;
+    once(event: 'end', listener: () => void): this;
+    once(event: string, listener: (...args: any[]) => void): this;
+    connect(callback?: (error?: Error) => void): void;
+}
+type TediousIsolationLevel = Record<string, number>;
+interface TediousRequestClass {
+    new (sqlTextOrProcedure: string | undefined, callback: (error?: Error | null, rowCount?: number, rows?: any) => void, options?: {
+        statementColumnEncryptionSetting?: any;
+    }): TediousRequest;
 }
 declare class TediousRequest {
-    constructor(sql: string, callback: (error: Error, rowCount: number, rows: any[]) => void);
-    addParameter(name: string, type: TediousType, value: any, options?: {
-        length?: number | 'max' | undefined;
-        precision?: number | undefined;
-        scale?: number | undefined;
-    }): void;
-    off(event: 'row', listener: (...args: any[]) => void): void;
-    on(event: 'row', listener: (columns: TediousColumnValue[]) => void): void;
-    once(event: 'requestCompleted', listener: (...args: any[]) => void): void;
+    addParameter(name: string, dataType: TediousDataType, value?: unknown, options?: Readonly<{
+        output?: boolean;
+        length?: number;
+        precision?: number;
+        scale?: number;
+    }> | null): void;
+    on(event: 'row', listener: (columns: any) => void): this;
+    on(event: string, listener: (...args: any[]) => void): this;
+    once(event: 'requestCompleted', listener: () => void): this;
+    once(event: string, listener: (...args: any[]) => void): this;
+    off(event: 'row', listener: (columns: any) => void): this;
+    off(event: string, listener: (...args: any[]) => void): this;
+    pause(): void;
+    resume(): void;
+}
+interface TediousTypes {
+    NVarChar: TediousDataType;
+    BigInt: TediousDataType;
+    Int: TediousDataType;
+    Float: TediousDataType;
+    Bit: TediousDataType;
+    DateTime: TediousDataType;
+    VarBinary: TediousDataType;
+    [x: string]: TediousDataType;
+}
+interface TediousDataType {
 }
 interface TediousColumnValue {
     metadata: {
@@ -2935,4 +2951,4 @@ declare function logOnce(message: string): void;
 
 type ExistsExpression<DB, TB extends keyof DB> = ExpressionOrFactory<DB, TB, any>;
 
-export { AddColumnNode, AddConstraintNode, AddIndexNode, AggregateFunctionNode, AliasNode, AlterColumnNode, AlterTableColumnAlterationNode, AlterTableNode, AndNode, BinaryOperationNode, CamelCasePlugin, type CamelCasePluginOptions, CaseNode, CastNode, CheckConstraintNode, ColumnDefinitionNode, ColumnNode, ColumnUpdateNode, CommonTableExpressionNameNode, CommonTableExpressionNode, Compilable, CompiledQuery, ConnectionProvider, CreateIndexNode, CreateSchemaNode, CreateTableNode, CreateTypeNode, CreateViewNode, DEFAULT_ALLOW_UNORDERED_MIGRATIONS, DEFAULT_MIGRATION_LOCK_TABLE, DEFAULT_MIGRATION_TABLE, DataTypeNode, DatabaseConnection, DatabaseIntrospector, DatabaseMetadata, DatabaseMetadataOptions, DeduplicateJoinsPlugin, DefaultConnectionProvider, DefaultInsertValueNode, DefaultQueryCompiler, DefaultQueryExecutor, DefaultValueNode, DeleteQueryNode, DeleteResult, Dialect, DialectAdapter, DialectAdapterBase, Driver, DropColumnNode, DropConstraintNode, DropIndexNode, DropSchemaNode, DropTableNode, DropTypeNode, DropViewNode, DummyDriver, type ExistsExpression, ExplainNode, ExpressionOrFactory, FetchNode, FileMigrationProvider, type FileMigrationProviderFS, type FileMigrationProviderPath, type FileMigrationProviderProps, ForeignKeyConstraintNode, FromNode, FunctionNode, GeneratedNode, GroupByItemNode, GroupByNode, HavingNode, IdentifierNode, type InferResult, InsertQueryNode, InsertResult, JSONOperatorChainNode, JSONPathLegNode, JSONPathNode, JSONReferenceNode, JoinNode, Kysely, KyselyPlugin, LimitNode, ListNode, MIGRATION_LOCK_ID, MatchedNode, MergeQueryNode, MergeResult, type Migration, type MigrationInfo, MigrationLockOptions, type MigrationProvider, type MigrationResult, type MigrationResultSet, Migrator, type MigratorProps, ModifyColumnNode, MssqlAdapter, MssqlDialect, type MssqlDialectConfig, MssqlDriver, MssqlIntrospector, MssqlQueryCompiler, MysqlAdapter, MysqlDialect, type MysqlDialectConfig, MysqlDriver, MysqlIntrospector, type MysqlOkPacket, type MysqlPool, type MysqlPoolConnection, MysqlQueryCompiler, type MysqlQueryResult, type MysqlStream, type MysqlStreamOptions, NOOP_QUERY_EXECUTOR, NO_MIGRATIONS, type NoMigrations, NoopQueryExecutor, OffsetNode, OnConflictNode, OnDuplicateKeyNode, OnNode, OperationNode, OperationNodeTransformer, OperationNodeVisitor, OperatorNode, OrNode, OrderByItemNode, OrderByNode, OutputNode, OverNode, ParensNode, ParseJSONResultsPlugin, type ParseJSONResultsPluginOptions, PartitionByItemNode, PartitionByNode, PluginTransformQueryArgs, PluginTransformResultArgs, PostgresAdapter, type PostgresCursor, type PostgresCursorConstructor, PostgresDialect, type PostgresDialectConfig, PostgresDriver, PostgresIntrospector, type PostgresPool, type PostgresPoolClient, PostgresQueryCompiler, type PostgresQueryResult, type PostgresStream, PrimaryKeyConstraintNode, PrimitiveValueListNode, QueryCompiler, QueryExecutor, QueryResult, RawBuilder, RawNode, ReferenceNode, ReferencesNode, RenameColumnNode, ReturningNode, RootOperationNode, SchemaMetadata, SchemableIdentifierNode, SelectAllNode, SelectModifierNode, SelectQueryNode, SelectionNode, SetOperationNode, Simplify, SingleConnectionProvider, type Sql, SqliteAdapter, type SqliteDatabase, SqliteDialect, type SqliteDialectConfig, SqliteDriver, SqliteIntrospector, SqliteQueryCompiler, type SqliteStatement, TableMetadata, TableNode, type Tarn, type TarnPendingRequest, TarnPool, type TarnPoolOptions, type Tedious, type TediousColumnValue, type TediousConnection, type TediousIsolationLevel, TediousRequest, type TediousType, type TediousTypes, TopNode, TransactionSettings, TupleNode, UnaryOperationNode, UniqueConstraintNode, UnknownRow, UpdateQueryNode, UpdateResult, UsingNode, ValueListNode, ValueNode, type ValuesItemNode, ValuesNode, WhenNode, WhereNode, WithNode, WithSchemaPlugin, logOnce, sql };
+export { AddColumnNode, AddConstraintNode, AddIndexNode, AggregateFunctionNode, AliasNode, AlterColumnNode, AlterTableColumnAlterationNode, AlterTableNode, AndNode, BinaryOperationNode, CamelCasePlugin, type CamelCasePluginOptions, CaseNode, CastNode, CheckConstraintNode, ColumnDefinitionNode, ColumnNode, ColumnUpdateNode, CommonTableExpressionNameNode, CommonTableExpressionNode, Compilable, CompiledQuery, ConnectionProvider, CreateIndexNode, CreateSchemaNode, CreateTableNode, CreateTypeNode, CreateViewNode, DEFAULT_ALLOW_UNORDERED_MIGRATIONS, DEFAULT_MIGRATION_LOCK_TABLE, DEFAULT_MIGRATION_TABLE, DataTypeNode, DatabaseConnection, DatabaseIntrospector, DatabaseMetadata, DatabaseMetadataOptions, DeduplicateJoinsPlugin, DefaultConnectionProvider, DefaultInsertValueNode, DefaultQueryCompiler, DefaultQueryExecutor, DefaultValueNode, DeleteQueryNode, DeleteResult, Dialect, DialectAdapter, DialectAdapterBase, Driver, DropColumnNode, DropConstraintNode, DropIndexNode, DropSchemaNode, DropTableNode, DropTypeNode, DropViewNode, DummyDriver, type ExistsExpression, ExplainNode, ExpressionOrFactory, FetchNode, FileMigrationProvider, type FileMigrationProviderFS, type FileMigrationProviderPath, type FileMigrationProviderProps, ForeignKeyConstraintNode, FromNode, FunctionNode, GeneratedNode, GroupByItemNode, GroupByNode, HavingNode, IdentifierNode, type InferResult, InsertQueryNode, InsertResult, JSONOperatorChainNode, JSONPathLegNode, JSONPathNode, JSONReferenceNode, JoinNode, Kysely, KyselyPlugin, LimitNode, ListNode, MIGRATION_LOCK_ID, MatchedNode, MergeQueryNode, MergeResult, type Migration, type MigrationInfo, MigrationLockOptions, type MigrationProvider, type MigrationResult, type MigrationResultSet, Migrator, type MigratorProps, ModifyColumnNode, MssqlAdapter, MssqlDialect, type MssqlDialectConfig, MssqlDriver, MssqlIntrospector, MssqlQueryCompiler, MysqlAdapter, MysqlDialect, type MysqlDialectConfig, MysqlDriver, MysqlIntrospector, type MysqlOkPacket, type MysqlPool, type MysqlPoolConnection, MysqlQueryCompiler, type MysqlQueryResult, type MysqlStream, type MysqlStreamOptions, NOOP_QUERY_EXECUTOR, NO_MIGRATIONS, type NoMigrations, NoopQueryExecutor, OffsetNode, OnConflictNode, OnDuplicateKeyNode, OnNode, OperationNode, OperationNodeTransformer, OperationNodeVisitor, OperatorNode, OrNode, OrderByItemNode, OrderByNode, OutputNode, OverNode, ParensNode, ParseJSONResultsPlugin, type ParseJSONResultsPluginOptions, PartitionByItemNode, PartitionByNode, PluginTransformQueryArgs, PluginTransformResultArgs, PostgresAdapter, type PostgresCursor, type PostgresCursorConstructor, PostgresDialect, type PostgresDialectConfig, PostgresDriver, PostgresIntrospector, type PostgresPool, type PostgresPoolClient, PostgresQueryCompiler, type PostgresQueryResult, type PostgresStream, PrimaryKeyConstraintNode, PrimitiveValueListNode, QueryCompiler, QueryExecutor, QueryResult, RawBuilder, RawNode, ReferenceNode, ReferencesNode, RenameColumnNode, ReturningNode, RootOperationNode, SchemaMetadata, SchemableIdentifierNode, SelectAllNode, SelectModifierNode, SelectQueryNode, SelectionNode, SetOperationNode, Simplify, SingleConnectionProvider, type Sql, SqliteAdapter, type SqliteDatabase, SqliteDialect, type SqliteDialectConfig, SqliteDriver, SqliteIntrospector, SqliteQueryCompiler, type SqliteStatement, TableMetadata, TableNode, type Tarn, type TarnPendingRequest, TarnPool, type TarnPoolOptions, type Tedious, type TediousColumnValue, type TediousConnection, type TediousDataType, type TediousIsolationLevel, TediousRequest, type TediousRequestClass, type TediousTypes, TopNode, TransactionSettings, TupleNode, UnaryOperationNode, UniqueConstraintNode, UnknownRow, UpdateQueryNode, UpdateResult, UsingNode, ValueListNode, ValueNode, type ValuesItemNode, ValuesNode, WhenNode, WhereNode, WithNode, WithSchemaPlugin, logOnce, sql };
