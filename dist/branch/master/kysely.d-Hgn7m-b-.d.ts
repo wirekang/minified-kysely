@@ -46,7 +46,16 @@ declare class DeleteResult {
 }
 
 declare class UpdateResult {
+    /**
+     * The number of rows the update query updated (even if not changed).
+    */
     readonly numUpdatedRows: bigint;
+    /**
+     * The number of rows the update query changed.
+     *
+     * This is **optional** and only supported in dialects such as MySQL.
+     * You would probably use {@link numUpdatedRows} in most cases.
+    */
     readonly numChangedRows?: bigint;
     constructor(numUpdatedRows: bigint, numChangedRows: bigint | undefined);
 }
@@ -1651,7 +1660,9 @@ interface QueryResult<O> {
     /**
      * This is defined for update queries and contains the number of rows
      * the query changed.
-     * This is optional and only provided by some drivers like node-mysql2.
+     *
+     * This is **optional** and only provided in dialects such as MySQL.
+     * You would probably use {@link numAffectedRows} in most cases.
      */
     readonly numChangedRows?: bigint;
     /**
