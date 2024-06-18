@@ -1872,16 +1872,20 @@ interface Tedious {
 }
 interface TediousConnection {
     beginTransaction(callback: (error?: Error | null, transactionDescriptor?: any) => void, name?: string, isolationLevel?: number): void;
-    commitTransaction(callback: (error?: Error | null) => void, name?: string): void;
-    execSql(request: TediousRequest): void;
-    rollbackTransaction(callback: (error?: Error | null) => void, name?: string): void;
-    saveTransaction(callback: (error?: Error | null) => void, name: string): void;
     cancel(): boolean;
-    reset(callback: (error?: Error | null) => void): void;
     close(): void;
+    commitTransaction(callback: (error?: Error | null) => void, name?: string): void;
+    connect(callback?: (error?: Error) => void): void;
+    execSql(request: TediousRequest): void;
+    off(event: 'error', listener: (error: unknown) => void): this;
+    off(event: string, listener: (...args: any[]) => void): this;
+    on(event: 'error', listener: (error: unknown) => void): this;
+    on(event: string, listener: (...args: any[]) => void): this;
     once(event: 'end', listener: () => void): this;
     once(event: string, listener: (...args: any[]) => void): this;
-    connect(callback?: (error?: Error) => void): void;
+    reset(callback: (error?: Error | null) => void): void;
+    rollbackTransaction(callback: (error?: Error | null) => void, name?: string): void;
+    saveTransaction(callback: (error?: Error | null) => void, name: string): void;
 }
 type TediousIsolationLevel = Record<string, number>;
 interface TediousRequestClass {
@@ -1896,12 +1900,12 @@ declare class TediousRequest {
         precision?: number;
         scale?: number;
     }> | null): void;
+    off(event: 'row', listener: (columns: any) => void): this;
+    off(event: string, listener: (...args: any[]) => void): this;
     on(event: 'row', listener: (columns: any) => void): this;
     on(event: string, listener: (...args: any[]) => void): this;
     once(event: 'requestCompleted', listener: () => void): this;
     once(event: string, listener: (...args: any[]) => void): this;
-    off(event: 'row', listener: (columns: any) => void): this;
-    off(event: string, listener: (...args: any[]) => void): this;
     pause(): void;
     resume(): void;
 }
@@ -2081,6 +2085,7 @@ declare class MssqlConnection implements DatabaseConnection {
     constructor(connection: TediousConnection, tedious: Tedious);
     beginTransaction(settings: TransactionSettings): Promise<void>;
     commitTransaction(): Promise<void>;
+    connect(): Promise<this>;
     executeQuery<O>(compiledQuery: CompiledQuery): Promise<QueryResult<O>>;
     rollbackTransaction(): Promise<void>;
     streamQuery<O>(compiledQuery: CompiledQuery, chunkSize: number): AsyncIterableIterator<QueryResult<O>>;
