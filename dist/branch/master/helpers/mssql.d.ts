@@ -1,4 +1,4 @@
-import { bI as Expression, R as RawBuilder, aZ as Simplify } from '../kysely.d-Hgn7m-b-.js';
+import { bI as Expression, R as RawBuilder, aZ as Simplify } from '../kysely.d-8UC1Ry46.js';
 
 /**
  * An MS SQL Server helper for aggregating a subquery into a JSON array.

@@ -449,7 +449,7 @@ interface AlterColumnNode extends OperationNode {
  */
 declare const AlterColumnNode: Readonly<{
     is(node: OperationNode): node is AlterColumnNode;
-    create<T extends "dataType" | "dataTypeExpression" | "setDefault" | "dropDefault" | "setNotNull" | "dropNotNull">(column: string, prop: T, value: Required<AlterColumnNodeProps>[T]): AlterColumnNode;
+    create<T extends keyof AlterColumnNodeProps>(column: string, prop: T, value: Required<AlterColumnNodeProps>[T]): AlterColumnNode;
 }>;
 
 type ForeignKeyConstraintNodeProps = Omit<ForeignKeyConstraintNode, 'kind' | 'columns' | 'references'>;
@@ -468,10 +468,10 @@ declare const ForeignKeyConstraintNode: Readonly<{
     is(node: OperationNode): node is ForeignKeyConstraintNode;
     create(sourceColumns: ReadonlyArray<ColumnNode>, targetTable: TableNode, targetColumns: ReadonlyArray<ColumnNode>, constraintName?: string): ForeignKeyConstraintNode;
     cloneWith(node: ForeignKeyConstraintNode, props: ForeignKeyConstraintNodeProps): Readonly<{
-        name?: IdentifierNode | undefined;
-        onDelete?: "no action" | "restrict" | "cascade" | "set null" | "set default" | undefined;
-        onUpdate?: "no action" | "restrict" | "cascade" | "set null" | "set default" | undefined;
-        kind: 'ForeignKeyConstraintNode';
+        name?: IdentifierNode;
+        onDelete?: OnModifyForeignAction;
+        onUpdate?: OnModifyForeignAction;
+        kind: "ForeignKeyConstraintNode";
         columns: ReadonlyArray<ColumnNode>;
         references: ReferencesNode;
     }>;
@@ -617,7 +617,7 @@ interface WhereNode extends OperationNode {
 declare const WhereNode: Readonly<{
     is(node: OperationNode): node is WhereNode;
     create(filter: OperationNode): WhereNode;
-    cloneWithOperation(whereNode: WhereNode, operator: 'And' | 'Or', operation: OperationNode): WhereNode;
+    cloneWithOperation(whereNode: WhereNode, operator: "And" | "Or", operation: OperationNode): WhereNode;
 }>;
 
 type CreateIndexNodeProps = Omit<CreateIndexNode, 'kind' | 'name'>;
@@ -761,7 +761,7 @@ interface HavingNode extends OperationNode {
 declare const HavingNode: Readonly<{
     is(node: OperationNode): node is HavingNode;
     create(filter: OperationNode): HavingNode;
-    cloneWithOperation(havingNode: HavingNode, operator: 'And' | 'Or', operation: OperationNode): HavingNode;
+    cloneWithOperation(havingNode: HavingNode, operator: "And" | "Or", operation: OperationNode): HavingNode;
 }>;
 
 interface OnNode extends OperationNode {
@@ -774,7 +774,7 @@ interface OnNode extends OperationNode {
 declare const OnNode: Readonly<{
     is(node: OperationNode): node is OnNode;
     create(filter: OperationNode): OnNode;
-    cloneWithOperation(onNode: OnNode, operator: 'And' | 'Or', operation: OperationNode): OnNode;
+    cloneWithOperation(onNode: OnNode, operator: "And" | "Or", operation: OperationNode): OnNode;
 }>;
 
 type JoinType = 'InnerJoin' | 'LeftJoin' | 'RightJoin' | 'FullJoin' | 'LateralInnerJoin' | 'LateralLeftJoin' | 'Using';
@@ -1612,13 +1612,13 @@ type QueryNode = SelectQueryNode | InsertQueryNode | UpdateQueryNode | DeleteQue
 declare const QueryNode: Readonly<{
     is(node: OperationNode): node is QueryNode;
     cloneWithWhere<T extends HasWhere>(node: T, operation: OperationNode): T;
-    cloneWithJoin<T_1 extends HasJoins>(node: T_1, join: JoinNode): T_1;
-    cloneWithReturning<T_2 extends HasReturning>(node: T_2, selections: ReadonlyArray<SelectionNode>): T_2;
-    cloneWithoutReturning<T_3 extends HasReturning>(node: T_3): T_3;
-    cloneWithoutWhere<T_4 extends HasWhere>(node: T_4): T_4;
-    cloneWithExplain<T_5 extends HasExplain>(node: T_5, format: ExplainFormat | undefined, options: Expression<any> | undefined): T_5;
-    cloneWithTop<T_6 extends HasTop>(node: T_6, top: TopNode): T_6;
-    cloneWithOutput<T_7 extends HasOutput>(node: T_7, selections: ReadonlyArray<SelectionNode>): T_7;
+    cloneWithJoin<T extends HasJoins>(node: T, join: JoinNode): T;
+    cloneWithReturning<T extends HasReturning>(node: T, selections: ReadonlyArray<SelectionNode>): T;
+    cloneWithoutReturning<T extends HasReturning>(node: T): T;
+    cloneWithoutWhere<T extends HasWhere>(node: T): T;
+    cloneWithExplain<T extends HasExplain>(node: T, format: ExplainFormat | undefined, options: Expression<any> | undefined): T;
+    cloneWithTop<T extends HasTop>(node: T, top: TopNode): T;
+    cloneWithOutput<T extends HasOutput>(node: T, selections: ReadonlyArray<SelectionNode>): T;
 }>;
 
 type RootOperationNode = QueryNode | CreateTableNode | CreateIndexNode | CreateSchemaNode | CreateViewNode | DropTableNode | DropIndexNode | DropSchemaNode | DropViewNode | AlterTableNode | RawNode | CreateTypeNode | DropTypeNode | MergeQueryNode;
@@ -6774,7 +6774,7 @@ declare const CaseNode: Readonly<{
     create(value?: OperationNode): CaseNode;
     cloneWithWhen(caseNode: CaseNode, when: WhenNode): CaseNode;
     cloneWithThen(caseNode: CaseNode, then: OperationNode): CaseNode;
-    cloneWith(caseNode: CaseNode, props: Partial<Pick<CaseNode, 'else' | 'isStatement'>>): CaseNode;
+    cloneWith(caseNode: CaseNode, props: Partial<Pick<CaseNode, "else" | "isStatement">>): CaseNode;
 }>;
 
 declare class CaseBuilder<DB, TB extends keyof DB, W = unknown, O = never> implements Whenable<DB, TB, W, O> {
