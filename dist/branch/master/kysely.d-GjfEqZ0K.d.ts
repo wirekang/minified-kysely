@@ -14284,7 +14284,7 @@ declare class WheneableMergeQueryBuilder<DB, TT extends keyof DB, ST extends key
      */
     $if<O2>(condition: boolean, func: (qb: this) => WheneableMergeQueryBuilder<any, any, any, O2>): O2 extends MergeResult ? WheneableMergeQueryBuilder<DB, TT, ST, MergeResult> : O2 extends O & infer E ? WheneableMergeQueryBuilder<DB, TT, ST, O & Partial<E>> : WheneableMergeQueryBuilder<DB, TT, ST, Partial<O2>>;
     toOperationNode(): MergeQueryNode;
-    compile(): CompiledQuery<never>;
+    compile(): CompiledQuery<O>;
     /**
      * Executes the query and returns an array of rows.
      *
