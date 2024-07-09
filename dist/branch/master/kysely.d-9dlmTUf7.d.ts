@@ -1265,7 +1265,6 @@ declare const SelectQueryNode: Readonly<{
     cloneWithSelections(select: SelectQueryNode, selections: ReadonlyArray<SelectionNode>): SelectQueryNode;
     cloneWithDistinctOn(select: SelectQueryNode, expressions: ReadonlyArray<OperationNode>): SelectQueryNode;
     cloneWithFrontModifier(select: SelectQueryNode, modifier: SelectModifierNode): SelectQueryNode;
-    cloneWithEndModifier(select: SelectQueryNode, modifier: SelectModifierNode): SelectQueryNode;
     cloneWithOrderByItems(selectNode: SelectQueryNode, items: ReadonlyArray<OrderByItemNode>): SelectQueryNode;
     cloneWithGroupByItems(selectNode: SelectQueryNode, items: ReadonlyArray<GroupByItemNode>): SelectQueryNode;
     cloneWithLimit(selectNode: SelectQueryNode, limit: LimitNode): SelectQueryNode;
@@ -1399,6 +1398,7 @@ interface MergeQueryNode extends OperationNode {
     readonly with?: WithNode;
     readonly top?: TopNode;
     readonly output?: OutputNode;
+    readonly endModifiers?: ReadonlyArray<OperationNode>;
 }
 /**
  * @internal
@@ -1490,6 +1490,7 @@ interface InsertQueryNode extends OperationNode {
     readonly replace?: boolean;
     readonly explain?: ExplainNode;
     readonly defaultValues?: boolean;
+    readonly endModifiers?: ReadonlyArray<OperationNode>;
     readonly top?: TopNode;
     readonly output?: OutputNode;
 }
@@ -1531,6 +1532,7 @@ interface UpdateQueryNode extends OperationNode {
     readonly returning?: ReturningNode;
     readonly with?: WithNode;
     readonly explain?: ExplainNode;
+    readonly endModifiers?: ReadonlyArray<OperationNode>;
     readonly limit?: LimitNode;
     readonly top?: TopNode;
     readonly output?: OutputNode;
@@ -1571,6 +1573,7 @@ interface DeleteQueryNode extends OperationNode {
     readonly orderBy?: OrderByNode;
     readonly limit?: LimitNode;
     readonly explain?: ExplainNode;
+    readonly endModifiers?: ReadonlyArray<OperationNode>;
     readonly top?: TopNode;
     readonly output?: OutputNode;
 }
@@ -1605,12 +1608,16 @@ type HasTop = {
 type HasOutput = {
     output?: OutputNode;
 };
+type HasEndModifiers = {
+    endModifiers?: ReadonlyArray<OperationNode>;
+};
 type QueryNode = SelectQueryNode | InsertQueryNode | UpdateQueryNode | DeleteQueryNode | MergeQueryNode;
 /**
  * @internal
  */
 declare const QueryNode: Readonly<{
     is(node: OperationNode): node is QueryNode;
+    cloneWithEndModifier<T extends HasEndModifiers>(node: T, modifier: OperationNode): T;
     cloneWithWhere<T extends HasWhere>(node: T, operation: OperationNode): T;
     cloneWithJoin<T extends HasJoins>(node: T, join: JoinNode): T;
     cloneWithReturning<T extends HasReturning>(node: T, selections: ReadonlyArray<SelectionNode>): T;
@@ -10681,6 +10688,26 @@ declare class InsertQueryBuilder<DB, TB extends keyof DB, O> implements Returnin
      */
     defaultValues(): InsertQueryBuilder<DB, TB, O>;
     /**
+     * This can be used to add any additional SQL to the end of the query.
+     *
+     * ### Examples
+     *
+     * ```ts
+     * await db.insertInto('person')
+     *   .values(values)
+     *   .modifyEnd(sql.raw('-- This is a comment'))
+     *   .execute()
+     * ```
+     *
+     * The generated SQL (MySQL):
+     *
+     * ```sql
+     * insert into `person`
+     * values (?, ?, ?) -- This is a comment
+     * ```
+     */
+    modifyEnd(modifier: Expression<any>): InsertQueryBuilder<DB, TB, O>;
+    /**
      * Changes an `insert into` query to an `insert ignore into` query.
      *
      * If you use the ignore modifier, ignorable errors that occur while executing the
@@ -12307,6 +12334,26 @@ declare class DeleteQueryBuilder<DB, TB extends keyof DB, O> implements WhereInt
      */
     limit(limit: ValueExpression<DB, TB, number>): DeleteQueryBuilder<DB, TB, O>;
     /**
+     * This can be used to add any additional SQL to the end of the query.
+     *
+     * ### Examples
+     *
+     * ```ts
+     * await db.deleteFrom('person')
+     * .where('first_name', '=', 'John')
+     * .modifyEnd(sql.raw('-- This is a comment'))
+     * .execute()
+     * ```
+     *
+     * The generated SQL (MySQL):
+     *
+     * ```sql
+     * delete from `person`
+     * where `first_name` = "John" -- This is a comment
+     * ```
+     */
+    modifyEnd(modifier: Expression<any>): DeleteQueryBuilder<DB, TB, O>;
+    /**
      * Simply calls the provided function passing `this` as the only argument. `$call` returns
      * what the provided function returns.
      *
@@ -13457,6 +13504,28 @@ declare class UpdateQueryBuilder<DB, UT extends keyof DB, TB extends keyof DB, O
      */
     outputAll(table: OutputPrefix): UpdateQueryBuilder<DB, UT, TB, ReturningAllRow<DB, TB, O>>;
     /**
+     * This can be used to add any additional SQL to the end of the query.
+     *
+     * ### Examples
+     *
+      * ```ts
+     * await db.updateTable('person')
+     * .set({ age: 39 })
+     * .where('first_name', '=', 'John')
+     * .modifyEnd(sql.raw('-- This is a comment'))
+     * .execute()
+     * ```
+     *
+     * The generated SQL (MySQL):
+     *
+     * ```sql
+     * update `person`
+     * set `age` = 39
+     * where `first_name` = "John" -- This is a comment
+     * ```
+     */
+    modifyEnd(modifier: Expression<any>): UpdateQueryBuilder<DB, UT, TB, O>;
+    /**
      * Clears all `returning` clauses from the query.
      *
      * ### Examples
@@ -13807,6 +13876,28 @@ declare class MergeQueryBuilder<DB, TT extends keyof DB, O> implements OutputInt
     #private;
     constructor(props: MergeQueryBuilderProps);
     /**
+     * This can be used to add any additional SQL to the end of the query.
+     *
+     * ### Examples
+     *
+     * ```ts
+     * const result = await db
+     *   .mergeInto('person')
+     *   .using('pet', 'pet.owner_id', 'person.id')
+     *   .whenMatched()
+     *   .thenDelete()
+     *   .modifyEnd(sql.raw('-- this is a comment'))
+     *   .execute()
+     * ```
+     *
+     * The generated SQL (PostgreSQL):
+     *
+     * ```sql
+     * merge into "person" using "pet" on "pet"."owner_id" = "person"."id" when matched then delete -- this is a comment
+     * ```
+     */
+    modifyEnd(modifier: Expression<any>): MergeQueryBuilder<DB, TT, O>;
+    /**
      * Changes a `merge into` query to an `merge top into` query.
      *
      * `top` clause is only supported by some dialects like MS SQL Server.
@@ -13971,6 +14062,28 @@ interface MergeQueryBuilderProps {
 declare class WheneableMergeQueryBuilder<DB, TT extends keyof DB, ST extends keyof DB, O> implements Compilable<O>, OutputInterface<DB, TT, O>, OperationNodeSource {
     #private;
     constructor(props: MergeQueryBuilderProps);
+    /**
+     * This can be used to add any additional SQL to the end of the query.
+     *
+     * ### Examples
+     *
+     * ```ts
+     * const result = await db
+     *   .mergeInto('person')
+     *   .using('pet', 'pet.owner_id', 'person.id')
+     *   .whenMatched()
+     *   .thenDelete()
+     *   .modifyEnd(sql.raw('-- this is a comment'))
+     *   .execute()
+     * ```
+     *
+     * The generated SQL (PostgreSQL):
+     *
+     * ```sql
+     * merge into "person" using "pet" on "pet"."owner_id" = "person"."id" when matched then delete -- this is a comment
+     * ```
+     */
+    modifyEnd(modifier: Expression<any>): WheneableMergeQueryBuilder<DB, TT, ST, O>;
     /**
      * See {@link MergeQueryBuilder.top}.
      */
