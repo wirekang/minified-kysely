@@ -1247,6 +1247,10 @@ interface MysqlDialectConfig {
      * Called once for each created connection.
      */
     onCreateConnection?: (connection: DatabaseConnection) => Promise<void>;
+    /**
+     * Called every time a connection is acquired from the connection pool.
+     */
+    onReserveConnection?: (connection: DatabaseConnection) => Promise<void>;
 }
 /**
  * This interface is the subset of mysql2 driver's `Pool` class that
@@ -1509,6 +1513,10 @@ interface PostgresDialectConfig {
      * Called once for each created connection.
      */
     onCreateConnection?: (connection: DatabaseConnection) => Promise<void>;
+    /**
+     * Called every time a connection is acquired from the pool.
+     */
+    onReserveConnection?: (connection: DatabaseConnection) => Promise<void>;
 }
 /**
  * This interface is the subset of pg driver's `Pool` class that
