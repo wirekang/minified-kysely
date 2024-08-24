@@ -5444,7 +5444,7 @@ interface SelectQueryBuilder<DB, TB extends keyof DB, O> extends WhereInterface<
      * method called inside the callback add optional fields to the result type. This is
      * because we can't know if those selections were actually made before running the code.
      *
-     * Also see [this recipe](https://github.com/koskimas/kysely/tree/master/site/docs/recipes/conditional-selects.md)
+     * Also see [this recipe](https://github.com/kysely-org/kysely/blob/master/site/docs/recipes/0005-conditional-selects.md)
      *
      * ### Examples
      *
@@ -15099,7 +15099,7 @@ declare class QueryCreator<DB> {
      * This only affects the query created through the builder returned from
      * this method and doesn't modify the `db` instance.
      *
-     * See [this recipe](https://github.com/koskimas/kysely/tree/master/site/docs/recipes/schemas.md)
+     * See [this recipe](https://github.com/kysely-org/kysely/blob/master/site/docs/recipes/0007-schemas.md)
      * for a more detailed explanation.
      *
      * ### Examples
@@ -15404,7 +15404,7 @@ declare class Kysely<DB> extends QueryCreator<DB> implements QueryExecutorProvid
     /**
      * Executes a given compiled query or query builder.
      *
-     * See {@link https://github.com/koskimas/kysely/blob/master/site/docs/recipes/splitting-build-compile-and-execute-code.md#execute-compiled-queries splitting build, compile and execute code recipe} for more information.
+     * See {@link https://github.com/kysely-org/kysely/blob/master/site/docs/recipes/0004-splitting-query-building-and-execution.md#execute-compiled-queries splitting build, compile and execute code recipe} for more information.
      */
     executeQuery<R>(query: CompiledQuery<R> | Compilable<R>, queryId?: QueryId): Promise<QueryResult<R>>;
 }
