@@ -7174,8 +7174,8 @@ declare class TraversedJSONPathBuilder<S, O> extends JSONPathBuilder<S, O> imple
      * This method call doesn't change the SQL in any way. This methods simply
      * returns a copy of this `JSONPathBuilder` with a new output type.
      */
-    $castTo<C>(): JSONPathBuilder<C>;
-    $notNull(): JSONPathBuilder<Exclude<O, null>>;
+    $castTo<O2>(): TraversedJSONPathBuilder<S, O2>;
+    $notNull(): TraversedJSONPathBuilder<S, Exclude<O, null>>;
     /**
      * Creates the OperationNode that describes how to compile this expression into SQL.
      *
