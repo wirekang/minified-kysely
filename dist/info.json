@@ -1,5 +1,5 @@
 {
-    "lastCommitId": "88d0b8a26d950e40b5faa6a58a66fb92b4973bd4",
+    "lastCommitId": "c34093ec7afa36296023d28d1789bd6a4b644ade",
     "tags": [
         {
             "name": "0.24.0",
@@ -414,7 +414,7 @@
     "branches": [
         {
             "name": "master",
-            "commitId": "88d0b8a26d950e40b5faa6a58a66fb92b4973bd4",
+            "commitId": "c34093ec7afa36296023d28d1789bd6a4b644ade",
             "dependencies": {
                 "typescript": "^5.5.4"
             },
