@@ -5828,6 +5828,7 @@ interface AggregateFunctionNode extends OperationNode {
     readonly func: string;
     readonly aggregated: readonly OperationNode[];
     readonly distinct?: boolean;
+    readonly orderBy?: OrderByNode;
     readonly filter?: WhereNode;
     readonly over?: OverNode;
 }
@@ -5838,6 +5839,7 @@ declare const AggregateFunctionNode: Readonly<{
     is(node: OperationNode): node is AggregateFunctionNode;
     create(aggregateFunction: string, aggregated?: readonly OperationNode[]): AggregateFunctionNode;
     cloneWithDistinct(aggregateFunctionNode: AggregateFunctionNode): AggregateFunctionNode;
+    cloneWithOrderBy(aggregateFunctionNode: AggregateFunctionNode, orderItems: ReadonlyArray<OrderByItemNode>): AggregateFunctionNode;
     cloneWithFilter(aggregateFunctionNode: AggregateFunctionNode, filter: OperationNode): AggregateFunctionNode;
     cloneWithOrFilter(aggregateFunctionNode: AggregateFunctionNode, filter: OperationNode): AggregateFunctionNode;
     cloneWithOver(aggregateFunctionNode: AggregateFunctionNode, over?: OverNode): AggregateFunctionNode;
@@ -5973,6 +5975,30 @@ declare class AggregateFunctionBuilder<DB, TB extends keyof DB, O = unknown> imp
      * ```
      */
     distinct(): AggregateFunctionBuilder<DB, TB, O>;
+    /**
+     * Adds an `order by` clause inside the aggregate function.
+     *
+     * ### Examples
+     *
+     * ```ts
+     * const result = await db
+     *   .selectFrom('person')
+     *   .innerJoin('pet', 'pet.owner_id', 'person.id')
+     *   .select((eb) =>
+     *     eb.fn.jsonAgg('pet.name').orderBy('pet.name').as('person_pets')
+     *   )
+     *   .executeTakeFirstOrThrow()
+     * ```
+     *
+     * The generated SQL (PostgreSQL):
+     *
+     * ```sql
+     * select json_agg("pet"."name" order by "pet"."name") as "person_pets"
+     * from "person"
+     * inner join "pet" ON "pet"."owner_id" = "person"."id"
+     * ```
+     */
+    orderBy<OE extends StringReference<DB, TB> | DynamicReferenceBuilder<any>>(orderBy: OE, direction?: OrderByDirectionExpression): AggregateFunctionBuilder<DB, TB, O>;
     /**
      * Adds a `filter` clause with a nested `where` clause after the function.
      *
