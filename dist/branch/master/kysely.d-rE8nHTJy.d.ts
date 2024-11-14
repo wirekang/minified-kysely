@@ -10604,7 +10604,7 @@ declare class InsertQueryBuilder<DB, TB extends keyof DB, O> implements Returnin
      *   .insertInto('person')
      *   .values(({ ref, selectFrom, fn }) => ({
      *     first_name: 'Jennifer',
-     *     last_name: sql<string>`>concat(${ani}, ${ston})`,
+     *     last_name: sql<string>`concat(${ani}, ${ston})`,
      *     middle_name: ref('first_name'),
      *     age: selectFrom('person')
      *       .select(fn.avg<number>('age').as('avg_age')),
