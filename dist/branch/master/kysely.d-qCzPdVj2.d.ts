@@ -1026,7 +1026,7 @@ interface AliasableExpression<T> extends Expression<T> {
      *   .selectFrom('person')
      *   .select((eb) =>
      *     // `eb.fn<string>` returns an AliasableExpression<string>
-     *     eb.fn<string>('concat', ['first_name' eb.val(' '), 'last_name']).as('full_name')
+     *     eb.fn<string>('concat', ['first_name', eb.val(' '), 'last_name']).as('full_name')
      *   )
      *   .executeTakeFirstOrThrow()
      *
@@ -1036,7 +1036,7 @@ interface AliasableExpression<T> extends Expression<T> {
      *
      * The generated SQL (PostgreSQL):
      *
-     * ```ts
+     * ```sql
      * select
      *   concat("first_name", $1, "last_name") as "full_name"
      * from
@@ -1065,7 +1065,7 @@ interface AliasableExpression<T> extends Expression<T> {
      *
      * The generated SQL (PostgreSQL):
      *
-     * ```ts
+     * ```sql
      * insert into "person" ("first_name", "last_name")
      * from (values (1, 'foo')) as t(a, b)
      * select "t"."a", "t"."b"
@@ -1843,8 +1843,10 @@ interface DialectAdapter {
      * have explicit locks but supports `FOR UPDATE` row locks and transactional DDL:
      *
      * ```ts
-     * {
-     *   async acquireMigrationLock(db, options): Promise<void> {
+     * import { DialectAdapterBase, MigrationLockOptions, Kysely } from 'kysely'
+     *
+     * export class MyAdapter extends DialectAdapterBase {
+     *   async override acquireMigrationLock(db: Kysely<any>, options: MigrationLockOptions): Promise<void> {
      *     const queryDb = options.lockTableSchema
      *       ? db.withSchema(options.lockTableSchema)
      *       : db
@@ -3196,7 +3198,7 @@ interface Streamable<O> {
      * ### Examples
      *
      * ```ts
-     * const stream = db.
+     * const stream = db
      *   .selectFrom('person')
      *   .select(['first_name', 'last_name'])
      *   .where('gender', '=', 'other')
@@ -3295,7 +3297,7 @@ declare class ExpressionWrapper<DB, TB extends keyof DB, T> implements Aliasable
      *
      * The generated SQL (PostgreSQL):
      *
-     * ```ts
+     * ```sql
      * select "first_name" = $1 as "is_jennifer"
      * from "person"
      * ```
@@ -3312,7 +3314,7 @@ declare class ExpressionWrapper<DB, TB extends keyof DB, T> implements Aliasable
      *   .selectFrom('person')
      *   .select((eb) =>
      *     // `eb.fn<string>` returns an AliasableExpression<string>
-     *     eb.fn<string>('concat', ['first_name' eb.val(' '), 'last_name']).as('full_name')
+     *     eb.fn<string>('concat', ['first_name', eb.val(' '), 'last_name']).as('full_name')
      *   )
      *   .executeTakeFirstOrThrow()
      *
@@ -3322,7 +3324,7 @@ declare class ExpressionWrapper<DB, TB extends keyof DB, T> implements Aliasable
      *
      * The generated SQL (PostgreSQL):
      *
-     * ```ts
+     * ```sql
      * select
      *   concat("first_name", $1, "last_name") as "full_name"
      * from
@@ -3351,7 +3353,7 @@ declare class ExpressionWrapper<DB, TB extends keyof DB, T> implements Aliasable
      *
      * The generated SQL (PostgreSQL):
      *
-     * ```ts
+     * ```sql
      * insert into "person" ("first_name", "last_name")
      * from (values (1, 'foo')) as t(a, b)
      * select "t"."a", "t"."b"
@@ -3376,7 +3378,7 @@ declare class ExpressionWrapper<DB, TB extends keyof DB, T> implements Aliasable
      *
      * The generated SQL (PostgreSQL):
      *
-     * ```ts
+     * ```sql
      * select *
      * from "person"
      * where (
@@ -3398,13 +3400,13 @@ declare class ExpressionWrapper<DB, TB extends keyof DB, T> implements Aliasable
      *       eb.selectFrom('pet')
      *         .select('id')
      *         .whereRef('pet.owner_id', '=', 'person.id')
-     *     )
+     *     ))
      *   )
      * ```
      *
      * The generated SQL (PostgreSQL):
      *
-     * ```ts
+     * ```sql
      * select *
      * from "person"
      * where (
@@ -3438,7 +3440,7 @@ declare class ExpressionWrapper<DB, TB extends keyof DB, T> implements Aliasable
      *
      * The generated SQL (PostgreSQL):
      *
-     * ```ts
+     * ```sql
      * select *
      * from "person"
      * where (
@@ -3460,13 +3462,13 @@ declare class ExpressionWrapper<DB, TB extends keyof DB, T> implements Aliasable
      *       eb.selectFrom('pet')
      *         .select('id')
      *         .whereRef('pet.owner_id', '=', 'person.id')
-     *     )
+     *     ))
      *   )
      * ```
      *
      * The generated SQL (PostgreSQL):
      *
-     * ```ts
+     * ```sql
      * select *
      * from "person"
      * where (
@@ -3576,7 +3578,7 @@ declare class OrWrapper<DB, TB extends keyof DB, T extends SqlBool> implements A
      *
      * The generated SQL (PostgreSQL):
      *
-     * ```ts
+     * ```sql
      * select "first_name" = $1 or "first_name" = $2 as "is_jennifer_or_sylvester"
      * from "person"
      * ```
@@ -3593,7 +3595,7 @@ declare class OrWrapper<DB, TB extends keyof DB, T extends SqlBool> implements A
      *   .selectFrom('person')
      *   .select((eb) =>
      *     // `eb.fn<string>` returns an AliasableExpression<string>
-     *     eb.fn<string>('concat', ['first_name' eb.val(' '), 'last_name']).as('full_name')
+     *     eb.fn<string>('concat', ['first_name', eb.val(' '), 'last_name']).as('full_name')
      *   )
      *   .executeTakeFirstOrThrow()
      *
@@ -3603,7 +3605,7 @@ declare class OrWrapper<DB, TB extends keyof DB, T extends SqlBool> implements A
      *
      * The generated SQL (PostgreSQL):
      *
-     * ```ts
+     * ```sql
      * select
      *   concat("first_name", $1, "last_name") as "full_name"
      * from
@@ -3632,7 +3634,7 @@ declare class OrWrapper<DB, TB extends keyof DB, T extends SqlBool> implements A
      *
      * The generated SQL (PostgreSQL):
      *
-     * ```ts
+     * ```sql
      * insert into "person" ("first_name", "last_name")
      * from (values (1, 'foo')) as t(a, b)
      * select "t"."a", "t"."b"
@@ -3712,7 +3714,7 @@ declare class AndWrapper<DB, TB extends keyof DB, T extends SqlBool> implements 
      *
      * The generated SQL (PostgreSQL):
      *
-     * ```ts
+     * ```sql
      * select "first_name" = $1 and "first_name" = $2 as "is_jennifer_aniston"
      * from "person"
      * ```
@@ -3729,7 +3731,7 @@ declare class AndWrapper<DB, TB extends keyof DB, T extends SqlBool> implements 
      *   .selectFrom('person')
      *   .select((eb) =>
      *     // `eb.fn<string>` returns an AliasableExpression<string>
-     *     eb.fn<string>('concat', ['first_name' eb.val(' '), 'last_name']).as('full_name')
+     *     eb.fn<string>('concat', ['first_name', eb.val(' '), 'last_name']).as('full_name')
      *   )
      *   .executeTakeFirstOrThrow()
      *
@@ -3739,7 +3741,7 @@ declare class AndWrapper<DB, TB extends keyof DB, T extends SqlBool> implements 
      *
      * The generated SQL (PostgreSQL):
      *
-     * ```ts
+     * ```sql
      * select
      *   concat("first_name", $1, "last_name") as "full_name"
      * from
@@ -3768,7 +3770,7 @@ declare class AndWrapper<DB, TB extends keyof DB, T extends SqlBool> implements 
      *
      * The generated SQL (PostgreSQL):
      *
-     * ```ts
+     * ```sql
      * insert into "person" ("first_name", "last_name")
      * from (values (1, 'foo')) as t(a, b)
      * select "t"."a", "t"."b"
@@ -4377,10 +4379,10 @@ interface SelectQueryBuilder<DB, TB extends keyof DB, O> extends WhereInterface<
      * // You can use `keyof Person` if any column of an interface is allowed.
      * type PossibleColumns = 'last_name' | 'first_name' | 'birth_date'
      *
-     * const spersons = await db
+     * const persons = await db
      *   .selectFrom('person')
      *   .select([
-     *     ref<PossibleColumns>(columnFromUserInput)
+     *     ref<PossibleColumns>(columnFromUserInput),
      *     'id'
      *   ])
      *   .execute()
@@ -5464,11 +5466,11 @@ interface SelectQueryBuilder<DB, TB extends keyof DB, O> extends WhereInterface<
      * the code. In the example above the return type of the `getPerson` function is:
      *
      * ```ts
-     * {
+     * Promise<{
      *   id: number
      *   first_name: string
      *   last_name?: string
-     * }
+     * }>
      * ```
      *
      * You can also call any other methods inside the callback:
@@ -5686,7 +5688,7 @@ interface SelectQueryBuilder<DB, TB extends keyof DB, O> extends WhereInterface<
      * ### Examples
      *
      * ```ts
-     * const stream = db.
+     * const stream = db
      *   .selectFrom('person')
      *   .select(['first_name', 'last_name'])
      *   .where('gender', '=', 'other')
@@ -6986,9 +6988,12 @@ declare class JSONPathBuilder<S, O = S> {
      * ### Examples
      *
      * ```ts
-     * db.selectFrom('person').select(eb =>
-     *   eb.ref('nicknames', '->').at(0).as('primary_nickname')
-     * )
+     * await db.selectFrom('person')
+     *   .select(eb =>
+     *     eb.ref('nicknames', '->').at(0).as('primary_nickname')
+     *   )
+     *   .execute()
+     * ```
      *
      * The generated SQL (PostgreSQL):
      *
@@ -7131,7 +7136,7 @@ declare class TraversedJSONPathBuilder<S, O> extends JSONPathBuilder<S, O> imple
      *
      * The generated SQL (PostgreSQL):
      *
-     * ```ts
+     * ```sql
      * select "first_name" = $1 as "is_jennifer"
      * from "person"
      * ```
@@ -7148,7 +7153,7 @@ declare class TraversedJSONPathBuilder<S, O> extends JSONPathBuilder<S, O> imple
      *   .selectFrom('person')
      *   .select((eb) =>
      *     // `eb.fn<string>` returns an AliasableExpression<string>
-     *     eb.fn<string>('concat', ['first_name' eb.val(' '), 'last_name']).as('full_name')
+     *     eb.fn<string>('concat', ['first_name', eb.val(' '), 'last_name']).as('full_name')
      *   )
      *   .executeTakeFirstOrThrow()
      *
@@ -7158,7 +7163,7 @@ declare class TraversedJSONPathBuilder<S, O> extends JSONPathBuilder<S, O> imple
      *
      * The generated SQL (PostgreSQL):
      *
-     * ```ts
+     * ```sql
      * select
      *   concat("first_name", $1, "last_name") as "full_name"
      * from
@@ -7187,7 +7192,7 @@ declare class TraversedJSONPathBuilder<S, O> extends JSONPathBuilder<S, O> imple
      *
      * The generated SQL (PostgreSQL):
      *
-     * ```ts
+     * ```sql
      * insert into "person" ("first_name", "last_name")
      * from (values (1, 'foo')) as t(a, b)
      * select "t"."a", "t"."b"
@@ -8026,7 +8031,7 @@ interface ExpressionBuilder<DB, TB extends keyof DB> {
      * ```ts
      * db.selectFrom('person')
      *   .selectAll('person')
-     *   .where((eb) => eb(eb.parens('age', '+', 1), '/', 100), '<', 0.1))
+     *   .where((eb) => eb(eb.parens('age', '+', 1), '/', 100), '<', 0.1)
      * ```
      *
      * The generated SQL (PostgreSQL):
@@ -8046,7 +8051,7 @@ interface ExpressionBuilder<DB, TB extends keyof DB> {
      *     eb('age', '=', 1).or('age', '=', 2))
      *   ).and(
      *     eb('first_name', '=', 'Jennifer').or('first_name', '=', 'Arnold')
-     *   ))
+     *   )
      * ```
      *
      * The generated SQL (PostgreSQL):
@@ -8571,7 +8576,7 @@ declare class CreateTableBuilder<TB extends string, C extends string = never> im
      *
      * await db.schema
      *   .createTable('person')
-     *   .addColumn('id', 'integer', (col) => col.autoIncrement().primaryKey()),
+     *   .addColumn('id', 'integer', (col) => col.autoIncrement().primaryKey())
      *   .addColumn('first_name', 'varchar(50)', (col) => col.notNull())
      *   .addColumn('last_name', 'varchar(255)')
      *   .addColumn('bank_balance', 'numeric(8, 2)')
@@ -8579,7 +8584,7 @@ declare class CreateTableBuilder<TB extends string, C extends string = never> im
      *   // don't include it.
      *   .addColumn('data', sql`any_type_here`)
      *   .addColumn('parent_id', 'integer', (col) =>
-     *     col.references('person.id').onDelete('cascade'))
+     *     col.references('person.id').onDelete('cascade')
      *   )
      * ```
      *
@@ -8590,11 +8595,14 @@ declare class CreateTableBuilder<TB extends string, C extends string = never> im
      * `create table` query. See the next example:
      *
      * ```ts
+     * await db.schema
+     *   .createTable('person')
      *   .addColumn('parent_id', 'integer')
      *   .addForeignKeyConstraint(
      *     'person_parent_id_fk', ['parent_id'], 'person', ['id'],
      *     (cb) => cb.onDelete('cascade')
      *   )
+     *   .execute()
      * ```
      *
      * Another good example is that PostgreSQL doesn't support the `auto_increment`
@@ -8604,7 +8612,8 @@ declare class CreateTableBuilder<TB extends string, C extends string = never> im
      * ```ts
      * await db.schema
      *   .createTable('person')
-     *   .addColumn('id', 'serial', (col) => col.primaryKey()),
+     *   .addColumn('id', 'serial', (col) => col.primaryKey())
+     *   .execute()
      * ```
      */
     addColumn<CN extends string>(columnName: CN, dataType: DataTypeExpression, build?: ColumnBuilderCallback): CreateTableBuilder<TB, C | CN>;
@@ -8692,11 +8701,11 @@ declare class CreateTableBuilder<TB extends string, C extends string = never> im
      * ### Examples
      *
      * ```ts
-     * db.schema.createTable('person')
+     * await db.schema.createTable('person')
      *   .modifyFront(sql`global temporary`)
      *   .addColumn('id', 'integer', col => col.primaryKey())
      *   .addColumn('first_name', 'varchar(64)', col => col.notNull())
-     *   .addColumn('last_name', 'varchar(64), col => col.notNull())
+     *   .addColumn('last_name', 'varchar(64)', col => col.notNull())
      *   .execute()
      * ```
      *
@@ -8719,10 +8728,10 @@ declare class CreateTableBuilder<TB extends string, C extends string = never> im
      * ### Examples
      *
      * ```ts
-     * db.schema.createTable('person')
+     * await db.schema.createTable('person')
      *   .addColumn('id', 'integer', col => col => primaryKey())
      *   .addColumn('first_name', 'varchar(64)', col => col.notNull())
-     *   .addColumn('last_name', 'varchar(64), col => col.notNull())
+     *   .addColumn('last_name', 'varchar(64)', col => col.notNull())
      *   .modifyEnd(sql`collate utf8_unicode_ci`)
      *   .execute()
      * ```
@@ -8904,7 +8913,7 @@ interface RawBuilder<O> extends AliasableExpression<O> {
      *
      * The generated SQL (PostgreSQL):
      *
-     * ```ts
+     * ```sql
      * select concat(first_name, ' ', last_name) as "full_name"
      * from "person"
      * ```
@@ -8931,7 +8940,7 @@ interface RawBuilder<O> extends AliasableExpression<O> {
      *
      * The generated SQL (PostgreSQL):
      *
-     * ```ts
+     * ```sql
      * insert into "person" ("first_name", "last_name")
      * from (values (1, 'foo')) as t(a, b)
      * select "t"."a", "t"."b"
@@ -8949,7 +8958,7 @@ interface RawBuilder<O> extends AliasableExpression<O> {
      *   .selectFrom('person')
      *   .select((eb) =>
      *     // `eb.fn<string>` returns an AliasableExpression<string>
-     *     eb.fn<string>('concat', ['first_name' eb.val(' '), 'last_name']).as('full_name')
+     *     eb.fn<string>('concat', ['first_name', eb.val(' '), 'last_name']).as('full_name')
      *   )
      *   .executeTakeFirstOrThrow()
      *
@@ -8959,7 +8968,7 @@ interface RawBuilder<O> extends AliasableExpression<O> {
      *
      * The generated SQL (PostgreSQL):
      *
-     * ```ts
+     * ```sql
      * select
      *   concat("first_name", $1, "last_name") as "full_name"
      * from
@@ -8988,7 +8997,7 @@ interface RawBuilder<O> extends AliasableExpression<O> {
      *
      * The generated SQL (PostgreSQL):
      *
-     * ```ts
+     * ```sql
      * insert into "person" ("first_name", "last_name")
      * from (values (1, 'foo')) as t(a, b)
      * select "t"."a", "t"."b"
@@ -10437,9 +10446,9 @@ interface OutputInterface<DB, TB extends keyof DB, O, OP extends OutputPrefix = 
      *
      * const { id, full_name } = await db
      *   .deleteFrom('person')
-     *   .output((eb) => sql<string>`concat(${eb.ref('deleted.first_name')}, ' ', ${eb.ref('deleted.last_name')})`.as('full_name')
+     *   .output((eb) => sql<string>`concat(${eb.ref('deleted.first_name')}, ' ', ${eb.ref('deleted.last_name')})`.as('full_name'))
      *   .where('created_at', '<', new Date())
-     *   .executeTakeFirst()
+     *   .executeTakeFirstOrThrow()
      * ```
      *
      * Return the action performed on the row:
@@ -10895,7 +10904,7 @@ declare class InsertQueryBuilder<DB, TB extends keyof DB, O> implements Returnin
      *   .onConflict((oc) => oc
      *     .column('name')
      *     .doUpdateSet({ species: 'hamster' })
-     *     .where('excluded.name', '!=', 'Catto'')
+     *     .where('excluded.name', '!=', 'Catto')
      *   )
      *   .execute()
      * ```
@@ -11085,9 +11094,9 @@ declare class InsertQueryBuilder<DB, TB extends keyof DB, O> implements Returnin
      *
      * const { id, full_name } = await db
      *   .deleteFrom('person')
-     *   .output((eb) => sql<string>`concat(${eb.ref('deleted.first_name')}, ' ', ${eb.ref('deleted.last_name')})`.as('full_name')
+     *   .output((eb) => sql<string>`concat(${eb.ref('deleted.first_name')}, ' ', ${eb.ref('deleted.last_name')})`.as('full_name'))
      *   .where('created_at', '<', new Date())
-     *   .executeTakeFirst()
+     *   .executeTakeFirstOrThrow()
      * ```
      *
      * Return the action performed on the row:
@@ -11191,11 +11200,11 @@ declare class InsertQueryBuilder<DB, TB extends keyof DB, O> implements Returnin
      * the code. In the example above the return type of the `insertPerson` function is:
      *
      * ```ts
-     * {
+     * Promise<{
      *   id: number
      *   first_name: string
      *   last_name?: string
-     * }
+     * }>
      * ```
      */
     $if<O2>(condition: boolean, func: (qb: this) => InsertQueryBuilder<any, any, O2>): O2 extends InsertResult ? InsertQueryBuilder<DB, TB, InsertResult> : O2 extends O & infer E ? InsertQueryBuilder<DB, TB, O & Partial<E>> : InsertQueryBuilder<DB, TB, Partial<O2>>;
@@ -11324,7 +11333,7 @@ declare class InsertQueryBuilder<DB, TB extends keyof DB, O> implements Returnin
      * ### Examples
      *
      * ```ts
-     * const stream = db.
+     * const stream = db
      *   .selectFrom('person')
      *   .select(['first_name', 'last_name'])
      *   .where('gender', '=', 'other')
@@ -12211,9 +12220,9 @@ declare class DeleteQueryBuilder<DB, TB extends keyof DB, O> implements WhereInt
      *
      * const { id, full_name } = await db
      *   .deleteFrom('person')
-     *   .output((eb) => sql<string>`concat(${eb.ref('deleted.first_name')}, ' ', ${eb.ref('deleted.last_name')})`.as('full_name')
+     *   .output((eb) => sql<string>`concat(${eb.ref('deleted.first_name')}, ' ', ${eb.ref('deleted.last_name')})`.as('full_name'))
      *   .where('created_at', '<', new Date())
-     *   .executeTakeFirst()
+     *   .executeTakeFirstOrThrow()
      * ```
      *
      * Return the action performed on the row:
@@ -12430,11 +12439,11 @@ declare class DeleteQueryBuilder<DB, TB extends keyof DB, O> implements WhereInt
      * the code. In the example above the return type of the `deletePerson` function is:
      *
      * ```ts
-     * {
+     * Promise<{
      *   id: number
      *   first_name: string
      *   last_name?: string
-     * }
+     * }>
      * ```
      */
     $if<O2>(condition: boolean, func: (qb: this) => DeleteQueryBuilder<any, any, O2>): O2 extends DeleteResult ? DeleteQueryBuilder<DB, TB, DeleteResult> : O2 extends O & infer E ? DeleteQueryBuilder<DB, TB, O & Partial<E>> : DeleteQueryBuilder<DB, TB, Partial<O2>>;
@@ -12564,7 +12573,7 @@ declare class DeleteQueryBuilder<DB, TB extends keyof DB, O> implements WhereInt
      * ### Examples
      *
      * ```ts
-     * const stream = db.
+     * const stream = db
      *   .selectFrom('person')
      *   .select(['first_name', 'last_name'])
      *   .where('gender', '=', 'other')
@@ -13315,7 +13324,7 @@ declare class UpdateQueryBuilder<DB, UT extends keyof DB, TB extends keyof DB, O
      *   .set('first_name', 'Foo')
      *   // As always, both arguments can be arbitrary expressions or
      *   // callbacks that give you access to an expression builder:
-     *   .set(sql<string>`address['postalCode']`, (eb) => eb.val('61710))
+     *   .set(sql<string>`address['postalCode']`, (eb) => eb.val('61710'))
      *   .where('id', '=', '1')
      *   .executeTakeFirst()
      * ```
@@ -13494,9 +13503,9 @@ declare class UpdateQueryBuilder<DB, UT extends keyof DB, TB extends keyof DB, O
      *
      * const { id, full_name } = await db
      *   .deleteFrom('person')
-     *   .output((eb) => sql<string>`concat(${eb.ref('deleted.first_name')}, ' ', ${eb.ref('deleted.last_name')})`.as('full_name')
+     *   .output((eb) => sql<string>`concat(${eb.ref('deleted.first_name')}, ' ', ${eb.ref('deleted.last_name')})`.as('full_name'))
      *   .where('created_at', '<', new Date())
-     *   .executeTakeFirst()
+     *   .executeTakeFirstOrThrow()
      * ```
      *
      * Return the action performed on the row:
@@ -13624,11 +13633,11 @@ declare class UpdateQueryBuilder<DB, UT extends keyof DB, TB extends keyof DB, O
      * the code. In the example above the return type of the `updatePerson` function is:
      *
      * ```ts
-     * {
+     * Promise<{
      *   id: number
      *   first_name: string
      *   last_name?: string
-     * }
+     * }>
      * ```
      */
     $if<O2>(condition: boolean, func: (qb: this) => UpdateQueryBuilder<any, any, any, O2>): O2 extends UpdateResult ? UpdateQueryBuilder<DB, UT, TB, UpdateResult> : O2 extends O & infer E ? UpdateQueryBuilder<DB, UT, TB, O & Partial<E>> : UpdateQueryBuilder<DB, UT, TB, Partial<O2>>;
@@ -13763,7 +13772,7 @@ declare class UpdateQueryBuilder<DB, UT extends keyof DB, TB extends keyof DB, O
      * ### Examples
      *
      * ```ts
-     * const stream = db.
+     * const stream = db
      *   .selectFrom('person')
      *   .select(['first_name', 'last_name'])
      *   .where('gender', '=', 'other')
@@ -14044,9 +14053,9 @@ declare class MergeQueryBuilder<DB, TT extends keyof DB, O> implements OutputInt
      *
      * const { id, full_name } = await db
      *   .deleteFrom('person')
-     *   .output((eb) => sql<string>`concat(${eb.ref('deleted.first_name')}, ' ', ${eb.ref('deleted.last_name')})`.as('full_name')
+     *   .output((eb) => sql<string>`concat(${eb.ref('deleted.first_name')}, ' ', ${eb.ref('deleted.last_name')})`.as('full_name'))
      *   .where('created_at', '<', new Date())
-     *   .executeTakeFirst()
+     *   .executeTakeFirstOrThrow()
      * ```
      *
      * Return the action performed on the row:
@@ -14326,9 +14335,9 @@ declare class WheneableMergeQueryBuilder<DB, TT extends keyof DB, ST extends key
      *
      * const { id, full_name } = await db
      *   .deleteFrom('person')
-     *   .output((eb) => sql<string>`concat(${eb.ref('deleted.first_name')}, ' ', ${eb.ref('deleted.last_name')})`.as('full_name')
+     *   .output((eb) => sql<string>`concat(${eb.ref('deleted.first_name')}, ' ', ${eb.ref('deleted.last_name')})`.as('full_name'))
      *   .where('created_at', '<', new Date())
-     *   .executeTakeFirst()
+     *   .executeTakeFirstOrThrow()
      * ```
      *
      * Return the action performed on the row:
@@ -14414,11 +14423,11 @@ declare class WheneableMergeQueryBuilder<DB, TT extends keyof DB, ST extends key
      * the code. In the example above the return type of the `updatePerson` function is:
      *
      * ```ts
-     * {
+     * Promise<{
      *   id: number
      *   first_name: string
      *   last_name?: string
-     * }
+     * }>
      * ```
      */
     $if<O2>(condition: boolean, func: (qb: this) => WheneableMergeQueryBuilder<any, any, any, O2>): O2 extends MergeResult ? WheneableMergeQueryBuilder<DB, TT, ST, MergeResult> : O2 extends O & infer E ? WheneableMergeQueryBuilder<DB, TT, ST, O & Partial<E>> : WheneableMergeQueryBuilder<DB, TT, ST, Partial<O2>>;
