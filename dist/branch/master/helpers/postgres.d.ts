@@ -1,4 +1,4 @@
-import { bI as Expression, R as RawBuilder, aZ as Simplify } from '../kysely.d-TRAO1JWP.js';
+import { bI as Expression, R as RawBuilder, aZ as Simplify } from '../kysely.d-G0axPfSW.js';
 
 /**
  * A postgres helper for aggregating a subquery (or other expression) into a JSONB array.
@@ -113,6 +113,9 @@ declare function jsonObjectFrom<O>(expr: Expression<O>): RawBuilder<Simplify<O> 
  * ### Examples
  *
  * ```ts
+ * import { sql } from 'kysely'
+ * import { jsonBuildObject } from 'kysely/helpers/postgres'
+ *
  * const result = await db
  *   .selectFrom('person')
  *   .select((eb) => [
@@ -125,10 +128,10 @@ declare function jsonObjectFrom<O>(expr: Expression<O>): RawBuilder<Simplify<O> 
  *   ])
  *   .execute()
  *
- * result[0].id
- * result[0].name.first
- * result[0].name.last
- * result[0].name.full
+ * result[0]?.id
+ * result[0]?.name.first
+ * result[0]?.name.last
+ * result[0]?.name.full
  * ```
  *
  * The generated SQL (PostgreSQL):

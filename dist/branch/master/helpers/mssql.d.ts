@@ -1,4 +1,4 @@
-import { bI as Expression, R as RawBuilder, aZ as Simplify } from '../kysely.d-TRAO1JWP.js';
+import { bI as Expression, R as RawBuilder, aZ as Simplify } from '../kysely.d-G0axPfSW.js';
 
 /**
  * An MS SQL Server helper for aggregating a subquery into a JSON array.
@@ -9,8 +9,26 @@ import { bI as Expression, R as RawBuilder, aZ as Simplify } from '../kysely.d-T
  * The plugin can be installed like this:
  *
  * ```ts
- * const db = new Kysely({
- *   dialect: new MssqlDialect(config),
+ * import { Kysely, MssqlDialect, ParseJSONResultsPlugin } from 'kysely'
+ * import * as Tarn from 'tarn'
+ * import * as Tedious from 'tedious'
+ * import type { Database } from 'type-editor' // imaginary module
+ *
+ * const db = new Kysely<Database>({
+ *   dialect: new MssqlDialect({
+ *     tarn: { options: { max: 10, min: 0 }, ...Tarn },
+ *     tedious: {
+ *       ...Tedious,
+ *       connectionFactory: () => new Tedious.Connection({
+ *         authentication: {
+ *           options: { password: 'password', userName: 'sa' },
+ *           type: 'default',
+ *         },
+ *         options: { database: 'test', port: 21433, trustServerCertificate: true },
+ *         server: 'localhost',
+ *       }),
+ *     },
+ *   }),
  *   plugins: [new ParseJSONResultsPlugin()]
  * })
  * ```
@@ -18,6 +36,8 @@ import { bI as Expression, R as RawBuilder, aZ as Simplify } from '../kysely.d-T
  * ### Examples
  *
  * ```ts
+ * import { jsonArrayFrom } from 'kysely/helpers/mssql'
+ *
  * const result = await db
  *   .selectFrom('person')
  *   .select((eb) => [
@@ -27,14 +47,14 @@ import { bI as Expression, R as RawBuilder, aZ as Simplify } from '../kysely.d-T
  *         .select(['pet.id as pet_id', 'pet.name'])
  *         .whereRef('pet.owner_id', '=', 'person.id')
  *         .orderBy('pet.name')
- *         .modifyEnd(sql`offset 0 rows`)
+ *         .offset(0)
  *     ).as('pets')
  *   ])
  *   .execute()
  *
- * result[0].id
- * result[0].pets[0].pet_id
- * result[0].pets[0].name
+ * result[0]?.id
+ * result[0]?.pets[0]?.pet_id
+ * result[0]?.pets[0]?.name
  * ```
  *
  * The generated SQL (MS SQL Server):
@@ -46,7 +66,7 @@ import { bI as Expression, R as RawBuilder, aZ as Simplify } from '../kysely.d-T
  *     from "pet"
  *     where "pet"."owner_id" = "person"."id"
  *     order by "pet"."name"
- *     offset 0 rows
+ *     offset @1 rows
  *   ) as "agg" for json path, include_null_values), '[]')
  * ) as "pets"
  * from "person"
@@ -64,8 +84,26 @@ declare function jsonArrayFrom<O>(expr: Expression<O>): RawBuilder<Simplify<O>[]
  * The plugin can be installed like this:
  *
  * ```ts
- * const db = new Kysely({
- *   dialect: new MssqlDialect(config),
+ * import { Kysely, MssqlDialect, ParseJSONResultsPlugin } from 'kysely'
+ * import * as Tarn from 'tarn'
+ * import * as Tedious from 'tedious'
+ * import type { Database } from 'type-editor' // imaginary module
+ *
+ * const db = new Kysely<Database>({
+ *   dialect: new MssqlDialect({
+ *     tarn: { options: { max: 10, min: 0 }, ...Tarn },
+ *     tedious: {
+ *       ...Tedious,
+ *       connectionFactory: () => new Tedious.Connection({
+ *         authentication: {
+ *           options: { password: 'password', userName: 'sa' },
+ *           type: 'default',
+ *         },
+ *         options: { database: 'test', port: 21433, trustServerCertificate: true },
+ *         server: 'localhost',
+ *       }),
+ *     },
+ *   }),
  *   plugins: [new ParseJSONResultsPlugin()]
  * })
  * ```
@@ -73,6 +111,8 @@ declare function jsonArrayFrom<O>(expr: Expression<O>): RawBuilder<Simplify<O>[]
  * ### Examples
  *
  * ```ts
+ * import { jsonObjectFrom } from 'kysely/helpers/mssql'
+ *
  * const result = await db
  *   .selectFrom('person')
  *   .select((eb) => [
@@ -86,9 +126,9 @@ declare function jsonArrayFrom<O>(expr: Expression<O>): RawBuilder<Simplify<O>[]
  *   ])
  *   .execute()
  *
- * result[0].id
- * result[0].favorite_pet.pet_id
- * result[0].favorite_pet.name
+ * result[0]?.id
+ * result[0]?.favorite_pet?.pet_id
+ * result[0]?.favorite_pet?.name
  * ```
  *
  * The generated SQL (MS SQL Server):
@@ -115,8 +155,26 @@ declare function jsonObjectFrom<O>(expr: Expression<O>): RawBuilder<Simplify<O> 
  * The plugin can be installed like this:
  *
  * ```ts
- * const db = new Kysely({
- *   dialect: new MssqlDialect(config),
+ * import { Kysely, MssqlDialect, ParseJSONResultsPlugin } from 'kysely'
+ * import * as Tarn from 'tarn'
+ * import * as Tedious from 'tedious'
+ * import type { Database } from 'type-editor' // imaginary module
+ *
+ * const db = new Kysely<Database>({
+ *   dialect: new MssqlDialect({
+ *     tarn: { options: { max: 10, min: 0 }, ...Tarn },
+ *     tedious: {
+ *       ...Tedious,
+ *       connectionFactory: () => new Tedious.Connection({
+ *         authentication: {
+ *           options: { password: 'password', userName: 'sa' },
+ *           type: 'default',
+ *         },
+ *         options: { database: 'test', port: 21433, trustServerCertificate: true },
+ *         server: 'localhost',
+ *       }),
+ *     },
+ *   }),
  *   plugins: [new ParseJSONResultsPlugin()]
  * })
  * ```
@@ -124,6 +182,8 @@ declare function jsonObjectFrom<O>(expr: Expression<O>): RawBuilder<Simplify<O> 
  * ### Examples
  *
  * ```ts
+ * import { jsonBuildObject } from 'kysely/helpers/mssql'
+ *
  * const result = await db
  *   .selectFrom('person')
  *   .select((eb) => [

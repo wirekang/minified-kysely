@@ -1,5 +1,5 @@
-import { O as OperationNode, V as ValueListNode, P as PrimitiveValueListNode, R as RawBuilder, Q as QueryExecutor, K as KyselyPlugin, D as DialectAdapter, a as RootOperationNode, b as QueryId, C as CompiledQuery, c as DatabaseConnection, d as QueryResult, e as ConnectionProvider, f as QueryCompiler, S as SelectQueryNode, g as SelectionNode, h as ColumnNode, A as AliasNode, T as TableNode, F as FromNode, i as ReferenceNode, j as AndNode, k as OrNode, l as ParensNode, J as JoinNode, m as RawNode, W as WhereNode, I as InsertQueryNode, n as DeleteQueryNode, o as ReturningNode, p as CreateTableNode, q as AddColumnNode, r as ColumnDefinitionNode, s as DropTableNode, t as OrderByNode, u as OrderByItemNode, G as GroupByNode, v as GroupByItemNode, U as UpdateQueryNode, w as ColumnUpdateNode, L as LimitNode, x as OffsetNode, y as OnConflictNode, z as OnDuplicateKeyNode, B as CreateIndexNode, E as DropIndexNode, H as PrimaryKeyConstraintNode, M as UniqueConstraintNode, N as ReferencesNode, X as CheckConstraintNode, Y as WithNode, Z as CommonTableExpressionNode, _ as CommonTableExpressionNameNode, $ as HavingNode, a0 as CreateSchemaNode, a1 as DropSchemaNode, a2 as AlterTableNode, a3 as DropColumnNode, a4 as RenameColumnNode, a5 as AlterColumnNode, a6 as ModifyColumnNode, a7 as AddConstraintNode, a8 as DropConstraintNode, a9 as ForeignKeyConstraintNode, aa as DataTypeNode, ab as SelectAllNode, ac as IdentifierNode, ad as SchemableIdentifierNode, ae as ValueNode, af as OperatorNode, ag as CreateViewNode, ah as DropViewNode, ai as GeneratedNode, aj as DefaultValueNode, ak as OnNode, al as SelectModifierNode, am as CreateTypeNode, an as DropTypeNode, ao as ExplainNode, ap as AggregateFunctionNode, aq as OverNode, ar as PartitionByNode, as as PartitionByItemNode, at as SetOperationNode, au as UsingNode, av as CaseNode, aw as WhenNode, ax as JSONReferenceNode, ay as JSONPathNode, az as JSONPathLegNode, aA as JSONOperatorChainNode, aB as MergeQueryNode, aC as AddIndexNode, aD as FetchNode, aE as TopNode, aF as OutputNode, aG as AlterTableColumnAlterationNode, aH as Driver, aI as Kysely, aJ as MigrationLockOptions, aK as Dialect, aL as DatabaseIntrospector, aM as SchemaMetadata, aN as DatabaseMetadataOptions, aO as TableMetadata, aP as DatabaseMetadata, aQ as TransactionSettings, aR as PluginTransformQueryArgs, aS as PluginTransformResultArgs, aT as UnknownRow, aU as Compilable, aV as InsertResult, aW as UpdateResult, aX as DeleteResult, aY as MergeResult, aZ as Simplify, a_ as ExpressionOrFactory } from './kysely.d-TRAO1JWP.js';
-export { e1 as ARITHMETIC_OPERATORS, dv as AddIndexNodeProps, cy as AggregateFunctionBuilder, cA as AggregateFunctionBuilderProps, bJ as AliasableExpression, cz as AliasedAggregateFunctionBuilder, bK as AliasedExpression, bO as AliasedExpressionWrapper, cI as AliasedJSONPathBuilder, cR as AliasedRawBuilder, c2 as AliasedSelectQueryBuilder, dn as AlterColumnBuilder, dq as AlterColumnBuilderCallback, dw as AlterColumnNodeProps, de as AlterTableBuilder, df as AlterTableBuilderProps, dh as AlterTableColumnAlteringBuilder, di as AlterTableColumnAlteringBuilderProps, dx as AlterTableNodeTableProps, dp as AlteredColumnBuilder, bQ as AndWrapper, b1 as AnyAliasedColumn, b2 as AnyAliasedColumnWithTable, b3 as AnyColumn, b4 as AnyColumnWithTable, e8 as ArithmeticOperator, e3 as BINARY_OPERATORS, eb as BinaryOperator, e0 as COMPARISON_OPERATORS, bd as CallbackSelection, cC as CaseBuilder, cF as CaseEndBuilder, cD as CaseThenBuilder, cE as CaseWhenBuilder, dg as ColumnAlteringInterface, cW as ColumnBuilderCallback, dI as ColumnDataType, da as ColumnDefinitionBuilder, db as ColumnDefinitionBuilderCallback, dy as ColumnDefinitionNodeProps, du as ColumnMetadata, ev as ColumnType, e7 as ComparisonOperator, bv as ComparisonOperatorExpression, bE as ConnectionBuilder, dz as ConstraintNode, d2 as CreateIndexBuilder, d3 as CreateIndexBuilderProps, dA as CreateIndexNodeProps, d6 as CreateSchemaBuilder, d7 as CreateSchemaBuilderProps, dC as CreateSchemaNodeParams, cU as CreateTableBuilder, cV as CreateTableBuilderProps, dF as CreateTableNodeParams, cY as CreateTypeBuilder, cZ as CreateTypeBuilderProps, dG as CreateTypeNodeParams, dj as CreateViewBuilder, dk as CreateViewBuilderProps, dH as CreateViewNodeParams, dJ as DataTypeParams, cf as DeleteQueryBuilder, cg as DeleteQueryBuilderProps, ck as DeleteQueryBuilderWithFullJoin, ch as DeleteQueryBuilderWithInnerJoin, ci as DeleteQueryBuilderWithLeftJoin, cj as DeleteQueryBuilderWithRightJoin, dL as DropConstraintNodeProps, d4 as DropIndexBuilder, d5 as DropIndexBuilderProps, dM as DropIndexNodeProps, d8 as DropSchemaBuilder, d9 as DropSchemaBuilderProps, dN as DropSchemaNodeParams, c_ as DropTableBuilder, c$ as DropTableBuilderProps, dO as DropTablexNodeParams, d0 as DropTypeBuilder, d1 as DropTypeBuilderProps, dP as DropTypeNodeParams, dl as DropViewBuilder, dm as DropViewBuilderProps, dQ as DropViewNodeParams, dr as DynamicModule, b5 as Equals, eP as ErrorLogEvent, eJ as ExplainFormat, eK as Explainable, bI as Expression, a$ as ExpressionBuilder, bN as ExpressionWrapper, bj as ExtractTypeFromReferenceExpression, bi as ExtractTypeFromStringReference, cO as ExtractWheneableMergeQueryBuilder, dR as FetchModifier, by as FilterObject, dd as ForeignKeyConstraintBuilder, cX as ForeignKeyConstraintBuilderCallback, dc as ForeignKeyConstraintBuilderInterface, dS as ForeignKeyConstraintNodeProps, cq as FunctionModule, ew as Generated, ex as GeneratedAlways, dT as GeneratedNodeParams, b_ as HavingInterface, dB as IndexType, br as InsertObject, c7 as InsertQueryBuilder, c8 as InsertQueryBuilderProps, dU as InsertQueryNodeProps, eA as InsertType, eG as Insertable, dt as IsolationLevel, ey as JSONColumnType, e9 as JSONOperator, ea as JSONOperatorWith$, cG as JSONPathBuilder, dW as JSONPathLegType, e2 as JSON_OPERATORS, co as JoinBuilder, cp as JoinBuilderProps, bq as JoinCallbackExpression, bp as JoinReferenceExpression, dV as JoinType, bD as KyselyConfig, bB as KyselyProps, eM as LOG_LEVELS, eT as Log, eS as LogConfig, eQ as LogEvent, eN as LogLevel, eR as Logger, cM as MatchedThenableMergeQueryBuilder, cJ as MergeQueryBuilder, cK as MergeQueryBuilderProps, cm as NoResultError, cl as NoResultErrorConstructor, eD as NonNullableInsertKeys, cN as NotMatchedThenableMergeQueryBuilder, b8 as NotNull, b7 as Nullable, eC as NullableInsertKeys, dD as ON_COMMIT_ACTIONS, em as ON_MODIFY_FOREIGN_ACTIONS, e6 as OPERATORS, dE as OnCommitAction, cs as OnConflictBuilder, ct as OnConflictBuilderProps, cu as OnConflictDatabase, cw as OnConflictDoNothingBuilder, dX as OnConflictNodeProps, cv as OnConflictTables, cx as OnConflictUpdateBuilder, dY as OnDuplicateKeyNodeProps, en as OnModifyForeignAction, bz as OperandExpression, bw as OperandValueExpression, bx as OperandValueExpressionOrList, d$ as OperationNodeKind, dZ as OperationNodeSource, ee as Operator, bP as OrWrapper, bu as OrderByDirectionExpression, bt as OrderByExpression, bX as OutputCallback, bV as OutputDatabase, bW as OutputExpression, bT as OutputInterface, bU as OutputPrefix, cB as OverBuilderCallback, ek as PrimaryConstraintNode, bG as QueryCreator, bH as QueryCreatorProps, cS as QueryExecutorProvider, eO as QueryLogEvent, el as QueryNode, cP as RawBuilderProps, be as ReferenceExpression, bf as ReferenceExpressionOrList, bS as ReturningInterface, cT as SchemaModule, bb as SelectArg, ba as SelectCallback, b9 as SelectExpression, bZ as SelectExpressionFromOutputCallback, bY as SelectExpressionFromOutputExpression, eo as SelectModifier, b$ as SelectQueryBuilder, c1 as SelectQueryBuilderProps, c6 as SelectQueryBuilderWithFullJoin, c3 as SelectQueryBuilderWithInnerJoin, c4 as SelectQueryBuilderWithLeftJoin, c5 as SelectQueryBuilderWithRightJoin, ez as SelectType, eF as Selectable, bc as Selection, ep as SetOperator, bg as SimpleReferenceExpression, eq as SimpleReferenceExpressionNode, bm as SimpleTableReference, b6 as SqlBool, eL as Streamable, bh as StringReference, ds as TRANSACTION_ISOLATION_LEVELS, bn as TableExpression, bo as TableExpressionOrList, er as TopModifier, bA as Transaction, bF as TransactionBuilder, cH as TraversedJSONPathBuilder, e4 as UNARY_FILTER_OPERATORS, e5 as UNARY_OPERATORS, ed as UnaryFilterOperator, ec as UnaryOperator, es as UniqueConstraintNodeProps, eE as UpdateKeys, bs as UpdateObject, c9 as UpdateQueryBuilder, ca as UpdateQueryBuilderProps, ce as UpdateQueryBuilderWithFullJoin, cb as UpdateQueryBuilderWithInnerJoin, cc as UpdateQueryBuilderWithLeftJoin, cd as UpdateQueryBuilderWithRightJoin, eB as UpdateType, et as UpdateValuesNode, eH as Updateable, bk as ValueExpression, bl as ValueExpressionOrList, cL as WheneableMergeQueryBuilder, bR as WhereInterface, eu as WithNodeParams, cr as createFunctionModule, cQ as createRawBuilder, c0 as createSelectQueryBuilder, b0 as expressionBuilder, bM as isAliasedExpression, ei as isArithmeticOperator, eg as isBinaryOperator, dK as isColumnDataType, eh as isComparisonOperator, eI as isCompilable, bL as isExpression, ej as isJSONOperator, bC as isKyselyProps, cn as isNoResultErrorConstructor, d_ as isOperationNodeSource, ef as isOperator } from './kysely.d-TRAO1JWP.js';
+import { O as OperationNode, V as ValueListNode, P as PrimitiveValueListNode, R as RawBuilder, Q as QueryExecutor, K as KyselyPlugin, D as DialectAdapter, a as RootOperationNode, b as QueryId, C as CompiledQuery, c as DatabaseConnection, d as QueryResult, e as ConnectionProvider, f as QueryCompiler, S as SelectQueryNode, g as SelectionNode, h as ColumnNode, A as AliasNode, T as TableNode, F as FromNode, i as ReferenceNode, j as AndNode, k as OrNode, l as ParensNode, J as JoinNode, m as RawNode, W as WhereNode, I as InsertQueryNode, n as DeleteQueryNode, o as ReturningNode, p as CreateTableNode, q as AddColumnNode, r as ColumnDefinitionNode, s as DropTableNode, t as OrderByNode, u as OrderByItemNode, G as GroupByNode, v as GroupByItemNode, U as UpdateQueryNode, w as ColumnUpdateNode, L as LimitNode, x as OffsetNode, y as OnConflictNode, z as OnDuplicateKeyNode, B as CreateIndexNode, E as DropIndexNode, H as PrimaryKeyConstraintNode, M as UniqueConstraintNode, N as ReferencesNode, X as CheckConstraintNode, Y as WithNode, Z as CommonTableExpressionNode, _ as CommonTableExpressionNameNode, $ as HavingNode, a0 as CreateSchemaNode, a1 as DropSchemaNode, a2 as AlterTableNode, a3 as DropColumnNode, a4 as RenameColumnNode, a5 as AlterColumnNode, a6 as ModifyColumnNode, a7 as AddConstraintNode, a8 as DropConstraintNode, a9 as ForeignKeyConstraintNode, aa as DataTypeNode, ab as SelectAllNode, ac as IdentifierNode, ad as SchemableIdentifierNode, ae as ValueNode, af as OperatorNode, ag as CreateViewNode, ah as DropViewNode, ai as GeneratedNode, aj as DefaultValueNode, ak as OnNode, al as SelectModifierNode, am as CreateTypeNode, an as DropTypeNode, ao as ExplainNode, ap as AggregateFunctionNode, aq as OverNode, ar as PartitionByNode, as as PartitionByItemNode, at as SetOperationNode, au as UsingNode, av as CaseNode, aw as WhenNode, ax as JSONReferenceNode, ay as JSONPathNode, az as JSONPathLegNode, aA as JSONOperatorChainNode, aB as MergeQueryNode, aC as AddIndexNode, aD as FetchNode, aE as TopNode, aF as OutputNode, aG as AlterTableColumnAlterationNode, aH as Driver, aI as Kysely, aJ as MigrationLockOptions, aK as Dialect, aL as DatabaseIntrospector, aM as SchemaMetadata, aN as DatabaseMetadataOptions, aO as TableMetadata, aP as DatabaseMetadata, aQ as TransactionSettings, aR as PluginTransformQueryArgs, aS as PluginTransformResultArgs, aT as UnknownRow, aU as Compilable, aV as InsertResult, aW as UpdateResult, aX as DeleteResult, aY as MergeResult, aZ as Simplify, a_ as ExpressionOrFactory } from './kysely.d-G0axPfSW.js';
+export { e1 as ARITHMETIC_OPERATORS, dv as AddIndexNodeProps, cy as AggregateFunctionBuilder, cA as AggregateFunctionBuilderProps, bJ as AliasableExpression, cz as AliasedAggregateFunctionBuilder, bK as AliasedExpression, bO as AliasedExpressionWrapper, cI as AliasedJSONPathBuilder, cR as AliasedRawBuilder, c2 as AliasedSelectQueryBuilder, dn as AlterColumnBuilder, dq as AlterColumnBuilderCallback, dw as AlterColumnNodeProps, de as AlterTableBuilder, df as AlterTableBuilderProps, dh as AlterTableColumnAlteringBuilder, di as AlterTableColumnAlteringBuilderProps, dx as AlterTableNodeTableProps, dp as AlteredColumnBuilder, bQ as AndWrapper, b1 as AnyAliasedColumn, b2 as AnyAliasedColumnWithTable, b3 as AnyColumn, b4 as AnyColumnWithTable, e8 as ArithmeticOperator, e3 as BINARY_OPERATORS, eb as BinaryOperator, e0 as COMPARISON_OPERATORS, bd as CallbackSelection, cC as CaseBuilder, cF as CaseEndBuilder, cD as CaseThenBuilder, cE as CaseWhenBuilder, dg as ColumnAlteringInterface, cW as ColumnBuilderCallback, dI as ColumnDataType, da as ColumnDefinitionBuilder, db as ColumnDefinitionBuilderCallback, dy as ColumnDefinitionNodeProps, du as ColumnMetadata, ev as ColumnType, e7 as ComparisonOperator, bv as ComparisonOperatorExpression, bE as ConnectionBuilder, dz as ConstraintNode, d2 as CreateIndexBuilder, d3 as CreateIndexBuilderProps, dA as CreateIndexNodeProps, d6 as CreateSchemaBuilder, d7 as CreateSchemaBuilderProps, dC as CreateSchemaNodeParams, cU as CreateTableBuilder, cV as CreateTableBuilderProps, dF as CreateTableNodeParams, cY as CreateTypeBuilder, cZ as CreateTypeBuilderProps, dG as CreateTypeNodeParams, dj as CreateViewBuilder, dk as CreateViewBuilderProps, dH as CreateViewNodeParams, dJ as DataTypeParams, cf as DeleteQueryBuilder, cg as DeleteQueryBuilderProps, ck as DeleteQueryBuilderWithFullJoin, ch as DeleteQueryBuilderWithInnerJoin, ci as DeleteQueryBuilderWithLeftJoin, cj as DeleteQueryBuilderWithRightJoin, dL as DropConstraintNodeProps, d4 as DropIndexBuilder, d5 as DropIndexBuilderProps, dM as DropIndexNodeProps, d8 as DropSchemaBuilder, d9 as DropSchemaBuilderProps, dN as DropSchemaNodeParams, c_ as DropTableBuilder, c$ as DropTableBuilderProps, dO as DropTablexNodeParams, d0 as DropTypeBuilder, d1 as DropTypeBuilderProps, dP as DropTypeNodeParams, dl as DropViewBuilder, dm as DropViewBuilderProps, dQ as DropViewNodeParams, dr as DynamicModule, b5 as Equals, eP as ErrorLogEvent, eJ as ExplainFormat, eK as Explainable, bI as Expression, a$ as ExpressionBuilder, bN as ExpressionWrapper, bj as ExtractTypeFromReferenceExpression, bi as ExtractTypeFromStringReference, cO as ExtractWheneableMergeQueryBuilder, dR as FetchModifier, by as FilterObject, dd as ForeignKeyConstraintBuilder, cX as ForeignKeyConstraintBuilderCallback, dc as ForeignKeyConstraintBuilderInterface, dS as ForeignKeyConstraintNodeProps, cq as FunctionModule, ew as Generated, ex as GeneratedAlways, dT as GeneratedNodeParams, b_ as HavingInterface, dB as IndexType, br as InsertObject, c7 as InsertQueryBuilder, c8 as InsertQueryBuilderProps, dU as InsertQueryNodeProps, eA as InsertType, eG as Insertable, dt as IsolationLevel, ey as JSONColumnType, e9 as JSONOperator, ea as JSONOperatorWith$, cG as JSONPathBuilder, dW as JSONPathLegType, e2 as JSON_OPERATORS, co as JoinBuilder, cp as JoinBuilderProps, bq as JoinCallbackExpression, bp as JoinReferenceExpression, dV as JoinType, bD as KyselyConfig, bB as KyselyProps, eM as LOG_LEVELS, eT as Log, eS as LogConfig, eQ as LogEvent, eN as LogLevel, eR as Logger, cM as MatchedThenableMergeQueryBuilder, cJ as MergeQueryBuilder, cK as MergeQueryBuilderProps, cm as NoResultError, cl as NoResultErrorConstructor, eD as NonNullableInsertKeys, cN as NotMatchedThenableMergeQueryBuilder, b8 as NotNull, b7 as Nullable, eC as NullableInsertKeys, dD as ON_COMMIT_ACTIONS, em as ON_MODIFY_FOREIGN_ACTIONS, e6 as OPERATORS, dE as OnCommitAction, cs as OnConflictBuilder, ct as OnConflictBuilderProps, cu as OnConflictDatabase, cw as OnConflictDoNothingBuilder, dX as OnConflictNodeProps, cv as OnConflictTables, cx as OnConflictUpdateBuilder, dY as OnDuplicateKeyNodeProps, en as OnModifyForeignAction, bz as OperandExpression, bw as OperandValueExpression, bx as OperandValueExpressionOrList, d$ as OperationNodeKind, dZ as OperationNodeSource, ee as Operator, bP as OrWrapper, bu as OrderByDirectionExpression, bt as OrderByExpression, bX as OutputCallback, bV as OutputDatabase, bW as OutputExpression, bT as OutputInterface, bU as OutputPrefix, cB as OverBuilderCallback, ek as PrimaryConstraintNode, bG as QueryCreator, bH as QueryCreatorProps, cS as QueryExecutorProvider, eO as QueryLogEvent, el as QueryNode, cP as RawBuilderProps, be as ReferenceExpression, bf as ReferenceExpressionOrList, bS as ReturningInterface, cT as SchemaModule, bb as SelectArg, ba as SelectCallback, b9 as SelectExpression, bZ as SelectExpressionFromOutputCallback, bY as SelectExpressionFromOutputExpression, eo as SelectModifier, b$ as SelectQueryBuilder, c1 as SelectQueryBuilderProps, c6 as SelectQueryBuilderWithFullJoin, c3 as SelectQueryBuilderWithInnerJoin, c4 as SelectQueryBuilderWithLeftJoin, c5 as SelectQueryBuilderWithRightJoin, ez as SelectType, eF as Selectable, bc as Selection, ep as SetOperator, bg as SimpleReferenceExpression, eq as SimpleReferenceExpressionNode, bm as SimpleTableReference, b6 as SqlBool, eL as Streamable, bh as StringReference, ds as TRANSACTION_ISOLATION_LEVELS, bn as TableExpression, bo as TableExpressionOrList, er as TopModifier, bA as Transaction, bF as TransactionBuilder, cH as TraversedJSONPathBuilder, e4 as UNARY_FILTER_OPERATORS, e5 as UNARY_OPERATORS, ed as UnaryFilterOperator, ec as UnaryOperator, es as UniqueConstraintNodeProps, eE as UpdateKeys, bs as UpdateObject, c9 as UpdateQueryBuilder, ca as UpdateQueryBuilderProps, ce as UpdateQueryBuilderWithFullJoin, cb as UpdateQueryBuilderWithInnerJoin, cc as UpdateQueryBuilderWithLeftJoin, cd as UpdateQueryBuilderWithRightJoin, eB as UpdateType, et as UpdateValuesNode, eH as Updateable, bk as ValueExpression, bl as ValueExpressionOrList, cL as WheneableMergeQueryBuilder, bR as WhereInterface, eu as WithNodeParams, cr as createFunctionModule, cQ as createRawBuilder, c0 as createSelectQueryBuilder, b0 as expressionBuilder, bM as isAliasedExpression, ei as isArithmeticOperator, eg as isBinaryOperator, dK as isColumnDataType, eh as isComparisonOperator, eI as isCompilable, bL as isExpression, ej as isJSONOperator, bC as isKyselyProps, cn as isNoResultErrorConstructor, d_ as isOperationNodeSource, ef as isOperator } from './kysely.d-G0axPfSW.js';
 
 interface BinaryOperationNode extends OperationNode {
     readonly kind: 'BinaryOperationNode';
@@ -886,20 +886,21 @@ declare class SingleConnectionProvider implements ConnectionProvider {
  * This example creates a Kysely instance for building postgres queries:
  *
  * ```ts
+ * import {
+ *   DummyDriver,
+ *   Kysely,
+ *   PostgresAdapter,
+ *   PostgresIntrospector,
+ *   PostgresQueryCompiler
+ * } from 'kysely'
+ * import type { Database } from 'type-editor' // imaginary module
+ *
  * const db = new Kysely<Database>({
  *   dialect: {
- *     createAdapter() {
- *       return new PostgresAdapter()
- *     },
- *     createDriver() {
- *       return new DummyDriver()
- *     },
- *     createIntrospector(db: Kysely<any>) {
- *       return new PostgresIntrospector(db)
- *     },
- *     createQueryCompiler() {
- *       return new PostgresQueryCompiler()
- *     },
+ *     createAdapter: () => new PostgresAdapter(),
+ *     createDriver: () => new DummyDriver(),
+ *     createIntrospector: (db: Kysely<any>) => new PostgresIntrospector(db),
+ *     createQueryCompiler: () => new PostgresQueryCompiler(),
  *   },
  * })
  * ```
@@ -993,10 +994,13 @@ declare abstract class DialectAdapterBase implements DialectAdapter {
      * have explicit locks but supports `FOR UPDATE` row locks and transactional DDL:
      *
      * ```ts
-     * import { DialectAdapterBase, MigrationLockOptions, Kysely } from 'kysely'
+     * import { DialectAdapterBase, type MigrationLockOptions, Kysely } from 'kysely'
      *
      * export class MyAdapter extends DialectAdapterBase {
-     *   async override acquireMigrationLock(db: Kysely<any>, options: MigrationLockOptions): Promise<void> {
+     *   override async acquireMigrationLock(
+     *     db: Kysely<any>,
+     *     options: MigrationLockOptions
+     *   ): Promise<void> {
      *     const queryDb = options.lockTableSchema
      *       ? db.withSchema(options.lockTableSchema)
      *       : db
@@ -1011,6 +1015,10 @@ declare abstract class DialectAdapterBase implements DialectAdapter {
      *       .where('id', '=', options.lockRowId)
      *       .forUpdate()
      *       .execute()
+     *   }
+     *
+     *   override async releaseMigrationLock() {
+     *     // noop
      *   }
      * }
      * ```
@@ -1213,10 +1221,13 @@ declare class PostgresAdapter extends DialectAdapterBase {
      * have explicit locks but supports `FOR UPDATE` row locks and transactional DDL:
      *
      * ```ts
-     * import { DialectAdapterBase, MigrationLockOptions, Kysely } from 'kysely'
+     * import { DialectAdapterBase, type MigrationLockOptions, Kysely } from 'kysely'
      *
      * export class MyAdapter extends DialectAdapterBase {
-     *   async override acquireMigrationLock(db: Kysely<any>, options: MigrationLockOptions): Promise<void> {
+     *   override async acquireMigrationLock(
+     *     db: Kysely<any>,
+     *     options: MigrationLockOptions
+     *   ): Promise<void> {
      *     const queryDb = options.lockTableSchema
      *       ? db.withSchema(options.lockTableSchema)
      *       : db
@@ -1231,6 +1242,10 @@ declare class PostgresAdapter extends DialectAdapterBase {
      *       .where('id', '=', options.lockRowId)
      *       .forUpdate()
      *       .execute()
+     *   }
+     *
+     *   override async releaseMigrationLock() {
+     *     // noop
      *   }
      * }
      * ```
@@ -1470,10 +1485,13 @@ declare class MysqlAdapter extends DialectAdapterBase {
      * have explicit locks but supports `FOR UPDATE` row locks and transactional DDL:
      *
      * ```ts
-     * import { DialectAdapterBase, MigrationLockOptions, Kysely } from 'kysely'
+     * import { DialectAdapterBase, type MigrationLockOptions, Kysely } from 'kysely'
      *
      * export class MyAdapter extends DialectAdapterBase {
-     *   async override acquireMigrationLock(db: Kysely<any>, options: MigrationLockOptions): Promise<void> {
+     *   override async acquireMigrationLock(
+     *     db: Kysely<any>,
+     *     options: MigrationLockOptions
+     *   ): Promise<void> {
      *     const queryDb = options.lockTableSchema
      *       ? db.withSchema(options.lockTableSchema)
      *       : db
@@ -1488,6 +1506,10 @@ declare class MysqlAdapter extends DialectAdapterBase {
      *       .where('id', '=', options.lockRowId)
      *       .forUpdate()
      *       .execute()
+     *   }
+     *
+     *   override async releaseMigrationLock() {
+     *     // noop
      *   }
      * }
      * ```
@@ -1523,13 +1545,16 @@ interface PostgresDialectConfig {
     pool: PostgresPool | (() => Promise<PostgresPool>);
     /**
      * https://github.com/brianc/node-postgres/tree/master/packages/pg-cursor
+     *
      * ```ts
+     * import { PostgresDialect } from 'kysely'
+     * import { Pool } from 'pg'
      * import Cursor from 'pg-cursor'
-     * // or
-     * import * as Cursor from 'pg-cursor'
+     * // or import * as Cursor from 'pg-cursor'
      *
      * new PostgresDialect({
-     *  cursor: Cursor
+     *  cursor: Cursor,
+     *  pool: new Pool('postgres://localhost:5432/mydb')
      * })
      * ```
      */
@@ -1738,10 +1763,13 @@ declare class SqliteAdapter extends DialectAdapterBase {
      * have explicit locks but supports `FOR UPDATE` row locks and transactional DDL:
      *
      * ```ts
-     * import { DialectAdapterBase, MigrationLockOptions, Kysely } from 'kysely'
+     * import { DialectAdapterBase, type MigrationLockOptions, Kysely } from 'kysely'
      *
      * export class MyAdapter extends DialectAdapterBase {
-     *   async override acquireMigrationLock(db: Kysely<any>, options: MigrationLockOptions): Promise<void> {
+     *   override async acquireMigrationLock(
+     *     db: Kysely<any>,
+     *     options: MigrationLockOptions
+     *   ): Promise<void> {
      *     const queryDb = options.lockTableSchema
      *       ? db.withSchema(options.lockTableSchema)
      *       : db
@@ -1756,6 +1784,10 @@ declare class SqliteAdapter extends DialectAdapterBase {
      *       .where('id', '=', options.lockRowId)
      *       .forUpdate()
      *       .execute()
+     *   }
+     *
+     *   override async releaseMigrationLock() {
+     *     // noop
      *   }
      * }
      * ```
@@ -1813,10 +1845,13 @@ declare class MssqlAdapter extends DialectAdapterBase {
      * have explicit locks but supports `FOR UPDATE` row locks and transactional DDL:
      *
      * ```ts
-     * import { DialectAdapterBase, MigrationLockOptions, Kysely } from 'kysely'
+     * import { DialectAdapterBase, type MigrationLockOptions, Kysely } from 'kysely'
      *
      * export class MyAdapter extends DialectAdapterBase {
-     *   async override acquireMigrationLock(db: Kysely<any>, options: MigrationLockOptions): Promise<void> {
+     *   override async acquireMigrationLock(
+     *     db: Kysely<any>,
+     *     options: MigrationLockOptions
+     *   ): Promise<void> {
      *     const queryDb = options.lockTableSchema
      *       ? db.withSchema(options.lockTableSchema)
      *       : db
@@ -1831,6 +1866,10 @@ declare class MssqlAdapter extends DialectAdapterBase {
      *       .where('id', '=', options.lockRowId)
      *       .forUpdate()
      *       .execute()
+     *   }
+     *
+     *   override async releaseMigrationLock() {
+     *     // noop
      *   }
      * }
      * ```
@@ -1860,21 +1899,23 @@ interface MssqlDialectConfig {
      * (excluding `create`, `destroy` and `validate` functions which are controlled by this dialect),
      * `min` & `max` connections at the very least.
      *
-     * Example:
+     * ### Examples
      *
      * ```ts
+     * import { MssqlDialect } from 'kysely'
      * import * as Tarn from 'tarn'
+     * import * as Tedious from 'tedious'
      *
      * const dialect = new MssqlDialect({
-     *   // ...
-     *   tarn: {
-     *     ...Tarn,
-     *     options: {
+     *   tarn: { ...Tarn, options: { max: 10, min: 0 } },
+     *   tedious: {
+     *     ...Tedious,
+     *     connectionFactory: () => new Tedious.Connection({
      *       // ...
-     *       min: 0,
-     *       max: 10,
-     *     },
-     *   },
+     *       server: 'localhost',
+     *       // ...
+     *     }),
+     *   }
      * })
      * ```
      */
@@ -1885,19 +1926,23 @@ interface MssqlDialectConfig {
      * you need to pass the `tedious` package itself. You also need to pass a factory
      * function that creates new `tedious` `Connection` instances on demand.
      *
-     * Example:
+     * ### Examples
      *
      * ```ts
+     * import { MssqlDialect } from 'kysely'
+     * import * as Tarn from 'tarn'
      * import * as Tedious from 'tedious'
      *
      * const dialect = new MssqlDialect({
-     *   // ...
+     *   tarn: { ...Tarn, options: { max: 10, min: 0 } },
      *   tedious: {
      *     ...Tedious,
      *     connectionFactory: () => new Tedious.Connection({
      *       // ...
+     *       server: 'localhost',
+     *       // ...
      *     }),
-     *   },
+     *   }
      * })
      * ```
      */
@@ -1988,20 +2033,6 @@ interface Tarn {
     };
     /**
      * Tarn.js' Pool class.
-     *
-     * Example:
-     *
-     * ```ts
-     * import { Pool } from 'tarn'
-     *
-     * const dialect = new MssqlDialect({
-     *   // ...
-     *   tarn: {
-     *     // ...
-     *     Pool,
-     *   },
-     * })
-     * ```
      */
     Pool: typeof TarnPool;
 }
@@ -2204,14 +2235,27 @@ interface Migration {
  * ```ts
  * import { promises as fs } from 'node:fs'
  * import path from 'node:path'
+ * import * as Sqlite from 'better-sqlite3'
+ * import {
+ *   FileMigrationProvider,
+ *   Kysely,
+ *   Migrator,
+ *   SqliteDialect
+ * } from 'kysely'
+ *
+ * const db = new Kysely<any>({
+ *   dialect: new SqliteDialect({
+ *     database: Sqlite(':memory:')
+ *   })
+ * })
  *
  * const migrator = new Migrator({
  *   db,
  *   provider: new FileMigrationProvider({
  *     fs,
- *     path,
  *     // Path to the folder that contains all your migrations.
- *     migrationFolder: 'some/path/to/migrations'
+ *     migrationFolder: 'some/path/to/migrations',
+ *     path,
  *   })
  * })
  * ```
@@ -2241,19 +2285,18 @@ declare class Migrator {
      * ### Examples
      *
      * ```ts
-     * const db = new Kysely<Database>({
-     *   dialect: new PostgresDialect({
-     *     host: 'localhost',
-     *     database: 'kysely_test',
-     *   }),
-     * })
+     * import { promises as fs } from 'node:fs'
+     * import path from 'node:path'
+     * import * as Sqlite from 'better-sqlite3'
+     * import { FileMigrationProvider, Migrator } from 'kysely'
      *
      * const migrator = new Migrator({
      *   db,
-     *   provider: new FileMigrationProvider(
-     *     // Path to the folder that contains all your migrations.
-     *     'some/path/to/migrations'
-     *   )
+     *   provider: new FileMigrationProvider({
+     *     fs,
+     *     migrationFolder: 'some/path/to/migrations',
+     *     path,
+     *   })
      * })
      *
      * const { error, results } = await migrator.migrateToLatest()
@@ -2284,6 +2327,20 @@ declare class Migrator {
      * ### Examples
      *
      * ```ts
+     * import { promises as fs } from 'node:fs'
+     * import path from 'node:path'
+     * import { FileMigrationProvider, Migrator } from 'kysely'
+     *
+     * const migrator = new Migrator({
+     *   db,
+     *   provider: new FileMigrationProvider({
+     *     fs,
+     *     // Path to the folder that contains all your migrations.
+     *     migrationFolder: 'some/path/to/migrations',
+     *     path,
+     *   })
+     * })
+     *
      * await migrator.migrateTo('some_migration')
      * ```
      *
@@ -2293,6 +2350,20 @@ declare class Migrator {
      * you can use a special constant `NO_MIGRATIONS`:
      *
      * ```ts
+     * import { promises as fs } from 'node:fs'
+     * import path from 'node:path'
+     * import { FileMigrationProvider, Migrator, NO_MIGRATIONS } from 'kysely'
+     *
+     * const migrator = new Migrator({
+     *   db,
+     *   provider: new FileMigrationProvider({
+     *     fs,
+     *     // Path to the folder that contains all your migrations.
+     *     migrationFolder: 'some/path/to/migrations',
+     *     path,
+     *   })
+     * })
+     *
      * await migrator.migrateTo(NO_MIGRATIONS)
      * ```
      */
@@ -2308,6 +2379,20 @@ declare class Migrator {
      * ### Examples
      *
      * ```ts
+     * import { promises as fs } from 'node:fs'
+     * import path from 'node:path'
+     * import { FileMigrationProvider, Migrator } from 'kysely'
+     *
+     * const migrator = new Migrator({
+     *   db,
+     *   provider: new FileMigrationProvider({
+     *     fs,
+     *     // Path to the folder that contains all your migrations.
+     *     migrationFolder: 'some/path/to/migrations',
+     *     path,
+     *   })
+     * })
+     *
      * await migrator.migrateUp()
      * ```
      */
@@ -2323,6 +2408,20 @@ declare class Migrator {
      * ### Examples
      *
      * ```ts
+     * import { promises as fs } from 'node:fs'
+     * import path from 'node:path'
+     * import { FileMigrationProvider, Migrator } from 'kysely'
+     *
+     * const migrator = new Migrator({
+     *   db,
+     *   provider: new FileMigrationProvider({
+     *     fs,
+     *     // Path to the folder that contains all your migrations.
+     *     migrationFolder: 'some/path/to/migrations',
+     *     path,
+     *   })
+     * })
+     *
      * await migrator.migrateDown()
      * ```
      */
@@ -2575,36 +2674,37 @@ interface CamelCasePluginOptions {
  * using `CamelCasePlugin` we would setup Kysely like this:
  *
  * ```ts
- * interface Person {
- *   firstName: string
- *   lastName: string
+ * import * as Sqlite from 'better-sqlite3'
+ * import { CamelCasePlugin, Kysely, SqliteDialect } from 'kysely'
+ *
+ * interface CamelCasedDatabase {
+ *   userMetadata: {
+ *     firstName: string
+ *     lastName: string
+ *   }
  * }
  *
- * interface Database {
- *   personTable: Person
- * }
- *
- * const db = new Kysely<Database>({
- *   dialect: new PostgresDialect({
- *     database: 'kysely_test',
- *     host: 'localhost',
+ * const db = new Kysely<CamelCasedDatabase>({
+ *   dialect: new SqliteDialect({
+ *     database: new Sqlite(':memory:'),
  *   }),
- *   plugins: [
- *     new CamelCasePlugin()
- *   ]
+ *   plugins: [new CamelCasePlugin()],
  * })
  *
- * const person = await db.selectFrom('personTable')
+ * const person = await db.selectFrom('userMetadata')
  *   .where('firstName', '=', 'Arnold')
  *   .select(['firstName', 'lastName'])
  *   .executeTakeFirst()
  *
- * // generated sql:
- * // select first_name, last_name from person_table where first_name = $1
- *
  * if (person) {
  *   console.log(person.firstName)
  * }
+ * ```
+ *
+ * The generated SQL (SQLite):
+ *
+ * ```sql
+ * select "first_name", "last_name" from "user_metadata" where "first_name" = ?
  * ```
  *
  * As you can see from the example, __everything__ needs to be defined
@@ -2621,11 +2721,15 @@ interface CamelCasePluginOptions {
  * ```ts
  * class MyCamelCasePlugin extends CamelCasePlugin {
  *   protected override snakeCase(str: string): string {
- *     return mySnakeCase(str)
+ *     // ...
+ *
+ *     return str
  *   }
  *
  *   protected override camelCase(str: string): string {
- *     return myCamelCase(str)
+ *     // ...
+ *
+ *     return str
  *   }
  * }
  * ```
@@ -2644,19 +2748,41 @@ declare class CamelCasePlugin implements KyselyPlugin {
      * can use a `WeakMap` with {@link PluginTransformQueryArgs.queryId | args.queryId} as the key:
      *
      * ```ts
-     * const plugin = {
-     *   data: new WeakMap<QueryId, SomeData>(),
+     * import type {
+     *   KyselyPlugin,
+     *   QueryResult,
+     *   RootOperationNode,
+     *   UnknownRow
+     * } from 'kysely'
      *
+     * interface MyData {
+     *   // ...
+     * }
+     * const data = new WeakMap<any, MyData>()
+     *
+     * const plugin = {
      *   transformQuery(args: PluginTransformQueryArgs): RootOperationNode {
-     *     this.data.set(args.queryId, something)
+     *     const something: MyData = {}
+     *
+     *     // ...
+     *
+     *     data.set(args.queryId, something)
+     *
+     *     // ...
+     *
      *     return args.node
      *   },
      *
-     *   transformResult(args: PluginTransformResultArgs): QueryResult<UnknownRow> {
-     *     const data = this.data.get(args.queryId)
+     *   async transformResult(args: PluginTransformResultArgs): Promise<QueryResult<UnknownRow>> {
+     *     // ...
+     *
+     *     const something = data.get(args.queryId)
+     *
+     *     // ...
+     *
      *     return args.result
      *   }
-     * }
+     * } satisfies KyselyPlugin
      * ```
      *
      * You should use a `WeakMap` instead of a `Map` or some other strong references because `transformQuery`
@@ -2692,19 +2818,41 @@ declare class DeduplicateJoinsPlugin implements KyselyPlugin {
      * can use a `WeakMap` with {@link PluginTransformQueryArgs.queryId | args.queryId} as the key:
      *
      * ```ts
-     * const plugin = {
-     *   data: new WeakMap<QueryId, SomeData>(),
+     * import type {
+     *   KyselyPlugin,
+     *   QueryResult,
+     *   RootOperationNode,
+     *   UnknownRow
+     * } from 'kysely'
      *
+     * interface MyData {
+     *   // ...
+     * }
+     * const data = new WeakMap<any, MyData>()
+     *
+     * const plugin = {
      *   transformQuery(args: PluginTransformQueryArgs): RootOperationNode {
-     *     this.data.set(args.queryId, something)
+     *     const something: MyData = {}
+     *
+     *     // ...
+     *
+     *     data.set(args.queryId, something)
+     *
+     *     // ...
+     *
      *     return args.node
      *   },
      *
-     *   transformResult(args: PluginTransformResultArgs): QueryResult<UnknownRow> {
-     *     const data = this.data.get(args.queryId)
+     *   async transformResult(args: PluginTransformResultArgs): Promise<QueryResult<UnknownRow>> {
+     *     // ...
+     *
+     *     const something = data.get(args.queryId)
+     *
+     *     // ...
+     *
      *     return args.result
      *   }
-     * }
+     * } satisfies KyselyPlugin
      * ```
      *
      * You should use a `WeakMap` instead of a `Map` or some other strong references because `transformQuery`
@@ -2733,19 +2881,41 @@ declare class WithSchemaPlugin implements KyselyPlugin {
      * can use a `WeakMap` with {@link PluginTransformQueryArgs.queryId | args.queryId} as the key:
      *
      * ```ts
-     * const plugin = {
-     *   data: new WeakMap<QueryId, SomeData>(),
+     * import type {
+     *   KyselyPlugin,
+     *   QueryResult,
+     *   RootOperationNode,
+     *   UnknownRow
+     * } from 'kysely'
      *
+     * interface MyData {
+     *   // ...
+     * }
+     * const data = new WeakMap<any, MyData>()
+     *
+     * const plugin = {
      *   transformQuery(args: PluginTransformQueryArgs): RootOperationNode {
-     *     this.data.set(args.queryId, something)
+     *     const something: MyData = {}
+     *
+     *     // ...
+     *
+     *     data.set(args.queryId, something)
+     *
+     *     // ...
+     *
      *     return args.node
      *   },
      *
-     *   transformResult(args: PluginTransformResultArgs): QueryResult<UnknownRow> {
-     *     const data = this.data.get(args.queryId)
+     *   async transformResult(args: PluginTransformResultArgs): Promise<QueryResult<UnknownRow>> {
+     *     // ...
+     *
+     *     const something = data.get(args.queryId)
+     *
+     *     // ...
+     *
      *     return args.result
      *   }
-     * }
+     * } satisfies KyselyPlugin
      * ```
      *
      * You should use a `WeakMap` instead of a `Map` or some other strong references because `transformQuery`
@@ -2781,12 +2951,42 @@ type ObjectStrategy = 'in-place' | 'create';
  * This plugin can be useful with dialects that don't automatically parse
  * JSON into objects and arrays but return JSON strings instead.
  *
+ * To apply this plugin globally, pass an instance of it to the `plugins` option
+ * when creating a new `Kysely` instance:
+ *
  * ```ts
- * const db = new Kysely<DB>({
- *   // ...
- *   plugins: [new ParseJSONResultsPlugin()]
- *   // ...
+ * import * as Sqlite from 'better-sqlite3'
+ * import { Kysely, ParseJSONResultsPlugin, SqliteDialect } from 'kysely'
+ * import type { Database } from 'type-editor' // imaginary module
+ *
+ * const db = new Kysely<Database>({
+ *   dialect: new SqliteDialect({
+ *     database: new Sqlite(':memory:'),
+ *   }),
+ *   plugins: [new ParseJSONResultsPlugin()],
  * })
+ * ```
+ *
+ * To apply this plugin to a single query:
+ *
+ * ```ts
+ * import { ParseJSONResultsPlugin } from 'kysely'
+ * import { jsonArrayFrom } from 'kysely/helpers/sqlite'
+ *
+ * const result = await db
+ *   .selectFrom('person')
+ *   .select((eb) => [
+ *     'id',
+ *     'first_name',
+ *     'last_name',
+ *     jsonArrayFrom(
+ *       eb.selectFrom('pet')
+ *         .whereRef('owner_id', '=', 'person.id')
+ *         .select(['name', 'species'])
+ *     ).as('pets')
+ *   ])
+ *   .withPlugin(new ParseJSONResultsPlugin())
+ *   .execute()
  * ```
  */
 declare class ParseJSONResultsPlugin implements KyselyPlugin {
@@ -2803,19 +3003,41 @@ declare class ParseJSONResultsPlugin implements KyselyPlugin {
      * can use a `WeakMap` with {@link PluginTransformQueryArgs.queryId | args.queryId} as the key:
      *
      * ```ts
-     * const plugin = {
-     *   data: new WeakMap<QueryId, SomeData>(),
+     * import type {
+     *   KyselyPlugin,
+     *   QueryResult,
+     *   RootOperationNode,
+     *   UnknownRow
+     * } from 'kysely'
      *
+     * interface MyData {
+     *   // ...
+     * }
+     * const data = new WeakMap<any, MyData>()
+     *
+     * const plugin = {
      *   transformQuery(args: PluginTransformQueryArgs): RootOperationNode {
-     *     this.data.set(args.queryId, something)
+     *     const something: MyData = {}
+     *
+     *     // ...
+     *
+     *     data.set(args.queryId, something)
+     *
+     *     // ...
+     *
      *     return args.node
      *   },
      *
-     *   transformResult(args: PluginTransformResultArgs): QueryResult<UnknownRow> {
-     *     const data = this.data.get(args.queryId)
+     *   async transformResult(args: PluginTransformResultArgs): Promise<QueryResult<UnknownRow>> {
+     *     // ...
+     *
+     *     const something = data.get(args.queryId)
+     *
+     *     // ...
+     *
      *     return args.result
      *   }
-     * }
+     * } satisfies KyselyPlugin
      * ```
      *
      * You should use a `WeakMap` instead of a `Map` or some other strong references because `transformQuery`
@@ -2845,8 +3067,11 @@ declare class ParseJSONResultsPlugin implements KyselyPlugin {
  * snake_case, you'd do something like this:
  *
  * ```ts
+ * import { type IdentifierNode, OperationNodeTransformer } from 'kysely'
+ * import snakeCase from 'lodash/snakeCase'
+ *
  * class CamelCaseTransformer extends OperationNodeTransformer {
- *   transformIdentifier(node: IdentifierNode): IdentifierNode {
+ *   override transformIdentifier(node: IdentifierNode): IdentifierNode {
  *     node = super.transformIdentifier(node)
  *
  *     return {
@@ -2857,7 +3082,10 @@ declare class ParseJSONResultsPlugin implements KyselyPlugin {
  * }
  *
  * const transformer = new CamelCaseTransformer()
- * const tree = transformer.transformNode(tree)
+ *
+ * const query = db.selectFrom('person').select(['first_name', 'last_name'])
+ *
+ * const tree = transformer.transformNode(query.toOperationNode())
  * ```
  */
 declare class OperationNodeTransformer {

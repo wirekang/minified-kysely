@@ -1,4 +1,4 @@
-import { eU as SelectQueryBuilderExpression, R as RawBuilder, aZ as Simplify, bI as Expression } from '../kysely.d-TRAO1JWP.js';
+import { eU as SelectQueryBuilderExpression, R as RawBuilder, aZ as Simplify, bI as Expression } from '../kysely.d-G0axPfSW.js';
 
 /**
  * A SQLite helper for aggregating a subquery into a JSON array.
@@ -9,8 +9,14 @@ import { eU as SelectQueryBuilderExpression, R as RawBuilder, aZ as Simplify, bI
  * The plugin can be installed like this:
  *
  * ```ts
- * const db = new Kysely({
- *   dialect: new SqliteDialect(config),
+ * import * as Sqlite from 'better-sqlite3'
+ * import { Kysely, ParseJSONResultsPlugin, SqliteDialect } from 'kysely'
+ * import type { Database } from 'type-editor' // imaginary module
+ *
+ * const db = new Kysely<Database>({
+ *   dialect: new SqliteDialect({
+ *     database: new Sqlite(':memory:')
+ *   }),
  *   plugins: [new ParseJSONResultsPlugin()]
  * })
  * ```
@@ -18,6 +24,8 @@ import { eU as SelectQueryBuilderExpression, R as RawBuilder, aZ as Simplify, bI
  * ### Examples
  *
  * ```ts
+ * import { jsonArrayFrom } from 'kysely/helpers/sqlite'
+ *
  * const result = await db
  *   .selectFrom('person')
  *   .select((eb) => [
@@ -31,9 +39,9 @@ import { eU as SelectQueryBuilderExpression, R as RawBuilder, aZ as Simplify, bI
  *   ])
  *   .execute()
  *
- * result[0].id
- * result[0].pets[0].pet_id
- * result[0].pets[0].name
+ * result[0]?.id
+ * result[0]?.pets[0].pet_id
+ * result[0]?.pets[0].name
  * ```
  *
  * The generated SQL (SQLite):
@@ -65,8 +73,14 @@ declare function jsonArrayFrom<O>(expr: SelectQueryBuilderExpression<O>): RawBui
  * The plugin can be installed like this:
  *
  * ```ts
- * const db = new Kysely({
- *   dialect: new SqliteDialect(config),
+ * import * as Sqlite from 'better-sqlite3'
+ * import { Kysely, ParseJSONResultsPlugin, SqliteDialect } from 'kysely'
+ * import type { Database } from 'type-editor' // imaginary module
+ *
+ * const db = new Kysely<Database>({
+ *   dialect: new SqliteDialect({
+ *     database: new Sqlite(':memory:')
+ *   }),
  *   plugins: [new ParseJSONResultsPlugin()]
  * })
  * ```
@@ -74,6 +88,8 @@ declare function jsonArrayFrom<O>(expr: SelectQueryBuilderExpression<O>): RawBui
  * ### Examples
  *
  * ```ts
+ * import { jsonObjectFrom } from 'kysely/helpers/sqlite'
+ *
  * const result = await db
  *   .selectFrom('person')
  *   .select((eb) => [
@@ -87,9 +103,9 @@ declare function jsonArrayFrom<O>(expr: SelectQueryBuilderExpression<O>): RawBui
  *   ])
  *   .execute()
  *
- * result[0].id
- * result[0].favorite_pet.pet_id
- * result[0].favorite_pet.name
+ * result[0]?.id
+ * result[0]?.favorite_pet?.pet_id
+ * result[0]?.favorite_pet?.name
  * ```
  *
  * The generated SQL (SQLite):
@@ -119,8 +135,14 @@ declare function jsonObjectFrom<O>(expr: SelectQueryBuilderExpression<O>): RawBu
  * The plugin can be installed like this:
  *
  * ```ts
- * const db = new Kysely({
- *   dialect: new SqliteDialect(config),
+ * import * as Sqlite from 'better-sqlite3'
+ * import { Kysely, ParseJSONResultsPlugin, SqliteDialect } from 'kysely'
+ * import type { Database } from 'type-editor' // imaginary module
+ *
+ * const db = new Kysely<Database>({
+ *   dialect: new SqliteDialect({
+ *     database: new Sqlite(':memory:')
+ *   }),
  *   plugins: [new ParseJSONResultsPlugin()]
  * })
  * ```
@@ -128,6 +150,9 @@ declare function jsonObjectFrom<O>(expr: SelectQueryBuilderExpression<O>): RawBu
  * ### Examples
  *
  * ```ts
+ * import { sql } from 'kysely'
+ * import { jsonBuildObject } from 'kysely/helpers/sqlite'
+ *
  * const result = await db
  *   .selectFrom('person')
  *   .select((eb) => [
@@ -140,10 +165,10 @@ declare function jsonObjectFrom<O>(expr: SelectQueryBuilderExpression<O>): RawBu
  *   ])
  *   .execute()
  *
- * result[0].id
- * result[0].name.first
- * result[0].name.last
- * result[0].name.full
+ * result[0]?.id
+ * result[0]?.name.first
+ * result[0]?.name.last
+ * result[0]?.name.full
  * ```
  *
  * The generated SQL (SQLite):

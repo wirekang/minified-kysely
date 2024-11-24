@@ -977,7 +977,11 @@ declare function isOperationNodeSource(obj: unknown): obj is OperationNodeSource
  * Most Kysely methods accept instances of `Expression` and most classes like `SelectQueryBuilder`
  * and the return value of the {@link sql} template tag implement it.
  *
+ * ### Examples
+ *
  * ```ts
+ * import { type Expression, sql } from 'kysely'
+ *
  * const exp1: Expression<string> = sql<string>`CONCAT('hello', ' ', 'world')`
  * const exp2: Expression<{ first_name: string }> = db.selectFrom('person').select('first_name')
  * ```
@@ -989,10 +993,18 @@ interface Expression<T> extends OperationNodeSource {
      * All expressions need to have this getter for complicated type-related reasons.
      * Simply add this getter for your expression and always return `undefined` from it:
      *
+     * ### Examples
+     *
      * ```ts
+     * import { type Expression, type OperationNode, sql } from 'kysely'
+     *
      * class SomeExpression<T> implements Expression<T> {
      *   get expressionType(): T | undefined {
      *     return undefined
+     *   }
+     *
+     *   toOperationNode(): OperationNode {
+     *     return sql`some sql here`.toOperationNode()
      *   }
      * }
      * ```
@@ -1005,11 +1017,19 @@ interface Expression<T> extends OperationNodeSource {
     /**
      * Creates the OperationNode that describes how to compile this expression into SQL.
      *
+     * ### Examples
+     *
      * If you are creating a custom expression, it's often easiest to use the {@link sql}
      * template tag to build the node:
      *
      * ```ts
+     * import { type Expression, type OperationNode, sql } from 'kysely'
+     *
      * class SomeExpression<T> implements Expression<T> {
+     *   get expressionType(): T | undefined {
+     *     return undefined
+     *   }
+     *
      *   toOperationNode(): OperationNode {
      *     return sql`some sql here`.toOperationNode()
      *   }
@@ -1024,6 +1044,8 @@ interface Expression<T> extends OperationNodeSource {
 interface AliasableExpression<T> extends Expression<T> {
     /**
      * Returns an aliased version of the expression.
+     *
+     * ### Examples
      *
      * In addition to slapping `as "the_alias"` at the end of the expression,
      * this method also provides strict typing:
@@ -1054,6 +1076,8 @@ interface AliasableExpression<T> extends Expression<T> {
      * provide the alias as the only type argument:
      *
      * ```ts
+     * import { sql } from 'kysely'
+     *
      * const values = sql<{ a: number, b: string }>`(values (1, 'foo'))`
      *
      * // The alias is `t(a, b)` which specifies the column names
@@ -1068,6 +1092,7 @@ interface AliasableExpression<T> extends Expression<T> {
      *   .expression(
      *     db.selectFrom(aliasedValues).select(['t.a', 't.b'])
      *   )
+     *   .execute()
      * ```
      *
      * The generated SQL (PostgreSQL):
@@ -1089,9 +1114,16 @@ interface AliasableExpression<T> extends Expression<T> {
  * needs to implement an `AliasedExpression<T, A>`. `A` becomes the name of the selected expression
  * in the result and `T` becomes its type.
  *
- * @example
+ * ### Examples
  *
  * ```ts
+ * import {
+ *   AliasNode,
+ *   type AliasedExpression,
+ *   type Expression,
+ *   IdentifierNode
+ * } from 'kysely'
+ *
  * class SomeAliasedExpression<T, A extends string> implements AliasedExpression<T, A> {
  *   #expression: Expression<T>
  *   #alias: A
@@ -1110,7 +1142,10 @@ interface AliasableExpression<T> extends Expression<T> {
  *   }
  *
  *   toOperationNode(): AliasNode {
- *     return AliasNode.create(this.#expression.toOperationNode(), IdentifierNode.create(this.#alias))
+ *     return AliasNode.create(
+ *       this.#expression.toOperationNode(),
+ *       IdentifierNode.create(this.#alias)
+ *     )
  *   }
  * }
  * ```
@@ -1850,10 +1885,13 @@ interface DialectAdapter {
      * have explicit locks but supports `FOR UPDATE` row locks and transactional DDL:
      *
      * ```ts
-     * import { DialectAdapterBase, MigrationLockOptions, Kysely } from 'kysely'
+     * import { DialectAdapterBase, type MigrationLockOptions, Kysely } from 'kysely'
      *
      * export class MyAdapter extends DialectAdapterBase {
-     *   async override acquireMigrationLock(db: Kysely<any>, options: MigrationLockOptions): Promise<void> {
+     *   override async acquireMigrationLock(
+     *     db: Kysely<any>,
+     *     options: MigrationLockOptions
+     *   ): Promise<void> {
      *     const queryDb = options.lockTableSchema
      *       ? db.withSchema(options.lockTableSchema)
      *       : db
@@ -1868,6 +1906,10 @@ interface DialectAdapter {
      *       .where('id', '=', options.lockRowId)
      *       .forUpdate()
      *       .execute()
+     *   }
+     *
+     *   override async releaseMigrationLock() {
+     *     // noop
      *   }
      * }
      * ```
@@ -1958,19 +2000,41 @@ interface KyselyPlugin {
      * can use a `WeakMap` with {@link PluginTransformQueryArgs.queryId | args.queryId} as the key:
      *
      * ```ts
-     * const plugin = {
-     *   data: new WeakMap<QueryId, SomeData>(),
+     * import type {
+     *   KyselyPlugin,
+     *   QueryResult,
+     *   RootOperationNode,
+     *   UnknownRow
+     * } from 'kysely'
      *
+     * interface MyData {
+     *   // ...
+     * }
+     * const data = new WeakMap<any, MyData>()
+     *
+     * const plugin = {
      *   transformQuery(args: PluginTransformQueryArgs): RootOperationNode {
-     *     this.data.set(args.queryId, something)
+     *     const something: MyData = {}
+     *
+     *     // ...
+     *
+     *     data.set(args.queryId, something)
+     *
+     *     // ...
+     *
      *     return args.node
      *   },
      *
-     *   transformResult(args: PluginTransformResultArgs): QueryResult<UnknownRow> {
-     *     const data = this.data.get(args.queryId)
+     *   async transformResult(args: PluginTransformResultArgs): Promise<QueryResult<UnknownRow>> {
+     *     // ...
+     *
+     *     const something = data.get(args.queryId)
+     *
+     *     // ...
+     *
      *     return args.result
      *   }
-     * }
+     * } satisfies KyselyPlugin
      * ```
      *
      * You should use a `WeakMap` instead of a `Map` or some other strong references because `transformQuery`
@@ -2725,11 +2789,19 @@ interface SelectQueryBuilderExpression<O> extends AliasableExpression<O> {
     /**
      * Creates the OperationNode that describes how to compile this expression into SQL.
      *
+     * ### Examples
+     *
      * If you are creating a custom expression, it's often easiest to use the {@link sql}
      * template tag to build the node:
      *
      * ```ts
+     * import { type Expression, type OperationNode, sql } from 'kysely'
+     *
      * class SomeExpression<T> implements Expression<T> {
+     *   get expressionType(): T | undefined {
+     *     return undefined
+     *   }
+     *
      *   toOperationNode(): OperationNode {
      *     return sql`some sql here`.toOperationNode()
      *   }
@@ -3542,10 +3614,18 @@ declare class ExpressionWrapper<DB, TB extends keyof DB, T> implements Aliasable
      * All expressions need to have this getter for complicated type-related reasons.
      * Simply add this getter for your expression and always return `undefined` from it:
      *
+     * ### Examples
+     *
      * ```ts
+     * import { type Expression, type OperationNode, sql } from 'kysely'
+     *
      * class SomeExpression<T> implements Expression<T> {
      *   get expressionType(): T | undefined {
      *     return undefined
+     *   }
+     *
+     *   toOperationNode(): OperationNode {
+     *     return sql`some sql here`.toOperationNode()
      *   }
      * }
      * ```
@@ -3557,6 +3637,8 @@ declare class ExpressionWrapper<DB, TB extends keyof DB, T> implements Aliasable
     get expressionType(): T | undefined;
     /**
      * Returns an aliased version of the expression.
+     *
+     * ### Examples
      *
      * In addition to slapping `as "the_alias"` to the end of the SQL,
      * this method also provides strict typing:
@@ -3583,6 +3665,8 @@ declare class ExpressionWrapper<DB, TB extends keyof DB, T> implements Aliasable
     as<A extends string>(alias: A): AliasedExpression<T, A>;
     /**
      * Returns an aliased version of the expression.
+     *
+     * ### Examples
      *
      * In addition to slapping `as "the_alias"` at the end of the expression,
      * this method also provides strict typing:
@@ -3613,6 +3697,8 @@ declare class ExpressionWrapper<DB, TB extends keyof DB, T> implements Aliasable
      * provide the alias as the only type argument:
      *
      * ```ts
+     * import { sql } from 'kysely'
+     *
      * const values = sql<{ a: number, b: string }>`(values (1, 'foo'))`
      *
      * // The alias is `t(a, b)` which specifies the column names
@@ -3627,6 +3713,7 @@ declare class ExpressionWrapper<DB, TB extends keyof DB, T> implements Aliasable
      *   .expression(
      *     db.selectFrom(aliasedValues).select(['t.a', 't.b'])
      *   )
+     *   .execute()
      * ```
      *
      * The generated SQL (PostgreSQL):
@@ -3646,12 +3733,13 @@ declare class ExpressionWrapper<DB, TB extends keyof DB, T> implements Aliasable
      * ### Examples
      *
      * ```ts
-     * db.selectFrom('person')
+     * const result = await db.selectFrom('person')
      *   .selectAll()
      *   .where(eb => eb('first_name', '=', 'Jennifer')
      *     .or('first_name', '=', 'Arnold')
      *     .or('first_name', '=', 'Sylvester')
      *   )
+     *   .execute()
      * ```
      *
      * The generated SQL (PostgreSQL):
@@ -3670,7 +3758,7 @@ declare class ExpressionWrapper<DB, TB extends keyof DB, T> implements Aliasable
      * this method:
      *
      * ```ts
-     * db.selectFrom('person')
+     * const result = await db.selectFrom('person')
      *   .selectAll()
      *   .where(eb => eb('first_name', '=', 'Jennifer')
      *     .or(eb('first_name', '=', 'Sylvester').and('last_name', '=', 'Stallone'))
@@ -3680,6 +3768,7 @@ declare class ExpressionWrapper<DB, TB extends keyof DB, T> implements Aliasable
      *         .whereRef('pet.owner_id', '=', 'person.id')
      *     ))
      *   )
+     *   .execute()
      * ```
      *
      * The generated SQL (PostgreSQL):
@@ -3708,12 +3797,13 @@ declare class ExpressionWrapper<DB, TB extends keyof DB, T> implements Aliasable
      * ### Examples
      *
      * ```ts
-     * db.selectFrom('person')
+     * const result = await db.selectFrom('person')
      *   .selectAll()
      *   .where(eb => eb('first_name', '=', 'Jennifer')
      *     .and('last_name', '=', 'Aniston')
      *     .and('age', '>', 40)
      *   )
+     *   .execute()
      * ```
      *
      * The generated SQL (PostgreSQL):
@@ -3732,7 +3822,7 @@ declare class ExpressionWrapper<DB, TB extends keyof DB, T> implements Aliasable
      * this method:
      *
      * ```ts
-     * db.selectFrom('person')
+     * const result = await db.selectFrom('person')
      *   .selectAll()
      *   .where(eb => eb('first_name', '=', 'Jennifer')
      *     .and(eb('first_name', '=', 'Sylvester').or('last_name', '=', 'Stallone'))
@@ -3742,6 +3832,7 @@ declare class ExpressionWrapper<DB, TB extends keyof DB, T> implements Aliasable
      *         .whereRef('pet.owner_id', '=', 'person.id')
      *     ))
      *   )
+     *   .execute()
      * ```
      *
      * The generated SQL (PostgreSQL):
@@ -3782,11 +3873,19 @@ declare class ExpressionWrapper<DB, TB extends keyof DB, T> implements Aliasable
     /**
      * Creates the OperationNode that describes how to compile this expression into SQL.
      *
+     * ### Examples
+     *
      * If you are creating a custom expression, it's often easiest to use the {@link sql}
      * template tag to build the node:
      *
      * ```ts
+     * import { type Expression, type OperationNode, sql } from 'kysely'
+     *
      * class SomeExpression<T> implements Expression<T> {
+     *   get expressionType(): T | undefined {
+     *     return undefined
+     *   }
+     *
      *   toOperationNode(): OperationNode {
      *     return sql`some sql here`.toOperationNode()
      *   }
@@ -3821,10 +3920,18 @@ declare class OrWrapper<DB, TB extends keyof DB, T extends SqlBool> implements A
      * All expressions need to have this getter for complicated type-related reasons.
      * Simply add this getter for your expression and always return `undefined` from it:
      *
+     * ### Examples
+     *
      * ```ts
+     * import { type Expression, type OperationNode, sql } from 'kysely'
+     *
      * class SomeExpression<T> implements Expression<T> {
      *   get expressionType(): T | undefined {
      *     return undefined
+     *   }
+     *
+     *   toOperationNode(): OperationNode {
+     *     return sql`some sql here`.toOperationNode()
      *   }
      * }
      * ```
@@ -3865,6 +3972,8 @@ declare class OrWrapper<DB, TB extends keyof DB, T extends SqlBool> implements A
     /**
      * Returns an aliased version of the expression.
      *
+     * ### Examples
+     *
      * In addition to slapping `as "the_alias"` at the end of the expression,
      * this method also provides strict typing:
      *
@@ -3894,6 +4003,8 @@ declare class OrWrapper<DB, TB extends keyof DB, T extends SqlBool> implements A
      * provide the alias as the only type argument:
      *
      * ```ts
+     * import { sql } from 'kysely'
+     *
      * const values = sql<{ a: number, b: string }>`(values (1, 'foo'))`
      *
      * // The alias is `t(a, b)` which specifies the column names
@@ -3908,6 +4019,7 @@ declare class OrWrapper<DB, TB extends keyof DB, T extends SqlBool> implements A
      *   .expression(
      *     db.selectFrom(aliasedValues).select(['t.a', 't.b'])
      *   )
+     *   .execute()
      * ```
      *
      * The generated SQL (PostgreSQL):
@@ -3936,11 +4048,19 @@ declare class OrWrapper<DB, TB extends keyof DB, T extends SqlBool> implements A
     /**
      * Creates the OperationNode that describes how to compile this expression into SQL.
      *
+     * ### Examples
+     *
      * If you are creating a custom expression, it's often easiest to use the {@link sql}
      * template tag to build the node:
      *
      * ```ts
+     * import { type Expression, type OperationNode, sql } from 'kysely'
+     *
      * class SomeExpression<T> implements Expression<T> {
+     *   get expressionType(): T | undefined {
+     *     return undefined
+     *   }
+     *
      *   toOperationNode(): OperationNode {
      *     return sql`some sql here`.toOperationNode()
      *   }
@@ -3957,10 +4077,18 @@ declare class AndWrapper<DB, TB extends keyof DB, T extends SqlBool> implements 
      * All expressions need to have this getter for complicated type-related reasons.
      * Simply add this getter for your expression and always return `undefined` from it:
      *
+     * ### Examples
+     *
      * ```ts
+     * import { type Expression, type OperationNode, sql } from 'kysely'
+     *
      * class SomeExpression<T> implements Expression<T> {
      *   get expressionType(): T | undefined {
      *     return undefined
+     *   }
+     *
+     *   toOperationNode(): OperationNode {
+     *     return sql`some sql here`.toOperationNode()
      *   }
      * }
      * ```
@@ -3987,7 +4115,7 @@ declare class AndWrapper<DB, TB extends keyof DB, T extends SqlBool> implements 
      *   .executeTakeFirstOrThrow()
      *
      * // `is_jennifer_aniston: SqlBool` field exists in the result type.
-     * console.log(result.is_jennifer_or_sylvester)
+     * console.log(result.is_jennifer_aniston)
      * ```
      *
      * The generated SQL (PostgreSQL):
@@ -4000,6 +4128,8 @@ declare class AndWrapper<DB, TB extends keyof DB, T extends SqlBool> implements 
     as<A extends string>(alias: A): AliasedExpression<T, A>;
     /**
      * Returns an aliased version of the expression.
+     *
+     * ### Examples
      *
      * In addition to slapping `as "the_alias"` at the end of the expression,
      * this method also provides strict typing:
@@ -4030,6 +4160,8 @@ declare class AndWrapper<DB, TB extends keyof DB, T extends SqlBool> implements 
      * provide the alias as the only type argument:
      *
      * ```ts
+     * import { sql } from 'kysely'
+     *
      * const values = sql<{ a: number, b: string }>`(values (1, 'foo'))`
      *
      * // The alias is `t(a, b)` which specifies the column names
@@ -4044,6 +4176,7 @@ declare class AndWrapper<DB, TB extends keyof DB, T extends SqlBool> implements 
      *   .expression(
      *     db.selectFrom(aliasedValues).select(['t.a', 't.b'])
      *   )
+     *   .execute()
      * ```
      *
      * The generated SQL (PostgreSQL):
@@ -4072,11 +4205,19 @@ declare class AndWrapper<DB, TB extends keyof DB, T extends SqlBool> implements 
     /**
      * Creates the OperationNode that describes how to compile this expression into SQL.
      *
+     * ### Examples
+     *
      * If you are creating a custom expression, it's often easiest to use the {@link sql}
      * template tag to build the node:
      *
      * ```ts
+     * import { type Expression, type OperationNode, sql } from 'kysely'
+     *
      * class SomeExpression<T> implements Expression<T> {
+     *   get expressionType(): T | undefined {
+     *     return undefined
+     *   }
+     *
      *   toOperationNode(): OperationNode {
      *     return sql`some sql here`.toOperationNode()
      *   }
@@ -6148,11 +6289,19 @@ interface SelectQueryBuilder<DB, TB extends keyof DB, O> extends WhereInterface<
     /**
      * Creates the OperationNode that describes how to compile this expression into SQL.
      *
+     * ### Examples
+     *
      * If you are creating a custom expression, it's often easiest to use the {@link sql}
      * template tag to build the node:
      *
      * ```ts
+     * import { type Expression, type OperationNode, sql } from 'kysely'
+     *
      * class SomeExpression<T> implements Expression<T> {
+     *   get expressionType(): T | undefined {
+     *     return undefined
+     *   }
+     *
      *   toOperationNode(): OperationNode {
      *     return sql`some sql here`.toOperationNode()
      *   }
@@ -6418,10 +6567,18 @@ declare class AggregateFunctionBuilder<DB, TB extends keyof DB, O = unknown> imp
      * All expressions need to have this getter for complicated type-related reasons.
      * Simply add this getter for your expression and always return `undefined` from it:
      *
+     * ### Examples
+     *
      * ```ts
+     * import { type Expression, type OperationNode, sql } from 'kysely'
+     *
      * class SomeExpression<T> implements Expression<T> {
      *   get expressionType(): T | undefined {
      *     return undefined
+     *   }
+     *
+     *   toOperationNode(): OperationNode {
+     *     return sql`some sql here`.toOperationNode()
      *   }
      * }
      * ```
@@ -6489,7 +6646,7 @@ declare class AggregateFunctionBuilder<DB, TB extends keyof DB, O = unknown> imp
      *   .selectFrom('person')
      *   .innerJoin('pet', 'pet.owner_id', 'person.id')
      *   .select((eb) =>
-     *     eb.fn.jsonAgg('pet.name').orderBy('pet.name').as('person_pets')
+     *     eb.fn.jsonAgg('pet').orderBy('pet.name').as('person_pets')
      *   )
      *   .executeTakeFirstOrThrow()
      * ```
@@ -6497,7 +6654,7 @@ declare class AggregateFunctionBuilder<DB, TB extends keyof DB, O = unknown> imp
      * The generated SQL (PostgreSQL):
      *
      * ```sql
-     * select json_agg("pet"."name" order by "pet"."name") as "person_pets"
+     * select json_agg("pet" order by "pet"."name") as "person_pets"
      * from "person"
      * inner join "pet" ON "pet"."owner_id" = "person"."id"
      * ```
@@ -6647,11 +6804,19 @@ declare class AggregateFunctionBuilder<DB, TB extends keyof DB, O = unknown> imp
     /**
      * Creates the OperationNode that describes how to compile this expression into SQL.
      *
+     * ### Examples
+     *
      * If you are creating a custom expression, it's often easiest to use the {@link sql}
      * template tag to build the node:
      *
      * ```ts
+     * import { type Expression, type OperationNode, sql } from 'kysely'
+     *
      * class SomeExpression<T> implements Expression<T> {
+     *   get expressionType(): T | undefined {
+     *     return undefined
+     *   }
+     *
      *   toOperationNode(): OperationNode {
      *     return sql`some sql here`.toOperationNode()
      *   }
@@ -7552,10 +7717,18 @@ declare class TraversedJSONPathBuilder<S, O> extends JSONPathBuilder<S, O> imple
      * All expressions need to have this getter for complicated type-related reasons.
      * Simply add this getter for your expression and always return `undefined` from it:
      *
+     * ### Examples
+     *
      * ```ts
+     * import { type Expression, type OperationNode, sql } from 'kysely'
+     *
      * class SomeExpression<T> implements Expression<T> {
      *   get expressionType(): T | undefined {
      *     return undefined
+     *   }
+     *
+     *   toOperationNode(): OperationNode {
+     *     return sql`some sql here`.toOperationNode()
      *   }
      * }
      * ```
@@ -7594,6 +7767,8 @@ declare class TraversedJSONPathBuilder<S, O> extends JSONPathBuilder<S, O> imple
     /**
      * Returns an aliased version of the expression.
      *
+     * ### Examples
+     *
      * In addition to slapping `as "the_alias"` at the end of the expression,
      * this method also provides strict typing:
      *
@@ -7623,6 +7798,8 @@ declare class TraversedJSONPathBuilder<S, O> extends JSONPathBuilder<S, O> imple
      * provide the alias as the only type argument:
      *
      * ```ts
+     * import { sql } from 'kysely'
+     *
      * const values = sql<{ a: number, b: string }>`(values (1, 'foo'))`
      *
      * // The alias is `t(a, b)` which specifies the column names
@@ -7637,6 +7814,7 @@ declare class TraversedJSONPathBuilder<S, O> extends JSONPathBuilder<S, O> imple
      *   .expression(
      *     db.selectFrom(aliasedValues).select(['t.a', 't.b'])
      *   )
+     *   .execute()
      * ```
      *
      * The generated SQL (PostgreSQL):
@@ -7659,11 +7837,19 @@ declare class TraversedJSONPathBuilder<S, O> extends JSONPathBuilder<S, O> imple
     /**
      * Creates the OperationNode that describes how to compile this expression into SQL.
      *
+     * ### Examples
+     *
      * If you are creating a custom expression, it's often easiest to use the {@link sql}
      * template tag to build the node:
      *
      * ```ts
+     * import { type Expression, type OperationNode, sql } from 'kysely'
+     *
      * class SomeExpression<T> implements Expression<T> {
+     *   get expressionType(): T | undefined {
+     *     return undefined
+     *   }
+     *
      *   toOperationNode(): OperationNode {
      *     return sql`some sql here`.toOperationNode()
      *   }
@@ -7748,9 +7934,10 @@ interface ExpressionBuilder<DB, TB extends keyof DB> {
      * A simple comparison:
      *
      * ```ts
-     * eb.selectFrom('person')
+     * const result = await db.selectFrom('person')
      *   .selectAll()
      *   .where((eb) => eb('first_name', '=', 'Jennifer'))
+     *   .execute()
      * ```
      *
      * The generated SQL (PostgreSQL):
@@ -7765,9 +7952,10 @@ interface ExpressionBuilder<DB, TB extends keyof DB> {
      * a column reference, you can use {@link ref}:
      *
      * ```ts
-     * eb.selectFrom('person')
+     * const result = await db.selectFrom('person')
      *   .selectAll()
      *   .where((eb) => eb('first_name', '=', eb.ref('last_name')))
+     *   .execute()
      * ```
      *
      * The generated SQL (PostgreSQL):
@@ -7781,11 +7969,12 @@ interface ExpressionBuilder<DB, TB extends keyof DB> {
      * In the following example `eb` is used to increment an integer column:
      *
      * ```ts
-     * db.updateTable('person')
+     * await db.updateTable('person')
      *   .set((eb) => ({
      *     age: eb('age', '+', 1)
      *   }))
-     *   .where('id', '=', id)
+     *   .where('id', '=', 3)
+     *   .execute()
      * ```
      *
      * The generated SQL (PostgreSQL):
@@ -7800,15 +7989,28 @@ interface ExpressionBuilder<DB, TB extends keyof DB> {
      * can be any expression:
      *
      * ```ts
-     * eb.selectFrom('person')
+     * const result = await db.selectFrom('person')
      *   .selectAll()
      *   .where((eb) => eb(
-     *     eb.fn('lower', ['first_name']),
+     *     eb.fn<string>('lower', ['first_name']),
      *     'in',
      *     eb.selectFrom('pet')
      *       .select('pet.name')
      *       .where('pet.species', '=', 'cat')
      *   ))
+     *   .execute()
+     * ```
+     *
+     * The generated SQL (PostgreSQL):
+     *
+     * ```sql
+     * select *
+     * from "person"
+     * where lower("first_name") in (
+     *   select "pet"."name"
+     *   from "pet"
+     *   where "pet"."species" = $1
+     * )
      * ```
      */
     <RE extends ReferenceExpression<DB, TB>, OP extends BinaryOperatorExpression, VE extends OperandValueExpressionOrList<DB, TB, RE>>(lhs: RE, op: OP, rhs: VE): ExpressionWrapper<DB, TB, OP extends ComparisonOperator ? SqlBool : ExtractTypeFromReferenceExpression<DB, TB, RE>>;
@@ -7818,13 +8020,14 @@ interface ExpressionBuilder<DB, TB extends keyof DB> {
      * ### Examples
      *
      * ```ts
-     * db.selectFrom('person')
+     * const result = await db.selectFrom('person')
      *   .where(({ eb, exists, selectFrom }) =>
      *     eb('first_name', '=', 'Jennifer').and(
      *       exists(selectFrom('pet').whereRef('owner_id', '=', 'person.id').select('pet.id'))
      *     )
      *   )
      *   .selectAll()
+     *   .execute()
      * ```
      *
      * The generated SQL (PostgreSQL):
@@ -7846,7 +8049,7 @@ interface ExpressionBuilder<DB, TB extends keyof DB> {
      * table of the database even if it doesn't produce valid SQL.
      *
      * ```ts
-     * await db.selectFrom('person')
+     * const result = await db.selectFrom('person')
      *   .innerJoin('pet', 'pet.owner_id', 'person.id')
      *   .select((eb) => [
      *     'person.id',
@@ -7893,7 +8096,7 @@ interface ExpressionBuilder<DB, TB extends keyof DB> {
      *   ])
      *   .execute()
      *
-     * console.log(result[0].owner_name)
+     * console.log(result[0]?.owner_name)
      * ```
      *
      * The generated SQL (PostgreSQL):
@@ -7925,11 +8128,9 @@ interface ExpressionBuilder<DB, TB extends keyof DB> {
      * Kitchen sink example with 2 flavors of `case` operator:
      *
      * ```ts
-     * import { sql } from 'kysely'
-     *
      * const { title, name } = await db
      *   .selectFrom('person')
-     *   .where('id', '=', '123')
+     *   .where('id', '=', 123)
      *   .select((eb) => [
      *     eb.fn.coalesce('last_name', 'first_name').as('name'),
      *     eb
@@ -7939,7 +8140,7 @@ interface ExpressionBuilder<DB, TB extends keyof DB> {
      *       .when('gender', '=', 'female')
      *       .then(
      *         eb
-     *           .case('maritalStatus')
+     *           .case('marital_status')
      *           .when('single')
      *           .then('Ms.')
      *           .else('Mrs.')
@@ -7959,7 +8160,7 @@ interface ExpressionBuilder<DB, TB extends keyof DB> {
      *   case
      *     when "gender" = $1 then $2
      *     when "gender" = $3 then
-     *       case "maritalStatus"
+     *       case "marital_status"
      *         when $4 then $5
      *         else $6
      *       end
@@ -7985,72 +8186,112 @@ interface ExpressionBuilder<DB, TB extends keyof DB> {
      * This function can be used to pass in a column reference instead:
      *
      * ```ts
-     * db.selectFrom('person')
+     * const result = await db.selectFrom('person')
      *   .selectAll('person')
      *   .where((eb) => eb.or([
      *     eb('first_name', '=', eb.ref('last_name')),
      *     eb('first_name', '=', eb.ref('middle_name'))
      *   ]))
+     *   .execute()
+     * ```
+     *
+     * The generated SQL (PostgreSQL):
+     *
+     * ```sql
+     * select "person".*
+     * from "person"
+     * where "first_name" = "last_name" or "first_name" = "middle_name"
      * ```
      *
      * In the next example we use the `ref` method to reference columns of the virtual
      * table `excluded` in a type-safe way to create an upsert operation:
      *
      * ```ts
-     * db.insertInto('person')
-     *   .values(person)
+     * await db.insertInto('person')
+     *   .values({
+     *     id: 3,
+     *     first_name: 'Jennifer',
+     *     last_name: 'Aniston',
+     *     gender: 'female',
+     *   })
      *   .onConflict((oc) => oc
      *     .column('id')
      *     .doUpdateSet(({ ref }) => ({
      *       first_name: ref('excluded.first_name'),
-     *       last_name: ref('excluded.last_name')
+     *       last_name: ref('excluded.last_name'),
+     *       gender: ref('excluded.gender'),
      *     }))
      *   )
+     *   .execute()
+     * ```
+     *
+     * The generated SQL (PostgreSQL):
+     *
+     * ```sql
+     * insert into "person" ("id", "first_name", "last_name", "gender")
+     * values ($1, $2, $3, $4)
+     * on conflict ("id") do update set
+     *   "first_name" = "excluded"."first_name",
+     *   "last_name" = "excluded"."last_name",
+     *   "gender" = "excluded"."gender"
      * ```
      *
      * In the next example we use `ref` in a raw sql expression. Unless you want
      * to be as type-safe as possible, this is probably overkill:
      *
      * ```ts
-     * db.update('pet').set((eb) => ({
-     *   name: sql<string>`concat(${eb.ref('pet.name')}, ${suffix})`
-     * }))
-     * ```
+     * import { sql } from 'kysely'
      *
-     * In the next example we use `ref` to reference a nested JSON property:
-     *
-     * ```ts
-     * db.selectFrom('person')
-     *   .where(({ eb, ref }) => eb(
-     *     ref('address', '->').key('state').key('abbr'),
-     *     '=',
-     *     'CA'
-     *   ))
-     *   .selectAll()
+     * await db.updateTable('pet')
+     *   .set((eb) => ({
+     *     name: sql<string>`concat(${eb.ref('pet.name')}, ${' the animal'})`
+     *   }))
+     *   .execute()
      * ```
      *
      * The generated SQL (PostgreSQL):
      *
      * ```sql
-     * select * from "person" where "address"->'state'->'abbr' = $1
+     * update "pet" set "name" = concat("pet"."name", $1)
+     * ```
+     *
+     * In the next example we use `ref` to reference a nested JSON property:
+     *
+     * ```ts
+     * const result = await db.selectFrom('person')
+     *   .where(({ eb, ref }) => eb(
+     *     ref('profile', '->').key('addresses').at(0).key('city'),
+     *     '=',
+     *     'San Diego'
+     *   ))
+     *   .selectAll()
+     *   .execute()
+     * ```
+     *
+     * The generated SQL (PostgreSQL):
+     *
+     * ```sql
+     * select * from "person" where "profile"->'addresses'->0->'city' = $1
      * ```
      *
      * You can also compile to a JSON path expression by using the `->$`or `->>$` operator:
      *
      * ```ts
-     * db.selectFrom('person')
+     * const result = await db.selectFrom('person')
      *   .select(({ ref }) =>
-     *     ref('experience', '->$')
+     *     ref('profile', '->$')
+     *       .key('addresses')
      *       .at('last')
-     *       .key('title')
-     *       .as('current_job')
+     *       .key('city')
+     *       .as('current_city')
      *   )
+     *   .execute()
      * ```
      *
      * The generated SQL (MySQL):
      *
      * ```sql
-     * select `experience`->'$[last].title' as `current_job` from `person`
+     * select `profile`->'$.addresses[last].city' as `current_city` from `person`
      * ```
      */
     ref<RE extends StringReference<DB, TB>>(reference: RE): ExpressionWrapper<DB, TB, ExtractTypeFromReferenceExpression<DB, TB, RE>>;
@@ -8063,13 +8304,13 @@ interface ExpressionBuilder<DB, TB extends keyof DB> {
      * ### Examples
      *
      * ```ts
-     * db.updateTable('person')
-     *   .set('experience', (eb) => eb.fn('json_set', [
-     *     'experience',
-     *     eb.jsonPath<'experience'>().at('last').key('title'),
-     *     eb.val('CEO')
+     * await db.updateTable('person')
+     *   .set('profile', (eb) => eb.fn('json_set', [
+     *     'profile',
+     *     eb.jsonPath<'profile'>().key('addresses').at('last').key('city'),
+     *     eb.val('San Diego')
      *   ]))
-     *   .where('id', '=', id)
+     *   .where('id', '=', 3)
      *   .execute()
      * ```
      *
@@ -8077,16 +8318,21 @@ interface ExpressionBuilder<DB, TB extends keyof DB> {
      *
      * ```sql
      * update `person`
-     * set `experience` = json_set(`experience`, '$[last].title', ?)
-     * where `id` = ?
+     * set `profile` = json_set(`profile`, '$.addresses[last].city', $1)
+     * where `id` = $2
      * ```
      */
     jsonPath<$ extends StringReference<DB, TB> = never>(): IsNever<$> extends true ? KyselyTypeError<"You must provide a column reference as this method's $ generic"> : JSONPathBuilder<ExtractTypeFromReferenceExpression<DB, TB, $>>;
     /**
      * Creates a table reference.
      *
+     * ### Examples
+     *
      * ```ts
-     * db.selectFrom('person')
+     * import { sql } from 'kysely'
+     * import type { Pet } from 'type-editor' // imaginary module
+     *
+     * const result = await db.selectFrom('person')
      *   .innerJoin('pet', 'pet.owner_id', 'person.id')
      *   .select(eb => [
      *     'person.id',
@@ -8119,13 +8365,30 @@ interface ExpressionBuilder<DB, TB extends keyof DB> {
      * be used to pass in a value instead:
      *
      * ```ts
-     * eb(val(38), '=', ref('age'))
+     * const result = await db.selectFrom('person')
+     *   .selectAll()
+     *   .where((eb) => eb(
+     *     eb.val('cat'),
+     *     '=',
+     *     eb.fn.any(
+     *       eb.selectFrom('pet')
+     *         .select('species')
+     *         .whereRef('owner_id', '=', 'person.id')
+     *     )
+     *   ))
+     *   .execute()
      * ```
      *
      * The generated SQL (PostgreSQL):
      *
      * ```sql
-     * $1 = "age"
+     * select *
+     * from "person"
+     * where $1 = any(
+     *   select "species"
+     *   from "pet"
+     *   where "owner_id" = "person"."id"
+     * )
      * ```
      */
     val<VE>(value: VE): ExpressionWrapper<DB, TB, ExtractTypeFromValueExpression<VE>>;
@@ -8138,7 +8401,7 @@ interface ExpressionBuilder<DB, TB extends keyof DB> {
      * ### Examples
      *
      * ```ts
-     * db.selectFrom('person')
+     * const result = await db.selectFrom('person')
      *   .selectAll('person')
      *   .where(({ eb, refTuple, tuple }) => eb(
      *     refTuple('first_name', 'last_name'),
@@ -8148,6 +8411,7 @@ interface ExpressionBuilder<DB, TB extends keyof DB> {
      *       tuple('Sylvester', 'Stallone')
      *     ]
      *   ))
+     *   .execute()
      * ```
      *
      * The generated SQL (PostgreSQL):
@@ -8171,7 +8435,7 @@ interface ExpressionBuilder<DB, TB extends keyof DB> {
      * function:
      *
      * ```ts
-     * db.selectFrom('person')
+     * const result = await db.selectFrom('person')
      *   .selectAll('person')
      *   .where(({ eb, refTuple, selectFrom }) => eb(
      *     refTuple('first_name', 'last_name'),
@@ -8181,6 +8445,7 @@ interface ExpressionBuilder<DB, TB extends keyof DB> {
      *       .where('species', '!=', 'cat')
      *       .$asTuple('name', 'species')
      *   ))
+     *   .execute()
      * ```
      *
      * The generated SQL (PostgreSQL):
@@ -8213,7 +8478,7 @@ interface ExpressionBuilder<DB, TB extends keyof DB> {
      * ### Examples
      *
      * ```ts
-     * db.selectFrom('person')
+     * const result = await db.selectFrom('person')
      *   .selectAll('person')
      *   .where(({ eb, refTuple, tuple }) => eb(
      *     refTuple('first_name', 'last_name'),
@@ -8223,6 +8488,7 @@ interface ExpressionBuilder<DB, TB extends keyof DB> {
      *       tuple('Sylvester', 'Stallone')
      *     ]
      *   ))
+     *   .execute()
      * ```
      *
      * The generated SQL (PostgreSQL):
@@ -8255,8 +8521,9 @@ interface ExpressionBuilder<DB, TB extends keyof DB> {
      * ### Examples
      *
      * ```ts
-     * db.selectFrom('person')
+     * const result = await db.selectFrom('person')
      *   .select((eb) => eb.lit(1).as('one'))
+     *   .execute()
      * ```
      *
      * The generated SQL (PostgreSQL):
@@ -8277,11 +8544,12 @@ interface ExpressionBuilder<DB, TB extends keyof DB> {
      * ### Examples
      *
      * ```ts
-     * db.selectFrom('person')
+     * const result = await db.selectFrom('person')
      *   .select((eb) => [
      *     'first_name',
      *     eb.unary('-', 'age').as('negative_age')
      *   ])
+     *   .execute()
      * ```
      *
      * The generated SQL (PostgreSQL):
@@ -8322,9 +8590,10 @@ interface ExpressionBuilder<DB, TB extends keyof DB> {
      * ### Examples
      *
      * ```ts
-     * db.selectFrom('person')
+     * const result = await db.selectFrom('person')
      *   .selectAll()
      *   .where((eb) => eb.between('age', 40, 60))
+     *   .execute()
      * ```
      *
      * The generated SQL (PostgreSQL):
@@ -8340,9 +8609,10 @@ interface ExpressionBuilder<DB, TB extends keyof DB> {
      * ### Examples
      *
      * ```ts
-     * db.selectFrom('person')
+     * const result = await db.selectFrom('person')
      *   .selectAll()
      *   .where((eb) => eb.betweenSymmetric('age', 40, 60))
+     *   .execute()
      * ```
      *
      * The generated SQL (PostgreSQL):
@@ -8366,13 +8636,14 @@ interface ExpressionBuilder<DB, TB extends keyof DB> {
      * statement:
      *
      * ```ts
-     * db.selectFrom('person')
+     * const result = await db.selectFrom('person')
      *   .selectAll('person')
      *   .where((eb) => eb.and([
      *     eb('first_name', '=', 'Jennifer'),
-     *     eb('fist_name', '=', 'Arnold'),
-     *     eb('fist_name', '=', 'Sylvester')
+     *     eb('first_name', '=', 'Arnold'),
+     *     eb('first_name', '=', 'Sylvester')
      *   ]))
+     *   .execute()
      * ```
      *
      * The generated SQL (PostgreSQL):
@@ -8391,12 +8662,13 @@ interface ExpressionBuilder<DB, TB extends keyof DB> {
      * equality comparisons:
      *
      * ```ts
-     * db.selectFrom('person')
+     * const result = await db.selectFrom('person')
      *   .selectAll('person')
      *   .where((eb) => eb.and({
      *     first_name: 'Jennifer',
      *     last_name: 'Aniston'
      *   }))
+     *   .execute()
      * ```
      *
      * The generated SQL (PostgreSQL):
@@ -8426,13 +8698,14 @@ interface ExpressionBuilder<DB, TB extends keyof DB> {
      * statement:
      *
      * ```ts
-     * db.selectFrom('person')
+     * const result = await db.selectFrom('person')
      *   .selectAll('person')
      *   .where((eb) => eb.or([
      *     eb('first_name', '=', 'Jennifer'),
-     *     eb('fist_name', '=', 'Arnold'),
-     *     eb('fist_name', '=', 'Sylvester')
+     *     eb('first_name', '=', 'Arnold'),
+     *     eb('first_name', '=', 'Sylvester')
      *   ]))
+     *   .execute()
      * ```
      *
      * The generated SQL (PostgreSQL):
@@ -8451,12 +8724,13 @@ interface ExpressionBuilder<DB, TB extends keyof DB> {
      * equality comparisons:
      *
      * ```ts
-     * db.selectFrom('person')
+     * const result = await db.selectFrom('person')
      *   .selectAll('person')
      *   .where((eb) => eb.or({
      *     first_name: 'Jennifer',
      *     last_name: 'Aniston'
      *   }))
+     *   .execute()
      * ```
      *
      * The generated SQL (PostgreSQL):
@@ -8478,9 +8752,10 @@ interface ExpressionBuilder<DB, TB extends keyof DB> {
      * ### Examples
      *
      * ```ts
-     * db.selectFrom('person')
+     * const result = await db.selectFrom('person')
      *   .selectAll('person')
      *   .where((eb) => eb(eb.parens('age', '+', 1), '/', 100), '<', 0.1)
+     *   .execute()
      * ```
      *
      * The generated SQL (PostgreSQL):
@@ -8494,13 +8769,14 @@ interface ExpressionBuilder<DB, TB extends keyof DB> {
      * You can also pass in any expression as the only argument:
      *
      * ```ts
-     * db.selectFrom('person')
+     * const result = await db.selectFrom('person')
      *   .selectAll('person')
      *   .where((eb) => eb.parens(
-     *     eb('age', '=', 1).or('age', '=', 2))
+     *     eb('age', '=', 1).or('age', '=', 2)
      *   ).and(
      *     eb('first_name', '=', 'Jennifer').or('first_name', '=', 'Arnold')
-     *   )
+     *   ))
+     *   .execute()
      * ```
      *
      * The generated SQL (PostgreSQL):
@@ -8522,12 +8798,13 @@ interface ExpressionBuilder<DB, TB extends keyof DB> {
      * ### Examples
      *
      * ```ts
-     * db.selectFrom('person')
+     * const result = await db.selectFrom('person')
      *   .select((eb) => [
      *     'id',
      *     'first_name',
      *     eb.cast<number>('age', 'integer').as('age')
      *   ])
+     *   .execute()
      * ```
      *
      * The generated SQL (PostgreSQL):
@@ -9487,6 +9764,8 @@ interface RawBuilder<O> extends AliasableExpression<O> {
     /**
      * Returns an aliased version of the expression.
      *
+     * ### Examples
+     *
      * In addition to slapping `as "the_alias"` at the end of the expression,
      * this method also provides strict typing:
      *
@@ -9516,6 +9795,8 @@ interface RawBuilder<O> extends AliasableExpression<O> {
      * provide the alias as the only type argument:
      *
      * ```ts
+     * import { sql } from 'kysely'
+     *
      * const values = sql<{ a: number, b: string }>`(values (1, 'foo'))`
      *
      * // The alias is `t(a, b)` which specifies the column names
@@ -9530,6 +9811,7 @@ interface RawBuilder<O> extends AliasableExpression<O> {
      *   .expression(
      *     db.selectFrom(aliasedValues).select(['t.a', 't.b'])
      *   )
+     *   .execute()
      * ```
      *
      * The generated SQL (PostgreSQL):
@@ -9590,11 +9872,19 @@ interface RawBuilder<O> extends AliasableExpression<O> {
     /**
      * Creates the OperationNode that describes how to compile this expression into SQL.
      *
+     * ### Examples
+     *
      * If you are creating a custom expression, it's often easiest to use the {@link sql}
      * template tag to build the node:
      *
      * ```ts
+     * import { type Expression, type OperationNode, sql } from 'kysely'
+     *
      * class SomeExpression<T> implements Expression<T> {
+     *   get expressionType(): T | undefined {
+     *     return undefined
+     *   }
+     *
      *   toOperationNode(): OperationNode {
      *     return sql`some sql here`.toOperationNode()
      *   }
@@ -9991,11 +10281,11 @@ declare class DynamicModule {
      * const { ref } = db.dynamic
      *
      * // Some column name provided by the user. Value not known at compile time.
-     * const columnFromUserInput = req.query.select;
+     * const columnFromUserInput: PossibleColumns = 'birthdate';
      *
      * // A type that lists all possible values `columnFromUserInput` can have.
      * // You can use `keyof Person` if any column of an interface is allowed.
-     * type PossibleColumns = 'last_name' | 'first_name' | 'birth_date'
+     * type PossibleColumns = 'last_name' | 'first_name' | 'birthdate'
      *
      * const [person] = await db.selectFrom('person')
      *   .select([
@@ -10007,12 +10297,12 @@ declare class DynamicModule {
      * // The resulting type contains all `PossibleColumns` as optional fields
      * // because we cannot know which field was actually selected before
      * // running the code.
-     * const lastName: string | undefined = person.last_name
-     * const firstName: string | undefined = person.first_name
-     * const birthDate: string | undefined = person.birth_date
+     * const lastName: string | null | undefined = person?.last_name
+     * const firstName: string | undefined = person?.first_name
+     * const birthDate: Date | null | undefined = person?.birthdate
      *
      * // The result type also contains the compile time selection `id`.
-     * person.id
+     * person?.id
      * ```
      */
     ref<R extends string = never>(reference: string): DynamicReferenceBuilder<R>;
@@ -12673,7 +12963,7 @@ declare class DeleteQueryBuilder<DB, TB extends keyof DB, O> implements WhereInt
      *   .innerJoin('pet', 'pet.owner_id', 'person.id')
      *   // `select` needs to come after the call to `innerJoin` so
      *   // that you can select from the joined table.
-     *   .select('person.id', 'pet.name')
+     *   .select(['person.id', 'pet.name'])
      *   .execute()
      *
      * result[0].id
@@ -12745,7 +13035,7 @@ declare class DeleteQueryBuilder<DB, TB extends keyof DB, O> implements WhereInt
      * ```ts
      * await db.selectFrom('person')
      *   .innerJoin(
-     *     qb.selectFrom('pet')
+     *     db.selectFrom('pet')
      *       .select(['owner_id', 'name'])
      *       .where('name', '=', 'Doggo')
      *       .as('doggos'),
@@ -12871,7 +13161,7 @@ declare class DeleteQueryBuilder<DB, TB extends keyof DB, O> implements WhereInt
      * Return all columns from all tables
      *
      * ```ts
-     * const result = ctx.db
+     * const result = await db
      *   .deleteFrom('toy')
      *   .using(['pet', 'person'])
      *   .whereRef('toy.pet_id', '=', 'pet.id')
@@ -12895,7 +13185,7 @@ declare class DeleteQueryBuilder<DB, TB extends keyof DB, O> implements WhereInt
      * Return all columns from a single table.
      *
      * ```ts
-     * const result = ctx.db
+     * const result = await db
      *   .deleteFrom('toy')
      *   .using(['pet', 'person'])
      *   .whereRef('toy.pet_id', '=', 'pet.id')
@@ -12919,7 +13209,7 @@ declare class DeleteQueryBuilder<DB, TB extends keyof DB, O> implements WhereInt
      * Return all columns from multiple tables.
      *
      * ```ts
-     * const result = ctx.db
+     * const result = await db
      *   .deleteFrom('toy')
      *   .using(['pet', 'person'])
      *   .whereRef('toy.pet_id', '=', 'pet.id')
@@ -13079,10 +13369,11 @@ declare class DeleteQueryBuilder<DB, TB extends keyof DB, O> implements WhereInt
      * ### Examples
      *
      * ```ts
-     * db.deleteFrom('pet')
+     * await db.deleteFrom('pet')
      *   .returningAll()
      *   .where('name', '=', 'Max')
      *   .clearReturning()
+     *   .execute()
      * ```
      *
      * The generated SQL(PostgreSQL):
@@ -13098,11 +13389,12 @@ declare class DeleteQueryBuilder<DB, TB extends keyof DB, O> implements WhereInt
      * ### Examples
      *
      * ```ts
-     * db.deleteFrom('pet')
+     * await db.deleteFrom('pet')
      *   .returningAll()
      *   .where('name', '=', 'Max')
      *   .limit(5)
      *   .clearLimit()
+     *   .execute()
      * ```
      *
      * The generated SQL(PostgreSQL):
@@ -13118,11 +13410,12 @@ declare class DeleteQueryBuilder<DB, TB extends keyof DB, O> implements WhereInt
      * ### Examples
      *
      * ```ts
-     * db.deleteFrom('pet')
+     * await db.deleteFrom('pet')
      *   .returningAll()
      *   .where('name', '=', 'Max')
      *   .orderBy('id')
      *   .clearOrderBy()
+     *   .execute()
      * ```
      *
      * The generated SQL(PostgreSQL):
@@ -13184,6 +13477,12 @@ declare class DeleteQueryBuilder<DB, TB extends keyof DB, O> implements WhereInt
      *   .limit(5)
      *   .execute()
      * ```
+     *
+     * The generated SQL (MySQL):
+     *
+     * ```sql
+     * delete from `pet` order by `created_at` limit ?
+     * ```
      */
     limit(limit: ValueExpression<DB, TB, number>): DeleteQueryBuilder<DB, TB, O>;
     /**
@@ -13192,10 +13491,12 @@ declare class DeleteQueryBuilder<DB, TB extends keyof DB, O> implements WhereInt
      * ### Examples
      *
      * ```ts
+     * import { sql } from 'kysely'
+     *
      * await db.deleteFrom('person')
-     * .where('first_name', '=', 'John')
-     * .modifyEnd(sql.raw('-- This is a comment'))
-     * .execute()
+     *   .where('first_name', '=', 'John')
+     *   .modifyEnd(sql`-- This is a comment`)
+     *   .execute()
      * ```
      *
      * The generated SQL (MySQL):
@@ -13218,12 +13519,14 @@ declare class DeleteQueryBuilder<DB, TB extends keyof DB, O> implements WhereInt
      * The next example uses a helper function `log` to log a query:
      *
      * ```ts
+     * import type { Compilable } from 'kysely'
+     *
      * function log<T extends Compilable>(qb: T): T {
      *   console.log(qb.compile())
      *   return qb
      * }
      *
-     * db.deleteFrom('person')
+     * await db.deleteFrom('person')
      *   .$call(log)
      *   .execute()
      * ```
@@ -13289,25 +13592,33 @@ declare class DeleteQueryBuilder<DB, TB extends keyof DB, O> implements WhereInt
      * Turn this code:
      *
      * ```ts
+     * import type { Person } from 'type-editor' // imaginary module
+     *
      * const person = await db.deleteFrom('person')
-     *   .where('id', '=', id)
+     *   .where('id', '=', 3)
      *   .where('nullable_column', 'is not', null)
      *   .returningAll()
      *   .executeTakeFirstOrThrow()
      *
-     * if (person.nullable_column) {
+     * if (isWithNoNullValue(person)) {
      *   functionThatExpectsPersonWithNonNullValue(person)
+     * }
+     *
+     * function isWithNoNullValue(person: Person): person is Person & { nullable_column: string } {
+     *   return person.nullable_column != null
      * }
      * ```
      *
      * Into this:
      *
      * ```ts
+     * import type { NotNull } from 'kysely'
+     *
      * const person = await db.deleteFrom('person')
-     *   .where('id', '=', id)
+     *   .where('id', '=', 3)
      *   .where('nullable_column', 'is not', null)
      *   .returningAll()
-     *   .$narrowType<{ nullable_column: string }>()
+     *   .$narrowType<{ nullable_column: NotNull }>()
      *   .executeTakeFirstOrThrow()
      *
      * functionThatExpectsPersonWithNonNullValue(person)
@@ -13337,22 +13648,26 @@ declare class DeleteQueryBuilder<DB, TB extends keyof DB, O> implements WhereInt
      * ### Examples
      *
      * ```ts
-     * const result = await db
-     *   .with('deleted_person', (qb) => qb
-     *     .deleteFrom('person')
-     *     .where('id', '=', person.id)
-     *     .returning('first_name')
-     *     .$assertType<{ first_name: string }>()
-     *   )
-     *   .with('deleted_pet', (qb) => qb
-     *     .deleteFrom('pet')
-     *     .where('owner_id', '=', person.id)
-     *     .returning(['name as pet_name', 'species'])
-     *     .$assertType<{ pet_name: string, species: Species }>()
-     *   )
-     *   .selectFrom(['deleted_person', 'deleted_pet'])
-     *   .selectAll()
-     *   .executeTakeFirstOrThrow()
+     * import type { Species } from 'type-editor' // imaginary module
+     *
+     * async function deletePersonAndPets(personId: number) {
+     *   return await db
+     *     .with('deleted_person', (qb) => qb
+     *        .deleteFrom('person')
+     *        .where('id', '=', personId)
+     *        .returning('first_name')
+     *        .$assertType<{ first_name: string }>()
+     *     )
+     *     .with('deleted_pets', (qb) => qb
+     *       .deleteFrom('pet')
+     *       .where('owner_id', '=', personId)
+     *       .returning(['name as pet_name', 'species'])
+     *       .$assertType<{ pet_name: string, species: Species }>()
+     *     )
+     *     .selectFrom(['deleted_person', 'deleted_pets'])
+     *     .selectAll()
+     *     .execute()
+     * }
      * ```
      */
     $assertType<T extends O>(): O extends T ? DeleteQueryBuilder<DB, TB, T> : KyselyTypeError<`$assertType() call failed: The type passed in is not equal to the output type of the query.`>;
@@ -16260,33 +16575,23 @@ declare class Log {
  *
  * ### Examples
  *
- * This example assumes your database has tables `person` and `pet`:
+ * This example assumes your database has a "person" table:
  *
  * ```ts
- * import { Kysely, Generated, PostgresDialect } from 'kysely'
- *
- * interface PersonTable {
- *   id: Generated<number>
- *   first_name: string
- *   last_name: string
- * }
- *
- * interface PetTable {
- *   id: Generated<number>
- *   owner_id: number
- *   name: string
- *   species: 'cat' | 'dog'
- * }
+ * import * as Sqlite from 'better-sqlite3'
+ * import { type Generated, Kysely, SqliteDialect } from 'kysely'
  *
  * interface Database {
- *   person: PersonTable,
- *   pet: PetTable
+ *   person: {
+ *     id: Generated<number>
+ *     first_name: string
+ *     last_name: string | null
+ *   }
  * }
  *
  * const db = new Kysely<Database>({
- *   dialect: new PostgresDialect({
- *     host: 'localhost',
- *     database: 'kysely_test',
+ *   dialect: new SqliteDialect({
+ *     database: new Sqlite(':memory:'),
  *   })
  * })
  * ```
@@ -16322,8 +16627,40 @@ declare class Kysely<DB> extends QueryCreator<DB> implements QueryExecutorProvid
     case(): CaseBuilder<DB, keyof DB>;
     case<V>(value: Expression<V>): CaseBuilder<DB, keyof DB, V>;
     /**
-     * Returns a {@link FunctionModule} that can be used to write type safe function
+     * Returns a {@link FunctionModule} that can be used to write somewhat type-safe function
      * calls.
+     *
+     * ```ts
+     * const { count } = db.fn
+     *
+     * await db.selectFrom('person')
+     *   .innerJoin('pet', 'pet.owner_id', 'person.id')
+     *   .select([
+     *     'id',
+     *     count('pet.id').as('person_count'),
+     *   ])
+     *   .groupBy('person.id')
+     *   .having(count('pet.id'), '>', 10)
+     *   .execute()
+     * ```
+     *
+     * The generated SQL (PostgreSQL):
+     *
+     * ```sql
+     * select "person"."id", count("pet"."id") as "person_count"
+     * from "person"
+     * inner join "pet" on "pet"."owner_id" = "person"."id"
+     * group by "person"."id"
+     * having count("pet"."id") > $1
+     * ```
+     *
+     * Why "somewhat" type-safe? Because the function calls are not bound to the
+     * current query context. They allow you to reference columns and tables that
+     * are not in the current query. E.g. remove the `innerJoin` from the previous
+     * query and TypeScript won't even complain.
+     *
+     * If you want to make the function calls fully type-safe, you can use the
+     * {@link ExpressionBuilder.fn} getter for a query context-aware, stricter {@link FunctionModule}.
      *
      * ```ts
      * await db.selectFrom('person')
@@ -16335,16 +16672,6 @@ declare class Kysely<DB> extends QueryCreator<DB> implements QueryExecutorProvid
      *   .groupBy('person.id')
      *   .having((eb) => eb.fn.count('pet.id'), '>', 10)
      *   .execute()
-     * ```
-     *
-     * The generated SQL (PostgreSQL):
-     *
-     * ```sql
-     * select "person"."id", count("pet"."id") as "pet_count"
-     * from "person"
-     * inner join "pet" on "pet"."owner_id" = "person"."id"
-     * group by "person"."id"
-     * having count("pet"."id") > $1
      * ```
      */
     get fn(): FunctionModule<DB, keyof DB>;
@@ -16402,12 +16729,18 @@ declare class Kysely<DB> extends QueryCreator<DB> implements QueryExecutorProvid
      * Setting the isolation level:
      *
      * ```ts
+     * import type { Kysely } from 'kysely'
+     *
      * await db
      *   .transaction()
      *   .setIsolationLevel('serializable')
      *   .execute(async (trx) => {
      *     await doStuff(trx)
      *   })
+     *
+     * async function doStuff(kysely: typeof db) {
+     *   // ...
+     * }
      * ```
      */
     transaction(): TransactionBuilder<DB>;
@@ -16425,6 +16758,10 @@ declare class Kysely<DB> extends QueryCreator<DB> implements QueryExecutorProvid
      *     // the same connection.
      *     await doStuff(db)
      *   })
+     *
+     * async function doStuff(kysely: typeof db) {
+     *   // ...
+     * }
      * ```
      */
     connection(): ConnectionBuilder<DB>;
@@ -16451,7 +16788,6 @@ declare class Kysely<DB> extends QueryCreator<DB> implements QueryExecutorProvid
      *
      * The following example adds and uses a temporary table:
      *
-     * @example
      * ```ts
      * await db.schema
      *   .createTable('temp_table')
@@ -16559,12 +16895,18 @@ declare class Transaction<DB> extends Kysely<DB> {
      * Setting the isolation level:
      *
      * ```ts
+     * import type { Kysely } from 'kysely'
+     *
      * await db
      *   .transaction()
      *   .setIsolationLevel('serializable')
      *   .execute(async (trx) => {
      *     await doStuff(trx)
      *   })
+     *
+     * async function doStuff(kysely: typeof db) {
+     *   // ...
+     * }
      * ```
      */
     transaction(): TransactionBuilder<DB>;
@@ -16582,6 +16924,10 @@ declare class Transaction<DB> extends Kysely<DB> {
      *     // the same connection.
      *     await doStuff(db)
      *   })
+     *
+     * async function doStuff(kysely: typeof db) {
+     *   // ...
+     * }
      * ```
      */
     connection(): ConnectionBuilder<DB>;
@@ -16614,7 +16960,6 @@ declare class Transaction<DB> extends Kysely<DB> {
      *
      * The following example adds and uses a temporary table:
      *
-     * @example
      * ```ts
      * await db.schema
      *   .createTable('temp_table')
@@ -16654,16 +16999,32 @@ interface KyselyConfig {
      *
      * ### Examples
      *
+     * Setting up built-in logging for preferred log levels:
+     *
      * ```ts
+     * import * as Sqlite from 'better-sqlite3'
+     * import { Kysely, SqliteDialect } from 'kysely'
+     * import type { Database } from 'type-editor' // imaginary module
+     *
      * const db = new Kysely<Database>({
-     *   dialect: new PostgresDialect(postgresConfig),
+     *   dialect: new SqliteDialect({
+     *     database: new Sqlite(':memory:'),
+     *   }),
      *   log: ['query', 'error']
      * })
      * ```
      *
+     * Setting up custom logging:
+     *
      * ```ts
+     * import * as Sqlite from 'better-sqlite3'
+     * import { Kysely, SqliteDialect } from 'kysely'
+     * import type { Database } from 'type-editor' // imaginary module
+     *
      * const db = new Kysely<Database>({
-     *   dialect: new PostgresDialect(postgresConfig),
+     *   dialect: new SqliteDialect({
+     *     database: new Sqlite(':memory:'),
+     *   }),
      *   log(event): void {
      *     if (event.level === 'query') {
      *       console.log(event.query.sql)

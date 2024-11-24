@@ -1,4 +1,4 @@
-import { eU as SelectQueryBuilderExpression, R as RawBuilder, aZ as Simplify, bI as Expression } from '../kysely.d-TRAO1JWP.js';
+import { eU as SelectQueryBuilderExpression, R as RawBuilder, aZ as Simplify, bI as Expression } from '../kysely.d-G0axPfSW.js';
 
 /**
  * A MySQL helper for aggregating a subquery into a JSON array.
@@ -11,6 +11,8 @@ import { eU as SelectQueryBuilderExpression, R as RawBuilder, aZ as Simplify, bI
  * ### Examples
  *
  * ```ts
+ * import { jsonArrayFrom } from 'kysely/helpers/mysql'
+ *
  * const result = await db
  *   .selectFrom('person')
  *   .select((eb) => [
@@ -24,9 +26,9 @@ import { eU as SelectQueryBuilderExpression, R as RawBuilder, aZ as Simplify, bI
  *   ])
  *   .execute()
  *
- * result[0].id
- * result[0].pets[0].pet_id
- * result[0].pets[0].name
+ * result[0]?.id
+ * result[0]?.pets[0]?.pet_id
+ * result[0]?.pets[0]?.name
  * ```
  *
  * The generated SQL (MySQL):
@@ -60,6 +62,8 @@ declare function jsonArrayFrom<O>(expr: SelectQueryBuilderExpression<O>): RawBui
  * ### Examples
  *
  * ```ts
+ * import { jsonObjectFrom } from 'kysely/helpers/mysql'
+ *
  * const result = await db
  *   .selectFrom('person')
  *   .select((eb) => [
@@ -73,9 +77,9 @@ declare function jsonArrayFrom<O>(expr: SelectQueryBuilderExpression<O>): RawBui
  *   ])
  *   .execute()
  *
- * result[0].id
- * result[0].favorite_pet.pet_id
- * result[0].favorite_pet.name
+ * result[0]?.id
+ * result[0]?.favorite_pet?.pet_id
+ * result[0]?.favorite_pet?.name
  * ```
  *
  * The generated SQL (MySQL):
@@ -119,10 +123,10 @@ declare function jsonObjectFrom<O>(expr: SelectQueryBuilderExpression<O>): RawBu
  *   ])
  *   .execute()
  *
- * result[0].id
- * result[0].name.first
- * result[0].name.last
- * result[0].name.full
+ * result[0]?.id
+ * result[0]?.name.first
+ * result[0]?.name.last
+ * result[0]?.name.full
  * ```
  *
  * The generated SQL (MySQL):
