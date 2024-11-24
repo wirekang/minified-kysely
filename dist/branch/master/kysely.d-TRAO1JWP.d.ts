@@ -13,12 +13,17 @@
  * ### Examples
  *
  * ```ts
- * const result = await db
- *   .insertInto('person')
- *   .values(person)
- *   .executeTakeFirst()
+ * import type { NewPerson } from 'type-editor' // imaginary module
  *
- * console.log(result.insertId)
+ * async function insertPerson(person: NewPerson) {
+ *   const result = await db
+ *     .insertInto('person')
+ *     .values(person)
+ *     .executeTakeFirstOrThrow()
+ *
+ *   console.log(result.insertId) // relevant on MySQL
+ *   console.log(result.numInsertedOrUpdatedRows) // always relevant
+ * }
  * ```
  */
 declare class InsertResult {
@@ -2610,14 +2615,28 @@ declare class AlterColumnBuilder {
 /**
  * Allows us to force consumers to do exactly one alteration to a column.
  *
- * Basically, deny the following:
+ * One cannot do no alterations:
  *
  * ```ts
- * db.schema.alterTable('person').alterColumn('age', (ac) => ac)
+ * await db.schema
+ *   .alterTable('person')
+ * //  .execute() // Property 'execute' does not exist on type 'AlteredColumnBuilder'.
  * ```
  *
  * ```ts
- * db.schema.alterTable('person').alterColumn('age', (ac) => ac.dropNotNull().setNotNull())
+ * await db.schema
+ *   .alterTable('person')
+ * //  .alterColumn('age', (ac) => ac) // Type 'AlterColumnBuilder' is not assignable to type 'AlteredColumnBuilder'.
+ * //  .execute()
+ * ```
+ *
+ * One cannot do multiple alterations:
+ *
+ * ```ts
+ * await db.schema
+ *   .alterTable('person')
+ * //  .alterColumn('age', (ac) => ac.dropNotNull().setNotNull()) // Property 'setNotNull' does not exist on type 'AlteredColumnBuilder'.
+ * //  .execute()
  * ```
  *
  * Which would now throw a compilation error, instead of a runtime error.
@@ -3075,6 +3094,8 @@ interface WhereInterface<DB, TB extends keyof DB> {
      * you can always use:
      *
      * ```ts
+     * import { sql } from 'kysely'
+     *
      * sql`your operator`
      * ```
      *
@@ -3086,7 +3107,7 @@ interface WhereInterface<DB, TB extends keyof DB> {
      * const persons = await db
      *   .selectFrom('person')
      *   .selectAll()
-     *   .where('id', 'in', ['1', '2', '3'])
+     *   .where('id', 'in', [1, 2, 3])
      *   .execute()
      * ```
      *
@@ -3333,6 +3354,8 @@ interface WhereInterface<DB, TB extends keyof DB> {
      * ```ts
      * import { sql } from 'kysely'
      * const { ref } = db.dynamic
+     *
+     * const columnFromUserInput: string = 'id'
      *
      * const persons = await db
      *   .selectFrom('person')
@@ -4096,6 +4119,8 @@ interface SelectQueryBuilder<DB, TB extends keyof DB, O> extends WhereInterface<
      * you can always use:
      *
      * ```ts
+     * import { sql } from 'kysely'
+     *
      * sql`your operator`
      * ```
      *
@@ -4107,7 +4132,7 @@ interface SelectQueryBuilder<DB, TB extends keyof DB, O> extends WhereInterface<
      * const persons = await db
      *   .selectFrom('person')
      *   .selectAll()
-     *   .where('id', 'in', ['1', '2', '3'])
+     *   .where('id', 'in', [1, 2, 3])
      *   .execute()
      * ```
      *
@@ -4354,6 +4379,8 @@ interface SelectQueryBuilder<DB, TB extends keyof DB, O> extends WhereInterface<
      * ```ts
      * import { sql } from 'kysely'
      * const { ref } = db.dynamic
+     *
+     * const columnFromUserInput: string = 'id'
      *
      * const persons = await db
      *   .selectFrom('person')
@@ -4628,13 +4655,13 @@ interface SelectQueryBuilder<DB, TB extends keyof DB, O> extends WhereInterface<
      * const { ref } = db.dynamic
      *
      * // Some column name provided by the user. Value not known at compile time.
-     * const columnFromUserInput = req.query.select;
+     * const columnFromUserInput: string = 'first_name';
      *
      * // A type that lists all possible values `columnFromUserInput` can have.
      * // You can use `keyof Person` if any column of an interface is allowed.
-     * type PossibleColumns = 'last_name' | 'first_name' | 'birth_date'
+     * type PossibleColumns = 'last_name' | 'first_name' | 'birthdate'
      *
-     * const persons = await db
+     * const people = await db
      *   .selectFrom('person')
      *   .select([
      *     ref<PossibleColumns>(columnFromUserInput),
@@ -4645,12 +4672,12 @@ interface SelectQueryBuilder<DB, TB extends keyof DB, O> extends WhereInterface<
      * // The resulting type contains all `PossibleColumns` as optional fields
      * // because we cannot know which field was actually selected before
      * // running the code.
-     * const lastName: string | undefined = persons[0].last_name
-     * const firstName: string | undefined = persons[0].first_name
-     * const birthDate: string | undefined = persons[0].birth_date
+     * const lastName: string | null | undefined = people[0].last_name
+     * const firstName: string | undefined = people[0].first_name
+     * const birthDate: Date | null | undefined = people[0].birthdate
      *
      * // The result type also contains the compile time selection `id`.
-     * persons[0].id
+     * people[0].id
      * ```
      */
     select<SE extends SelectExpression<DB, TB>>(selections: ReadonlyArray<SE>): SelectQueryBuilder<DB, TB, O & Selection<DB, TB, SE>>;
@@ -4689,7 +4716,9 @@ interface SelectQueryBuilder<DB, TB extends keyof DB, O> extends WhereInterface<
      * ### Examples
      *
      * ```ts
-     * db.selectFrom('person')
+     * import { sql } from 'kysely'
+     *
+     * await db.selectFrom('person')
      *   .modifyFront(sql`sql_no_cache`)
      *   .select('first_name')
      *   .execute()
@@ -4712,7 +4741,9 @@ interface SelectQueryBuilder<DB, TB extends keyof DB, O> extends WhereInterface<
      * ### Examples
      *
      * ```ts
-     * db.selectFrom('person')
+     * import { sql } from 'kysely'
+     *
+     * await db.selectFrom('person')
      *   .select('first_name')
      *   .modifyEnd(sql`for update`)
      *   .execute()
@@ -4976,7 +5007,7 @@ interface SelectQueryBuilder<DB, TB extends keyof DB, O> extends WhereInterface<
      * ### Examples
      *
      * ```ts
-     * db.selectFrom('person')
+     * await db.selectFrom('person')
      *   .innerJoinLateral(
      *     (eb) =>
      *       eb.selectFrom('pet')
@@ -4987,6 +5018,20 @@ interface SelectQueryBuilder<DB, TB extends keyof DB, O> extends WhereInterface<
      *   )
      *   .select(['first_name', 'p.name'])
      *   .orderBy('first_name')
+     *   .execute()
+     * ```
+     *
+     * The generated SQL (PostgreSQL):
+     *
+     * ```sql
+     * select "person"."first_name", "p"."name"
+     * from "person"
+     * inner join lateral (
+     *   select "name"
+     *   from "pet"
+     *   where "pet"."owner_id" = "person"."id"
+     * ) as "p" on true
+     * order by "first_name"
      * ```
      */
     innerJoinLateral<TE extends TableExpression<DB, TB>, K1 extends JoinReferenceExpression<DB, TB, TE>, K2 extends JoinReferenceExpression<DB, TB, TE>>(table: TE, k1: K1, k2: K2): SelectQueryBuilderWithInnerJoin<DB, TB, O, TE>;
@@ -4996,7 +5041,7 @@ interface SelectQueryBuilder<DB, TB extends keyof DB, O> extends WhereInterface<
      * ### Examples
      *
      * ```ts
-     * db.selectFrom('person')
+     * await db.selectFrom('person')
      *   .leftJoinLateral(
      *     (eb) =>
      *       eb.selectFrom('pet')
@@ -5007,6 +5052,20 @@ interface SelectQueryBuilder<DB, TB extends keyof DB, O> extends WhereInterface<
      *   )
      *   .select(['first_name', 'p.name'])
      *   .orderBy('first_name')
+     *   .execute()
+     * ```
+     *
+     * The generated SQL (PostgreSQL):
+     *
+     * ```sql
+     * select "person"."first_name", "p"."name"
+     * from "person"
+     * left join lateral (
+     *   select "name"
+     *   from "pet"
+     *   where "pet"."owner_id" = "person"."id"
+     * ) as "p" on true
+     * order by "first_name"
      * ```
      */
     leftJoinLateral<TE extends TableExpression<DB, TB>, K1 extends JoinReferenceExpression<DB, TB, TE>, K2 extends JoinReferenceExpression<DB, TB, TE>>(table: TE, k1: K1, k2: K2): SelectQueryBuilderWithLeftJoin<DB, TB, O, TE>;
@@ -5232,7 +5291,7 @@ interface SelectQueryBuilder<DB, TB extends keyof DB, O> extends WhereInterface<
      * Select the first 10 rows of the result:
      *
      * ```ts
-     * return await db
+     * await db
      *   .selectFrom('person')
      *   .select('first_name')
      *   .limit(10)
@@ -5248,7 +5307,7 @@ interface SelectQueryBuilder<DB, TB extends keyof DB, O> extends WhereInterface<
      * Select rows from index 10 to index 19 of the result:
      *
      * ```ts
-     * return await db
+     * await db
      *   .selectFrom('person')
      *   .select('first_name')
      *   .limit(10)
@@ -5271,7 +5330,7 @@ interface SelectQueryBuilder<DB, TB extends keyof DB, O> extends WhereInterface<
      * Select rows from index 10 to index 19 of the result:
      *
      * ```ts
-     * return await db
+     * await db
      *   .selectFrom('person')
      *   .select('first_name')
      *   .limit(10)
@@ -5294,7 +5353,7 @@ interface SelectQueryBuilder<DB, TB extends keyof DB, O> extends WhereInterface<
      * ### Examples
      *
      * ```ts
-     * return await db
+     * await db
      *   .selectFrom('person')
      *   .select('first_name')
      *   .orderBy('first_name')
@@ -5324,7 +5383,7 @@ interface SelectQueryBuilder<DB, TB extends keyof DB, O> extends WhereInterface<
      * Select 10 biggest ages:
      *
      * ```ts
-     * return await db
+     * await db
      *   .selectFrom('person')
      *   .select('age')
      *   .top(10)
@@ -5341,7 +5400,7 @@ interface SelectQueryBuilder<DB, TB extends keyof DB, O> extends WhereInterface<
      * Select 10% first rows:
      *
      * ```ts
-     * return await db
+     * await db
      *  .selectFrom('person')
      *  .selectAll()
      *  .top(10, 'percent')
@@ -5363,22 +5422,48 @@ interface SelectQueryBuilder<DB, TB extends keyof DB, O> extends WhereInterface<
      * ### Examples
      *
      * ```ts
-     * db.selectFrom('person')
+     * await db.selectFrom('person')
      *   .select(['id', 'first_name as name'])
      *   .union(db.selectFrom('pet').select(['id', 'name']))
      *   .orderBy('name')
+     *   .execute()
+     * ```
+     *
+     * The generated SQL (PostgreSQL):
+     *
+     * ```sql
+     * select "id", "first_name" as "name"
+     * from "person"
+     * union
+     * select "id", "name"
+     * from "pet"
+     * order by "name"
      * ```
      *
      * You can provide a callback to get an expression builder.
      * In the following example, this allows us to wrap the query in parentheses:
      *
      * ```ts
-     * db.selectFrom('person')
+     * await db.selectFrom('person')
      *   .select(['id', 'first_name as name'])
      *   .union((eb) => eb.parens(
      *     eb.selectFrom('pet').select(['id', 'name'])
      *   ))
      *   .orderBy('name')
+     *   .execute()
+     * ```
+     *
+     * The generated SQL (PostgreSQL):
+     *
+     * ```sql
+     * select "id", "first_name" as "name"
+     * from "person"
+     * union
+     * (
+     *   select "id", "name"
+     *   from "pet"
+     * )
+     * order by "name"
      * ```
      */
     union<E extends SetOperandExpression<DB, O>>(expression: E): SelectQueryBuilder<DB, TB, O>;
@@ -5390,22 +5475,48 @@ interface SelectQueryBuilder<DB, TB extends keyof DB, O> extends WhereInterface<
      * ### Examples
      *
      * ```ts
-     * db.selectFrom('person')
+     * await db.selectFrom('person')
      *   .select(['id', 'first_name as name'])
      *   .unionAll(db.selectFrom('pet').select(['id', 'name']))
      *   .orderBy('name')
+     *   .execute()
+     * ```
+     *
+     * The generated SQL (PostgreSQL):
+     *
+     * ```sql
+     * select "id", "first_name" as "name"
+     * from "person"
+     * union all
+     * select "id", "name"
+     * from "pet"
+     * order by "name"
      * ```
      *
      * You can provide a callback to get an expression builder.
      * In the following example, this allows us to wrap the query in parentheses:
      *
      * ```ts
-     * db.selectFrom('person')
+     * await db.selectFrom('person')
      *   .select(['id', 'first_name as name'])
      *   .unionAll((eb) => eb.parens(
      *     eb.selectFrom('pet').select(['id', 'name'])
      *   ))
      *   .orderBy('name')
+     *   .execute()
+     * ```
+     *
+     * The generated SQL (PostgreSQL):
+     *
+     * ```sql
+     * select "id", "first_name" as "name"
+     * from "person"
+     * union all
+     * (
+     *   select "id", "name"
+     *   from "pet"
+     * )
+     * order by "name"
      * ```
      */
     unionAll<E extends SetOperandExpression<DB, O>>(expression: E): SelectQueryBuilder<DB, TB, O>;
@@ -5417,22 +5528,48 @@ interface SelectQueryBuilder<DB, TB extends keyof DB, O> extends WhereInterface<
      * ### Examples
      *
      * ```ts
-     * db.selectFrom('person')
+     * await db.selectFrom('person')
      *   .select(['id', 'first_name as name'])
      *   .intersect(db.selectFrom('pet').select(['id', 'name']))
      *   .orderBy('name')
+     *   .execute()
+     * ```
+     *
+     * The generated SQL (PostgreSQL):
+     *
+     * ```sql
+     * select "id", "first_name" as "name"
+     * from "person"
+     * intersect
+     * select "id", "name"
+     * from "pet"
+     * order by "name"
      * ```
      *
      * You can provide a callback to get an expression builder.
      * In the following example, this allows us to wrap the query in parentheses:
      *
      * ```ts
-     * db.selectFrom('person')
+     * await db.selectFrom('person')
      *   .select(['id', 'first_name as name'])
      *   .intersect((eb) => eb.parens(
      *     eb.selectFrom('pet').select(['id', 'name'])
      *   ))
      *   .orderBy('name')
+     *   .execute()
+     * ```
+     *
+     * The generated SQL (PostgreSQL):
+     *
+     * ```sql
+     * select "id", "first_name" as "name"
+     * from "person"
+     * intersect
+     * (
+     *   select "id", "name"
+     *   from "pet"
+     * )
+     * order by "name"
      * ```
      */
     intersect<E extends SetOperandExpression<DB, O>>(expression: E): SelectQueryBuilder<DB, TB, O>;
@@ -5444,22 +5581,48 @@ interface SelectQueryBuilder<DB, TB extends keyof DB, O> extends WhereInterface<
      * ### Examples
      *
      * ```ts
-     * db.selectFrom('person')
+     * await db.selectFrom('person')
      *   .select(['id', 'first_name as name'])
      *   .intersectAll(db.selectFrom('pet').select(['id', 'name']))
      *   .orderBy('name')
+     *   .execute()
+     * ```
+     *
+     * The generated SQL (PostgreSQL):
+     *
+     * ```sql
+     * select "id", "first_name" as "name"
+     * from "person"
+     * intersect all
+     * select "id", "name"
+     * from "pet"
+     * order by "name"
      * ```
      *
      * You can provide a callback to get an expression builder.
      * In the following example, this allows us to wrap the query in parentheses:
      *
      * ```ts
-     * db.selectFrom('person')
+     * await db.selectFrom('person')
      *   .select(['id', 'first_name as name'])
      *   .intersectAll((eb) => eb.parens(
      *     eb.selectFrom('pet').select(['id', 'name'])
      *   ))
      *   .orderBy('name')
+     *   .execute()
+     * ```
+     *
+     * The generated SQL (PostgreSQL):
+     *
+     * ```sql
+     * select "id", "first_name" as "name"
+     * from "person"
+     * intersect all
+     * (
+     *   select "id", "name"
+     *   from "pet"
+     * )
+     * order by "name"
      * ```
      */
     intersectAll<E extends SetOperandExpression<DB, O>>(expression: E): SelectQueryBuilder<DB, TB, O>;
@@ -5471,22 +5634,48 @@ interface SelectQueryBuilder<DB, TB extends keyof DB, O> extends WhereInterface<
      * ### Examples
      *
      * ```ts
-     * db.selectFrom('person')
+     * await db.selectFrom('person')
      *   .select(['id', 'first_name as name'])
      *   .except(db.selectFrom('pet').select(['id', 'name']))
      *   .orderBy('name')
+     *   .execute()
+     * ```
+     *
+     * The generated SQL (PostgreSQL):
+     *
+     * ```sql
+     * select "id", "first_name" as "name"
+     * from "person"
+     * except
+     * select "id", "name"
+     * from "pet"
+     * order by "name"
      * ```
      *
      * You can provide a callback to get an expression builder.
      * In the following example, this allows us to wrap the query in parentheses:
      *
      * ```ts
-     * db.selectFrom('person')
+     * await db.selectFrom('person')
      *   .select(['id', 'first_name as name'])
      *   .except((eb) => eb.parens(
      *     eb.selectFrom('pet').select(['id', 'name'])
      *   ))
      *   .orderBy('name')
+     *   .execute()
+     * ```
+     *
+     * The generated SQL (PostgreSQL):
+     *
+     * ```sql
+     * select "id", "first_name" as "name"
+     * from "person"
+     * except
+     * (
+     *   select "id", "name"
+     *   from "pet"
+     * )
+     * order by "name"
      * ```
      */
     except<E extends SetOperandExpression<DB, O>>(expression: E): SelectQueryBuilder<DB, TB, O>;
@@ -5498,22 +5687,48 @@ interface SelectQueryBuilder<DB, TB extends keyof DB, O> extends WhereInterface<
      * ### Examples
      *
      * ```ts
-     * db.selectFrom('person')
+     * await db.selectFrom('person')
      *   .select(['id', 'first_name as name'])
      *   .exceptAll(db.selectFrom('pet').select(['id', 'name']))
      *   .orderBy('name')
+     *   .execute()
+     * ```
+     *
+     * The generated SQL (PostgreSQL):
+     *
+     * ```sql
+     * select "id", "first_name" as "name"
+     * from "person"
+     * except all
+     * select "id", "name"
+     * from "pet"
+     * order by "name"
      * ```
      *
      * You can provide a callback to get an expression builder.
      * In the following example, this allows us to wrap the query in parentheses:
      *
      * ```ts
-     * db.selectFrom('person')
+     * await db.selectFrom('person')
      *   .select(['id', 'first_name as name'])
      *   .exceptAll((eb) => eb.parens(
      *     eb.selectFrom('pet').select(['id', 'name'])
      *   ))
      *   .orderBy('name')
+     *   .execute()
+     * ```
+     *
+     * The generated SQL (PostgreSQL):
+     *
+     * ```sql
+     * select "id", "first_name" as "name"
+     * from "person"
+     * except all
+     * (
+     *   select "id", "name"
+     *   from "pet"
+     * )
+     * order by "name"
      * ```
      */
     exceptAll<E extends SetOperandExpression<DB, O>>(expression: E): SelectQueryBuilder<DB, TB, O>;
@@ -5535,6 +5750,17 @@ interface SelectQueryBuilder<DB, TB extends keyof DB, O> extends WhereInterface<
      *
      * pets[0].owner_first_name
      * ```
+     *
+     * The generated SQL (PostgreSQL):
+     *
+     * ```sql
+     * select "pet".*, (
+     *   select "first_name"
+     *   from "person"
+     *   where "pet"."owner_id" = "person"."id"
+     * ) as "owner_first_name"
+     * from "pet"
+     * ```
      */
     as<A extends string>(alias: A): AliasedSelectQueryBuilder<O, A>;
     /**
@@ -5543,10 +5769,11 @@ interface SelectQueryBuilder<DB, TB extends keyof DB, O> extends WhereInterface<
      * ### Examples
      *
      * ```ts
-     * db.selectFrom('person')
+     * await db.selectFrom('person')
      *   .select(['id', 'first_name'])
      *   .clearSelect()
      *   .select(['id', 'gender'])
+     *   .execute()
      * ```
      *
      * The generated SQL(PostgreSQL):
@@ -5581,10 +5808,11 @@ interface SelectQueryBuilder<DB, TB extends keyof DB, O> extends WhereInterface<
      * ### Examples
      *
      * ```ts
-     * db.selectFrom('person')
+     * await db.selectFrom('person')
      *   .selectAll()
      *   .limit(10)
      *   .clearLimit()
+     *   .execute()
      * ```
      *
      * The generated SQL(PostgreSQL):
@@ -5600,11 +5828,12 @@ interface SelectQueryBuilder<DB, TB extends keyof DB, O> extends WhereInterface<
      * ### Examples
      *
      * ```ts
-     * db.selectFrom('person')
+     * await db.selectFrom('person')
      *   .selectAll()
      *   .limit(10)
      *   .offset(20)
      *   .clearOffset()
+     *   .execute()
      * ```
      *
      * The generated SQL(PostgreSQL):
@@ -5620,10 +5849,11 @@ interface SelectQueryBuilder<DB, TB extends keyof DB, O> extends WhereInterface<
      * ### Examples
      *
      * ```ts
-     * db.selectFrom('person')
+     * await db.selectFrom('person')
      *   .selectAll()
      *   .orderBy('id')
      *   .clearOrderBy()
+     *   .execute()
      * ```
      *
      * The generated SQL(PostgreSQL):
@@ -5639,10 +5869,11 @@ interface SelectQueryBuilder<DB, TB extends keyof DB, O> extends WhereInterface<
      * ### Examples
      *
      * ```ts
-     * db.selectFrom('person')
+     * await db.selectFrom('person')
      *   .selectAll()
      *   .groupBy('id')
      *   .clearGroupBy()
+     *   .execute()
      * ```
      *
      * The generated SQL(PostgreSQL):
@@ -5664,12 +5895,14 @@ interface SelectQueryBuilder<DB, TB extends keyof DB, O> extends WhereInterface<
      * The next example uses a helper function `log` to log a query:
      *
      * ```ts
+     * import type { Compilable } from 'kysely'
+     *
      * function log<T extends Compilable>(qb: T): T {
      *   console.log(qb.compile())
      *   return qb
      * }
      *
-     * db.selectFrom('person')
+     * await db.selectFrom('person')
      *   .selectAll()
      *   .$call(log)
      *   .execute()
@@ -5684,17 +5917,19 @@ interface SelectQueryBuilder<DB, TB extends keyof DB, O> extends WhereInterface<
      * like this:
      *
      * ```ts
-     * let query = db.selectFrom('person').selectAll()
+     * async function getPeople(firstName?: string, lastName?: string) {
+     *   let query = db.selectFrom('person').selectAll()
      *
-     * if (firstName) {
-     *   query = query.where('first_name', '=', firstName)
+     *   if (firstName) {
+     *     query = query.where('first_name', '=', firstName)
+     *   }
+     *
+     *   if (lastName) {
+     *     query = query.where('last_name', '=', lastName)
+     *   }
+     *
+     *   return await query.execute()
      * }
-     *
-     * if (lastName) {
-     *   query = query.where('last_name', '=', lastName)
-     * }
-     *
-     * const result = await query.execute()
      * ```
      *
      * This method is mainly useful with optional selects. Any `select` or `selectAll`
@@ -5731,14 +5966,17 @@ interface SelectQueryBuilder<DB, TB extends keyof DB, O> extends WhereInterface<
      * You can also call any other methods inside the callback:
      *
      * ```ts
-     * db.selectFrom('person')
-     *   .select('person.id')
-     *   .$if(filterByFirstName, (qb) => qb.where('first_name', '=', firstName))
-     *   .$if(filterByPetCount, (qb) => qb
-     *     .innerJoin('pet', 'pet.owner_id', 'person.id')
-     *     .having((eb) => eb.fn.count('pet.id'), '>', petCountLimit)
-     *     .groupBy('person.id')
-     *   )
+     * async function getPeople(firstName?: string, petCountLimit?: number) {
+     *   return await db.selectFrom('person')
+     *     .select('person.id')
+     *     .$if(firstName != null, (qb) => qb.where('first_name', '=', firstName!))
+     *     .$if(petCountLimit != null, (qb) => qb
+     *       .innerJoin('pet', 'pet.owner_id', 'person.id')
+     *       .having((eb) => eb.fn.count('pet.id'), '>', petCountLimit!)
+     *       .groupBy('person.id')
+     *     )
+     *     .execute()
+     * }
      * ```
      */
     $if<O2>(condition: boolean, func: (qb: this) => SelectQueryBuilder<any, any, O & O2>): SelectQueryBuilder<DB, TB, O & Partial<Omit<O2, keyof O>>>;
@@ -5774,6 +6012,7 @@ interface SelectQueryBuilder<DB, TB extends keyof DB, O> extends WhereInterface<
      *       .where('pet.species', '!=', 'cat')
      *       .$asTuple('name', 'species')
      *   ))
+     *   .execute()
      * ```
      *
      * The generated SQL(PostgreSQL):
@@ -5815,23 +6054,31 @@ interface SelectQueryBuilder<DB, TB extends keyof DB, O> extends WhereInterface<
      * Turn this code:
      *
      * ```ts
+     * import type { Person } from 'type-editor' // imaginary module
+     *
      * const person = await db.selectFrom('person')
      *   .where('nullable_column', 'is not', null)
      *   .selectAll()
      *   .executeTakeFirstOrThrow()
      *
-     * if (person.nullable_column) {
+     * if (isWithNoNullValue(person)) {
      *   functionThatExpectsPersonWithNonNullValue(person)
+     * }
+     *
+     * function isWithNoNullValue(person: Person): person is Person & { nullable_column: string } {
+     *   return person.nullable_column != null
      * }
      * ```
      *
      * Into this:
      *
      * ```ts
+     * import type { NotNull } from 'kysely'
+     *
      * const person = await db.selectFrom('person')
      *   .where('nullable_column', 'is not', null)
      *   .selectAll()
-     *   .$narrowType<{ nullable_column: string }>()
+     *   .$narrowType<{ nullable_column: NotNull }>()
      *   .executeTakeFirstOrThrow()
      *
      * functionThatExpectsPersonWithNonNullValue(person)
@@ -5881,12 +6128,12 @@ interface SelectQueryBuilder<DB, TB extends keyof DB, O> extends WhereInterface<
      *   .with('first_and_last', (qb) => qb
      *     .selectFrom('person')
      *     .select(['first_name', 'last_name'])
-     *     .$assertType<{ first_name: string, last_name: string }>()
+     *     .$assertType<{ first_name: string, last_name: string | null }>()
      *   )
      *   .with('age', (qb) => qb
      *     .selectFrom('person')
      *     .select('age')
-     *     .$assertType<{ age: number }>()
+     *     .$assertType<{ age: number | null }>()
      *   )
      *   .selectFrom(['first_and_last', 'age'])
      *   .selectAll()
@@ -6520,9 +6767,10 @@ interface FunctionModule<DB, TB extends keyof DB> {
      * ### Examples
      *
      * ```ts
-     * db.selectFrom('person')
+     * await db.selectFrom('person')
      *   .selectAll('person')
      *   .where(db.fn('upper', ['first_name']), '=', 'JENNIFER')
+     *   .execute()
      * ```
      *
      * The generated SQL (PostgreSQL):
@@ -6536,9 +6784,12 @@ interface FunctionModule<DB, TB extends keyof DB> {
      * If you prefer readability over type-safety, you can always use raw `sql`:
      *
      * ```ts
-     * db.selectFrom('person')
+     * import { sql } from 'kysely'
+     *
+     * await db.selectFrom('person')
      *   .selectAll('person')
      *   .where(sql<string>`upper(first_name)`, '=', 'JENNIFER')
+     *   .execute()
      * ```
      */
     <O, RE extends ReferenceExpression<DB, TB> = ReferenceExpression<DB, TB>>(name: string, args?: ReadonlyArray<RE>): ExpressionWrapper<DB, TB, O>;
@@ -6555,11 +6806,12 @@ interface FunctionModule<DB, TB extends keyof DB> {
      * ### Examples
      *
      * ```ts
-     * db.selectFrom('person')
+     * await db.selectFrom('person')
      *   .select(({ fn }) => [
      *     fn.agg<number>('rank').over().as('rank'),
      *     fn.agg<string>('group_concat', ['first_name']).distinct().as('first_names')
      *   ])
+     *   .execute()
      * ```
      *
      * The generated SQL (MySQL):
@@ -6583,7 +6835,7 @@ interface FunctionModule<DB, TB extends keyof DB> {
      * ### Examples
      *
      * ```ts
-     * db.selectFrom('toy')
+     * await db.selectFrom('toy')
      *   .select((eb) => eb.fn.avg('price').as('avg_price'))
      *   .execute()
      * ```
@@ -6592,14 +6844,6 @@ interface FunctionModule<DB, TB extends keyof DB> {
      *
      * ```sql
      * select avg("price") as "avg_price" from "toy"
-     * ```
-     *
-     * You can limit column range to only columns participating in current query:
-     *
-     * ```ts
-     * db.selectFrom('toy')
-     *   .select((eb) => eb.fn.avg('price').as('avg_price'))
-     *   .execute()
      * ```
      *
      * If this function is used in a `select` statement, the type of the selected
@@ -6613,7 +6857,7 @@ interface FunctionModule<DB, TB extends keyof DB> {
      * the first type argument:
      *
      * ```ts
-     * db.selectFrom('toy')
+     * await db.selectFrom('toy')
      *   .select((eb) => eb.fn.avg<number>('price').as('avg_price'))
      *   .execute()
      * ```
@@ -6624,7 +6868,7 @@ interface FunctionModule<DB, TB extends keyof DB> {
      * function.
      *
      * ```ts
-     * db.selectFrom('toy')
+     * await db.selectFrom('toy')
      *   .select((eb) => eb.fn.avg<number | null>('price').as('avg_price'))
      *   .execute()
      * ```
@@ -6651,35 +6895,25 @@ interface FunctionModule<DB, TB extends keyof DB> {
      * ### Examples
      *
      * ```ts
-     * db.selectFrom('participant')
-     *   .select((eb) => eb.fn.coalesce('nickname', sql<string>`'<anonymous>'`).as('nickname'))
-     *   .where('room_id', '=', roomId)
+     * import { sql } from 'kysely'
+     *
+     * await db.selectFrom('person')
+     *   .select((eb) => eb.fn.coalesce('nullable_column', sql.lit('<unknown>')).as('column'))
+     *   .where('first_name', '=', 'Jessie')
      *   .execute()
      * ```
      *
      * The generated SQL (PostgreSQL):
      *
      * ```sql
-     * select coalesce("nickname", '<anonymous>') as "nickname"
-     * from "participant" where "room_id" = $1
-     * ```
-     *
-     * You can limit column range to only columns participating in current query:
-     *
-     * ```ts
-     * db.selectFrom('participant')
-     *   .select((eb) =>
-     *     eb.fn.coalesce('nickname', sql<string>`'<anonymous>'`).as('nickname')
-     *   )
-     *   .where('room_id', '=', roomId)
-     *   .execute()
+     * select coalesce("nullable_column", '<unknown>') as "column" from "person" where "first_name" = $1
      * ```
      *
      * You can combine this function with other helpers in this module:
      *
      * ```ts
-     * db.selectFrom('person')
-     *   .select((eb) => eb.fn.coalesce(eb.fn.avg<number | null>('age'), sql<number>`0`).as('avg_age'))
+     * await db.selectFrom('person')
+     *   .select((eb) => eb.fn.coalesce(eb.fn.avg<number | null>('age'), eb.lit(0)).as('avg_age'))
      *   .where('first_name', '=', 'Jennifer')
      *   .execute()
      * ```
@@ -6710,7 +6944,7 @@ interface FunctionModule<DB, TB extends keyof DB> {
      * ### Examples
      *
      * ```ts
-     * db.selectFrom('toy')
+     * await db.selectFrom('toy')
      *   .select((eb) => eb.fn.count('id').as('num_toys'))
      *   .execute()
      * ```
@@ -6732,16 +6966,8 @@ interface FunctionModule<DB, TB extends keyof DB> {
      * the type as the first type argument:
      *
      * ```ts
-     * db.selectFrom('toy')
+     * await db.selectFrom('toy')
      *   .select((eb) => eb.fn.count<number>('id').as('num_toys'))
-     *   .execute()
-     * ```
-     *
-     * You can limit column range to only columns participating in current query:
-     *
-     * ```ts
-     * db.selectFrom('toy')
-     *   .select((eb) => eb.fn.count('id').as('num_toys'))
      *   .execute()
      * ```
      */
@@ -6762,7 +6988,7 @@ interface FunctionModule<DB, TB extends keyof DB> {
      * ### Examples
      *
      * ```ts
-     * db.selectFrom('toy')
+     * await db.selectFrom('toy')
      *   .select((eb) => eb.fn.countAll().as('num_toys'))
      *   .execute()
      * ```
@@ -6784,7 +7010,7 @@ interface FunctionModule<DB, TB extends keyof DB> {
      * the type as the first type argument:
      *
      * ```ts
-     * db.selectFrom('toy')
+     * await db.selectFrom('toy')
      *   .select((eb) => eb.fn.countAll<number>().as('num_toys'))
      *   .execute()
      * ```
@@ -6793,7 +7019,7 @@ interface FunctionModule<DB, TB extends keyof DB> {
      * table:
      *
      * ```ts
-     * db.selectFrom('toy')
+     * await db.selectFrom('toy')
      *   .innerJoin('pet', 'pet.id', 'toy.pet_id')
      *   .select((eb) => eb.fn.countAll('toy').as('num_toys'))
      *   .execute()
@@ -6804,15 +7030,6 @@ interface FunctionModule<DB, TB extends keyof DB> {
      * ```sql
      * select count("toy".*) as "num_toys"
      * from "toy" inner join "pet" on "pet"."id" = "toy"."pet_id"
-     * ```
-     *
-     * You can limit table range to only tables participating in current query:
-     *
-     * ```ts
-     * db.selectFrom('toy')
-     *   .innerJoin('pet', 'pet.id', 'toy.pet_id')
-     *   .select((eb) => eb.fn.countAll('toy').as('num_toys'))
-     *   .execute()
      * ```
      */
     countAll<O extends number | string | bigint, T extends TB = TB>(table: T): AggregateFunctionBuilder<DB, TB, O>;
@@ -6833,7 +7050,7 @@ interface FunctionModule<DB, TB extends keyof DB> {
      * ### Examples
      *
      * ```ts
-     * db.selectFrom('toy')
+     * await db.selectFrom('toy')
      *   .select((eb) => eb.fn.max('price').as('max_price'))
      *   .execute()
      * ```
@@ -6844,21 +7061,13 @@ interface FunctionModule<DB, TB extends keyof DB> {
      * select max("price") as "max_price" from "toy"
      * ```
      *
-     * You can limit column range to only columns participating in current query:
-     *
-     * ```ts
-     * db.selectFrom('toy')
-     *   .select((eb) => eb.fn.max('price').as('max_price'))
-     *   .execute()
-     * ```
-     *
      * Sometimes a null is returned, e.g. when row count is 0, and no `group by`
      * was used. It is highly recommended to include null in the output type union
      * and handle null values in post-execute code, or wrap the function with a {@link coalesce}
      * function.
      *
      * ```ts
-     * db.selectFrom('toy')
+     * await db.selectFrom('toy')
      *   .select((eb) => eb.fn.max<number | null>('price').as('max_price'))
      *   .execute()
      * ```
@@ -6880,7 +7089,7 @@ interface FunctionModule<DB, TB extends keyof DB> {
      * ### Examples
      *
      * ```ts
-     * db.selectFrom('toy')
+     * await db.selectFrom('toy')
      *   .select((eb) => eb.fn.min('price').as('min_price'))
      *   .execute()
      * ```
@@ -6891,21 +7100,13 @@ interface FunctionModule<DB, TB extends keyof DB> {
      * select min("price") as "min_price" from "toy"
      * ```
      *
-     * You can limit column range to only columns participating in current query:
-     *
-     * ```ts
-     * db.selectFrom('toy')
-     *   .select((eb) => eb.fn.min('price').as('min_price'))
-     *   .execute()
-     * ```
-     *
      * Sometimes a null is returned, e.g. when row count is 0, and no `group by`
      * was used. It is highly recommended to include null in the output type union
      * and handle null values in post-execute code, or wrap the function with a {@link coalesce}
      * function.
      *
      * ```ts
-     * db.selectFrom('toy')
+     * await db.selectFrom('toy')
      *   .select((eb) => eb.fn.min<number | null>('price').as('min_price'))
      *   .execute()
      * ```
@@ -6923,7 +7124,7 @@ interface FunctionModule<DB, TB extends keyof DB> {
      * ### Examples
      *
      * ```ts
-     * db.selectFrom('toy')
+     * await db.selectFrom('toy')
      *   .select((eb) => eb.fn.sum('price').as('total_price'))
      *   .execute()
      * ```
@@ -6932,14 +7133,6 @@ interface FunctionModule<DB, TB extends keyof DB> {
      *
      * ```sql
      * select sum("price") as "total_price" from "toy"
-     * ```
-     *
-     * You can limit column range to only columns participating in current query:
-     *
-     * ```ts
-     * db.selectFrom('toy')
-     *   .select((eb) => eb.fn.sum('price').as('total_price'))
-     *   .execute()
      * ```
      *
      * If this function is used in a `select` statement, the type of the selected
@@ -6953,7 +7146,7 @@ interface FunctionModule<DB, TB extends keyof DB> {
      * the first type argument:
      *
      * ```ts
-     * db.selectFrom('toy')
+     * await db.selectFrom('toy')
      *   .select((eb) => eb.fn.sum<number>('price').as('total_price'))
      *   .execute()
      * ```
@@ -6964,7 +7157,7 @@ interface FunctionModule<DB, TB extends keyof DB> {
      * function.
      *
      * ```ts
-     * db.selectFrom('toy')
+     * await db.selectFrom('toy')
      *   .select((eb) => eb.fn.sum<number | null>('price').as('total_price'))
      *   .execute()
      * ```
@@ -6980,11 +7173,12 @@ interface FunctionModule<DB, TB extends keyof DB> {
      * In the following example, `nicknames` is assumed to be a column of type `string[]`:
      *
      * ```ts
-     * db.selectFrom('person')
+     * await db.selectFrom('person')
      *   .selectAll('person')
      *   .where((eb) => eb(
      *     eb.val('Jen'), '=', eb.fn.any('person.nicknames')
      *   ))
+     *   .execute()
      * ```
      *
      *
@@ -7008,7 +7202,7 @@ interface FunctionModule<DB, TB extends keyof DB> {
      * This function is only available on PostgreSQL.
      *
      * ```ts
-     * db.selectFrom('person')
+     * await db.selectFrom('person')
      *   .innerJoin('pet', 'pet.owner_id', 'person.id')
      *   .select((eb) => ['first_name', eb.fn.jsonAgg('pet').as('pets')])
      *   .groupBy('person.first_name')
@@ -7031,7 +7225,7 @@ interface FunctionModule<DB, TB extends keyof DB> {
      * This function is only available on PostgreSQL.
      *
      * ```ts
-     * db.selectFrom('person')
+     * await db.selectFrom('person')
      *   .innerJoin('pet', 'pet.owner_id', 'person.id')
      *   .select((eb) => ['first_name', eb.fn.toJson('pet').as('pet')])
      *   .execute()
@@ -9238,6 +9432,8 @@ interface RawBuilder<O> extends AliasableExpression<O> {
      * this method also provides strict typing:
      *
      * ```ts
+     * import { sql } from 'kysely'
+     *
      * const result = await db
      *   .selectFrom('person')
      *   .select(
@@ -9260,6 +9456,8 @@ interface RawBuilder<O> extends AliasableExpression<O> {
      * provide the alias as the only type argument:
      *
      * ```ts
+     * import { sql } from 'kysely'
+     *
      * const values = sql<{ a: number, b: string }>`(values (1, 'foo'))`
      *
      * // The alias is `t(a, b)` which specifies the column names
@@ -9274,6 +9472,7 @@ interface RawBuilder<O> extends AliasableExpression<O> {
      *   .expression(
      *     db.selectFrom(aliasedValues).select(['t.a', 't.b'])
      *   )
+     *   .execute()
      * ```
      *
      * The generated SQL (PostgreSQL):
@@ -9369,8 +9568,10 @@ interface RawBuilder<O> extends AliasableExpression<O> {
      * ### Examples
      *
      * ```ts
-     * const { sql } = sql`select * from ${sql.table('person')}`.compile(db)
-     * console.log(sql)
+     * import { sql } from 'kysely'
+     *
+     * const compiledQuery = sql`select * from ${sql.table('person')}`.compile(db)
+     * console.log(compiledQuery.sql)
      * ```
      */
     compile(executorProvider: QueryExecutorProvider): CompiledQuery<O>;
@@ -9380,6 +9581,8 @@ interface RawBuilder<O> extends AliasableExpression<O> {
      * ### Examples
      *
      * ```ts
+     * import { sql } from 'kysely'
+     *
      * const result = await sql`select * from ${sql.table('person')}`.execute(db)
      * ```
      */
@@ -9860,20 +10063,20 @@ interface ReturningInterface<DB, TB extends keyof DB, O> {
      *     last_name: 'Aniston'
      *   })
      *   .returning('id')
-     *   .executeTakeFirst()
+     *   .executeTakeFirstOrThrow()
      * ```
      *
      * Return multiple columns:
      *
      * ```ts
-     * const { id, first_name } = await db
+     * const { id, last_name } = await db
      *   .insertInto('person')
      *   .values({
      *     first_name: 'Jennifer',
      *     last_name: 'Aniston'
      *   })
      *   .returning(['id', 'last_name'])
-     *   .executeTakeFirst()
+     *   .executeTakeFirstOrThrow()
      * ```
      *
      * Return arbitrary expressions:
@@ -9890,9 +10093,9 @@ interface ReturningInterface<DB, TB extends keyof DB, O> {
      *   .returning((eb) => [
      *     'id as id',
      *     sql<string>`concat(first_name, ' ', last_name)`.as('full_name'),
-     *     eb.selectFrom('pets').select('pet.id').limit(1).as('first_pet_id')
+     *     eb.selectFrom('pet').select('pet.id').limit(1).as('first_pet_id')
      *   ])
-     *   .executeTakeFirst()
+     *   .executeTakeFirstOrThrow()
      * ```
      */
     returning<SE extends SelectExpression<DB, TB>>(selections: ReadonlyArray<SE>): ReturningInterface<DB, TB, ReturningRow<DB, TB, O, SE>>;
@@ -9972,6 +10175,8 @@ declare class OnConflictBuilder<DB, TB extends keyof DB> implements WhereInterfa
      * you can always use:
      *
      * ```ts
+     * import { sql } from 'kysely'
+     *
      * sql`your operator`
      * ```
      *
@@ -9983,7 +10188,7 @@ declare class OnConflictBuilder<DB, TB extends keyof DB> implements WhereInterfa
      * const persons = await db
      *   .selectFrom('person')
      *   .selectAll()
-     *   .where('id', 'in', ['1', '2', '3'])
+     *   .where('id', 'in', [1, 2, 3])
      *   .execute()
      * ```
      *
@@ -10230,6 +10435,8 @@ declare class OnConflictBuilder<DB, TB extends keyof DB> implements WhereInterfa
      * ```ts
      * import { sql } from 'kysely'
      * const { ref } = db.dynamic
+     *
+     * const columnFromUserInput: string = 'id'
      *
      * const persons = await db
      *   .selectFrom('person')
@@ -10318,21 +10525,25 @@ declare class OnConflictBuilder<DB, TB extends keyof DB> implements WhereInterfa
      * ### Examples
      *
      * ```ts
+     * const id = 1
+     * const first_name = 'John'
+     *
      * await db
      *   .insertInto('person')
-     *   .values({ first_name, pic })
+     *   .values({ first_name, id })
      *   .onConflict((oc) => oc
-     *     .column('pic')
+     *     .column('id')
      *     .doNothing()
      *   )
+     *   .execute()
      * ```
      *
      * The generated SQL (PostgreSQL):
      *
      * ```sql
-     * insert into "person" ("first_name", "pic")
+     * insert into "person" ("first_name", "id")
      * values ($1, $2)
-     * on conflict ("pic") do nothing
+     * on conflict ("id") do nothing
      * ```
      */
     doNothing(): OnConflictDoNothingBuilder<DB, TB>;
@@ -10342,21 +10553,25 @@ declare class OnConflictBuilder<DB, TB extends keyof DB> implements WhereInterfa
      * ### Examples
      *
      * ```ts
+     * const id = 1
+     * const first_name = 'John'
+     *
      * await db
      *   .insertInto('person')
-     *   .values({ first_name, pic })
+     *   .values({ first_name, id })
      *   .onConflict((oc) => oc
-     *     .column('pic')
+     *     .column('id')
      *     .doUpdateSet({ first_name })
      *   )
+     *   .execute()
      * ```
      *
      * The generated SQL (PostgreSQL):
      *
      * ```sql
-     * insert into "person" ("first_name", "pic")
+     * insert into "person" ("first_name", "id")
      * values ($1, $2)
-     * on conflict ("pic")
+     * on conflict ("id")
      * do update set "first_name" = $3
      * ```
      *
@@ -10365,15 +10580,32 @@ declare class OnConflictBuilder<DB, TB extends keyof DB> implements WhereInterfa
      * to create an upsert operation:
      *
      * ```ts
-     * db.insertInto('person')
-     *   .values(person)
-     *   .onConflict((oc) => oc
-     *     .column('id')
-     *     .doUpdateSet((eb) => ({
-     *       first_name: eb.ref('excluded.first_name'),
-     *       last_name: eb.ref('excluded.last_name')
-     *     }))
+     * import type { NewPerson } from 'type-editor' // imaginary module
+     *
+     * async function upsertPerson(person: NewPerson): Promise<void> {
+     *   await db.insertInto('person')
+     *     .values(person)
+     *     .onConflict((oc) => oc
+     *       .column('id')
+     *       .doUpdateSet((eb) => ({
+     *         first_name: eb.ref('excluded.first_name'),
+     *         last_name: eb.ref('excluded.last_name')
+     *       })
+     *     )
      *   )
+     *   .execute()
+     * }
+     * ```
+     *
+     * The generated SQL (PostgreSQL):
+     *
+     * ```sql
+     * insert into "person" ("first_name", "last_name")
+     * values ($1, $2)
+     * on conflict ("id")
+     * do update set
+     *  "first_name" = excluded."first_name",
+     *  "last_name" = excluded."last_name"
      * ```
      */
     doUpdateSet(update: UpdateObjectExpression<OnConflictDatabase<DB, TB>, OnConflictTables<TB>, OnConflictTables<TB>>): OnConflictUpdateBuilder<OnConflictDatabase<DB, TB>, OnConflictTables<TB>>;
@@ -10436,6 +10668,8 @@ declare class OnConflictUpdateBuilder<DB, TB extends keyof DB> implements WhereI
      * you can always use:
      *
      * ```ts
+     * import { sql } from 'kysely'
+     *
      * sql`your operator`
      * ```
      *
@@ -10447,7 +10681,7 @@ declare class OnConflictUpdateBuilder<DB, TB extends keyof DB> implements WhereI
      * const persons = await db
      *   .selectFrom('person')
      *   .selectAll()
-     *   .where('id', 'in', ['1', '2', '3'])
+     *   .where('id', 'in', [1, 2, 3])
      *   .execute()
      * ```
      *
@@ -10695,6 +10929,8 @@ declare class OnConflictUpdateBuilder<DB, TB extends keyof DB> implements WhereI
      * import { sql } from 'kysely'
      * const { ref } = db.dynamic
      *
+     * const columnFromUserInput: string = 'id'
+     *
      * const persons = await db
      *   .selectFrom('person')
      *   .selectAll()
@@ -10756,15 +10992,24 @@ interface OutputInterface<DB, TB extends keyof DB, O, OP extends OutputPrefix = 
      *   .output('inserted.id')
      *   .values({
      *     first_name: 'Jennifer',
-     *     last_name: 'Aniston'
+     *     last_name: 'Aniston',
+     *     gender: 'female',
      *   })
-     *   .executeTakeFirst()
+     *   .executeTakeFirstOrThrow()
+     * ```
+     *
+     * The generated SQL (MSSQL):
+     *
+     * ```sql
+     * insert into "person" ("first_name", "last_name", "gender")
+     * output "inserted"."id"
+     * values (@1, @2, @3)
      * ```
      *
      * Return multiple columns:
      *
      * ```ts
-     * const { id, first_name } = await db
+     * const { old_first_name, old_last_name, new_first_name, new_last_name } = await db
      *   .updateTable('person')
      *   .set({ first_name: 'John', last_name: 'Doe' })
      *   .output([
@@ -10774,7 +11019,19 @@ interface OutputInterface<DB, TB extends keyof DB, O, OP extends OutputPrefix = 
      *     'inserted.last_name as new_last_name',
      *   ])
      *   .where('created_at', '<', new Date())
-     *   .executeTakeFirst()
+     *   .executeTakeFirstOrThrow()
+     * ```
+     *
+     * The generated SQL (MSSQL):
+     *
+     * ```sql
+     * update "person"
+     * set "first_name" = @1, "last_name" = @2
+     * output "deleted"."first_name" as "old_first_name",
+     *   "deleted"."last_name" as "old_last_name",
+     *   "inserted"."first_name" as "new_first_name",
+     *   "inserted"."last_name" as "new_last_name"
+     * where "created_at" < @3
      * ```
      *
      * Return arbitrary expressions:
@@ -10782,11 +11039,19 @@ interface OutputInterface<DB, TB extends keyof DB, O, OP extends OutputPrefix = 
      * ```ts
      * import { sql } from 'kysely'
      *
-     * const { id, full_name } = await db
+     * const { full_name } = await db
      *   .deleteFrom('person')
      *   .output((eb) => sql<string>`concat(${eb.ref('deleted.first_name')}, ' ', ${eb.ref('deleted.last_name')})`.as('full_name'))
      *   .where('created_at', '<', new Date())
      *   .executeTakeFirstOrThrow()
+     * ```
+     *
+     * The generated SQL (MSSQL):
+     *
+     * ```sql
+     * delete from "person"
+     * output concat("deleted"."first_name", ' ', "deleted"."last_name") as "full_name"
+     * where "created_at" < @1
      * ```
      *
      * Return the action performed on the row:
@@ -10807,7 +11072,21 @@ interface OutputInterface<DB, TB extends keyof DB, O, OP extends OutputPrefix = 
      *     'inserted.id as inserted_id',
      *     'deleted.id as deleted_id',
      *   ])
+     *   .execute()
      * ```
+     *
+     * The generated SQL (MSSQL):
+     *
+     * ```sql
+     * merge into "person"
+     * using "pet" on "pet"."owner_id" = "person"."id"
+     * when matched then delete
+     * when not matched then
+     * insert ("first_name", "last_name", "gender")
+     * values (@1, @2, @3)
+     * output "inserted"."id" as "inserted_id", "deleted"."id" as "deleted_id"
+     * ```
+     *
      */
     output<OE extends OutputExpression<DB, TB, OP>>(selections: ReadonlyArray<OE>): OutputInterface<DB, TB, ReturningRow<DB, TB, O, SelectExpressionFromOutputExpression<OE>>, OP>;
     output<CB extends OutputCallback<DB, TB, OP>>(callback: CB): OutputInterface<DB, TB, ReturningRow<DB, TB, O, SelectExpressionFromOutputCallback<CB>>, OP>;
@@ -10979,7 +11258,7 @@ declare class InsertQueryBuilder<DB, TB extends keyof DB, O> implements Returnin
      * You can also use the callback version of subqueries or raw expressions:
      *
      * ```ts
-     * db.with('jennifer', (db) => db
+     * await db.with('jennifer', (db) => db
      *   .selectFrom('person')
      *   .where('first_name', '=', 'Jennifer')
      *   .select(['id', 'first_name', 'gender'])
@@ -10989,6 +11268,24 @@ declare class InsertQueryBuilder<DB, TB extends keyof DB, O> implements Returnin
      *   name: eb.selectFrom('jennifer').select('first_name'),
      *   species: 'cat',
      * }))
+     * .execute()
+     * ```
+     *
+     * The generated SQL (PostgreSQL):
+     *
+     * ```sql
+     * with "jennifer" as (
+     *   select "id", "first_name", "gender"
+     *   from "person"
+     *   where "first_name" = $1
+     *   limit $2
+     * )
+     * insert into "pet" ("owner_id", "name", "species")
+     * values (
+     *  (select "id" from "jennifer"),
+     *  (select "first_name" from "jennifer"),
+     *  $3
+     * )
      * ```
      */
     values(insert: InsertExpression<DB, TB>): InsertQueryBuilder<DB, TB, O>;
@@ -11002,9 +11299,10 @@ declare class InsertQueryBuilder<DB, TB extends keyof DB, O> implements Returnin
      * ### Examples
      *
      * ```ts
-     * db.insertInto('person')
+     * await db.insertInto('person')
      *   .columns(['first_name'])
      *   .expression((eb) => eb.selectFrom('pet').select('pet.name'))
+     *   .execute()
      * ```
      *
      * The generated SQL (PostgreSQL):
@@ -11058,6 +11356,12 @@ declare class InsertQueryBuilder<DB, TB extends keyof DB, O> implements Returnin
      *   .defaultValues()
      *   .execute()
      * ```
+     *
+     * The generated SQL (PostgreSQL):
+     *
+     * ```sql
+     * insert into "person" default values
+     * ```
      */
     defaultValues(): InsertQueryBuilder<DB, TB, O>;
     /**
@@ -11066,16 +11370,22 @@ declare class InsertQueryBuilder<DB, TB extends keyof DB, O> implements Returnin
      * ### Examples
      *
      * ```ts
+     * import { sql } from 'kysely'
+     *
      * await db.insertInto('person')
-     *   .values(values)
-     *   .modifyEnd(sql.raw('-- This is a comment'))
+     *   .values({
+     *     first_name: 'John',
+     *     last_name: 'Doe',
+     *     gender: 'male',
+     *   })
+     *   .modifyEnd(sql`-- This is a comment`)
      *   .execute()
      * ```
      *
      * The generated SQL (MySQL):
      *
      * ```sql
-     * insert into `person`
+     * insert into `person` ("first_name", "last_name", "gender")
      * values (?, ?, ?) -- This is a comment
      * ```
      */
@@ -11097,8 +11407,18 @@ declare class InsertQueryBuilder<DB, TB extends keyof DB, O> implements Returnin
      * ```ts
      * await db.insertInto('person')
      *   .ignore()
-     *   .values(values)
+     *   .values({
+     *     first_name: 'John',
+     *     last_name: 'Doe',
+     *     gender: 'female',
+     *   })
      *   .execute()
+     * ```
+     *
+     * The generated SQL (MySQL):
+     *
+     * ```sql
+     * insert ignore into `person` ("first_name", "last_name", "gender") values (?, ?, ?)
      * ```
      */
     ignore(): InsertQueryBuilder<DB, TB, O>;
@@ -11112,6 +11432,8 @@ declare class InsertQueryBuilder<DB, TB extends keyof DB, O> implements Returnin
      * Insert the first 5 rows:
      *
      * ```ts
+     * import { sql } from 'kysely'
+     *
      * await db.insertInto('person')
      *   .top(5)
      *   .columns(['first_name', 'gender'])
@@ -11130,6 +11452,8 @@ declare class InsertQueryBuilder<DB, TB extends keyof DB, O> implements Returnin
      * Insert the first 50 percent of rows:
      *
      * ```ts
+     * import { sql } from 'kysely'
+     *
      * await db.insertInto('person')
      *   .top(50, 'percent')
      *   .columns(['first_name', 'gender'])
@@ -11160,6 +11484,7 @@ declare class InsertQueryBuilder<DB, TB extends keyof DB, O> implements Returnin
      *   .values({
      *     name: 'Catto',
      *     species: 'cat',
+     *     owner_id: 3,
      *   })
      *   .onConflict((oc) => oc
      *     .column('name')
@@ -11171,10 +11496,10 @@ declare class InsertQueryBuilder<DB, TB extends keyof DB, O> implements Returnin
      * The generated SQL (PostgreSQL):
      *
      * ```sql
-     * insert into "pet" ("name", "species")
-     * values ($1, $2)
+     * insert into "pet" ("name", "species", "owner_id")
+     * values ($1, $2, $3)
      * on conflict ("name")
-     * do update set "species" = $3
+     * do update set "species" = $4
      * ```
      *
      * You can provide the name of the constraint instead of a column name:
@@ -11185,6 +11510,7 @@ declare class InsertQueryBuilder<DB, TB extends keyof DB, O> implements Returnin
      *   .values({
      *     name: 'Catto',
      *     species: 'cat',
+     *     owner_id: 3,
      *   })
      *   .onConflict((oc) => oc
      *     .constraint('pet_name_key')
@@ -11196,10 +11522,10 @@ declare class InsertQueryBuilder<DB, TB extends keyof DB, O> implements Returnin
      * The generated SQL (PostgreSQL):
      *
      * ```sql
-     * insert into "pet" ("name", "species")
-     * values ($1, $2)
+     * insert into "pet" ("name", "species", "owner_id")
+     * values ($1, $2, $3)
      * on conflict on constraint "pet_name_key"
-     * do update set "species" = $3
+     * do update set "species" = $4
      * ```
      *
      * You can also specify an expression as the conflict target in case
@@ -11213,6 +11539,7 @@ declare class InsertQueryBuilder<DB, TB extends keyof DB, O> implements Returnin
      *   .values({
      *     name: 'Catto',
      *     species: 'cat',
+     *     owner_id: 3,
      *   })
      *   .onConflict((oc) => oc
      *     .expression(sql<string>`lower(name)`)
@@ -11224,10 +11551,10 @@ declare class InsertQueryBuilder<DB, TB extends keyof DB, O> implements Returnin
      * The generated SQL (PostgreSQL):
      *
      * ```sql
-     * insert into "pet" ("name", "species")
-     * values ($1, $2)
+     * insert into "pet" ("name", "species", "owner_id")
+     * values ($1, $2, $3)
      * on conflict (lower(name))
-     * do update set "species" = $3
+     * do update set "species" = $4
      * ```
      *
      * You can add a filter for the update statement like this:
@@ -11238,6 +11565,7 @@ declare class InsertQueryBuilder<DB, TB extends keyof DB, O> implements Returnin
      *   .values({
      *     name: 'Catto',
      *     species: 'cat',
+     *     owner_id: 3,
      *   })
      *   .onConflict((oc) => oc
      *     .column('name')
@@ -11250,11 +11578,11 @@ declare class InsertQueryBuilder<DB, TB extends keyof DB, O> implements Returnin
      * The generated SQL (PostgreSQL):
      *
      * ```sql
-     * insert into "pet" ("name", "species")
-     * values ($1, $2)
+     * insert into "pet" ("name", "species", "owner_id")
+     * values ($1, $2, $3)
      * on conflict ("name")
-     * do update set "species" = $3
-     * where "excluded"."name" != $4
+     * do update set "species" = $4
+     * where "excluded"."name" != $5
      * ```
      *
      * You can create an `on conflict do nothing` clauses like this:
@@ -11265,6 +11593,7 @@ declare class InsertQueryBuilder<DB, TB extends keyof DB, O> implements Returnin
      *   .values({
      *     name: 'Catto',
      *     species: 'cat',
+     *     owner_id: 3,
      *   })
      *   .onConflict((oc) => oc
      *     .column('name')
@@ -11276,8 +11605,8 @@ declare class InsertQueryBuilder<DB, TB extends keyof DB, O> implements Returnin
      * The generated SQL (PostgreSQL):
      *
      * ```sql
-     * insert into "pet" ("name", "species")
-     * values ($1, $2)
+     * insert into "pet" ("name", "species", "owner_id")
+     * values ($1, $2, $3)
      * on conflict ("name") do nothing
      * ```
      *
@@ -11286,8 +11615,13 @@ declare class InsertQueryBuilder<DB, TB extends keyof DB, O> implements Returnin
      * `ExpressionBuilder`:
      *
      * ```ts
-     * db.insertInto('person')
-     *   .values(person)
+     * await db.insertInto('person')
+     *   .values({
+     *     id: 1,
+     *     first_name: 'John',
+     *     last_name: 'Doe',
+     *     gender: 'male',
+     *   })
      *   .onConflict(oc => oc
      *     .column('id')
      *     .doUpdateSet({
@@ -11295,6 +11629,18 @@ declare class InsertQueryBuilder<DB, TB extends keyof DB, O> implements Returnin
      *       last_name: (eb) => eb.ref('excluded.last_name')
      *     })
      *   )
+     *   .execute()
+     * ```
+     *
+     * The generated SQL (PostgreSQL):
+     *
+     * ```sql
+     * insert into "person" ("id", "first_name", "last_name", "gender")
+     * values ($1, $2, $3, $4)
+     * on conflict ("id")
+     * do update set
+     *  "first_name" = "excluded"."first_name",
+     *  "last_name" = "excluded"."last_name"
      * ```
      */
     onConflict(callback: (builder: OnConflictBuilder<DB, TB>) => OnConflictUpdateBuilder<OnConflictDatabase<DB, TB>, OnConflictTables<TB>> | OnConflictDoNothingBuilder<DB, TB>): InsertQueryBuilder<DB, TB, O>;
@@ -11312,8 +11658,22 @@ declare class InsertQueryBuilder<DB, TB extends keyof DB, O> implements Returnin
      * ```ts
      * await db
      *   .insertInto('person')
-     *   .values(values)
-     *   .onDuplicateKeyUpdate({ species: 'hamster' })
+     *   .values({
+     *     id: 1,
+     *     first_name: 'John',
+     *     last_name: 'Doe',
+     *     gender: 'male',
+     *   })
+     *   .onDuplicateKeyUpdate({ updated_at: new Date().toISOString() })
+     *   .execute()
+     * ```
+     *
+     * The generated SQL (MySQL):
+     *
+     * ```sql
+     * insert into `person` (`id`, `first_name`, `last_name`, `gender`)
+     * values (?, ?, ?, ?)
+     * on duplicate key update `updated_at` = ?
      * ```
      */
     onDuplicateKeyUpdate(update: UpdateObjectExpression<DB, TB, TB>): InsertQueryBuilder<DB, TB, O>;
@@ -11341,20 +11701,20 @@ declare class InsertQueryBuilder<DB, TB extends keyof DB, O> implements Returnin
      *     last_name: 'Aniston'
      *   })
      *   .returning('id')
-     *   .executeTakeFirst()
+     *   .executeTakeFirstOrThrow()
      * ```
      *
      * Return multiple columns:
      *
      * ```ts
-     * const { id, first_name } = await db
+     * const { id, last_name } = await db
      *   .insertInto('person')
      *   .values({
      *     first_name: 'Jennifer',
      *     last_name: 'Aniston'
      *   })
      *   .returning(['id', 'last_name'])
-     *   .executeTakeFirst()
+     *   .executeTakeFirstOrThrow()
      * ```
      *
      * Return arbitrary expressions:
@@ -11371,9 +11731,9 @@ declare class InsertQueryBuilder<DB, TB extends keyof DB, O> implements Returnin
      *   .returning((eb) => [
      *     'id as id',
      *     sql<string>`concat(first_name, ' ', last_name)`.as('full_name'),
-     *     eb.selectFrom('pets').select('pet.id').limit(1).as('first_pet_id')
+     *     eb.selectFrom('pet').select('pet.id').limit(1).as('first_pet_id')
      *   ])
-     *   .executeTakeFirst()
+     *   .executeTakeFirstOrThrow()
      * ```
      */
     returning<SE extends SelectExpression<DB, TB>>(selections: ReadonlyArray<SE>): InsertQueryBuilder<DB, TB, ReturningRow<DB, TB, O, SE>>;
@@ -11404,15 +11764,24 @@ declare class InsertQueryBuilder<DB, TB extends keyof DB, O> implements Returnin
      *   .output('inserted.id')
      *   .values({
      *     first_name: 'Jennifer',
-     *     last_name: 'Aniston'
+     *     last_name: 'Aniston',
+     *     gender: 'female',
      *   })
-     *   .executeTakeFirst()
+     *   .executeTakeFirstOrThrow()
+     * ```
+     *
+     * The generated SQL (MSSQL):
+     *
+     * ```sql
+     * insert into "person" ("first_name", "last_name", "gender")
+     * output "inserted"."id"
+     * values (@1, @2, @3)
      * ```
      *
      * Return multiple columns:
      *
      * ```ts
-     * const { id, first_name } = await db
+     * const { old_first_name, old_last_name, new_first_name, new_last_name } = await db
      *   .updateTable('person')
      *   .set({ first_name: 'John', last_name: 'Doe' })
      *   .output([
@@ -11422,7 +11791,19 @@ declare class InsertQueryBuilder<DB, TB extends keyof DB, O> implements Returnin
      *     'inserted.last_name as new_last_name',
      *   ])
      *   .where('created_at', '<', new Date())
-     *   .executeTakeFirst()
+     *   .executeTakeFirstOrThrow()
+     * ```
+     *
+     * The generated SQL (MSSQL):
+     *
+     * ```sql
+     * update "person"
+     * set "first_name" = @1, "last_name" = @2
+     * output "deleted"."first_name" as "old_first_name",
+     *   "deleted"."last_name" as "old_last_name",
+     *   "inserted"."first_name" as "new_first_name",
+     *   "inserted"."last_name" as "new_last_name"
+     * where "created_at" < @3
      * ```
      *
      * Return arbitrary expressions:
@@ -11430,11 +11811,19 @@ declare class InsertQueryBuilder<DB, TB extends keyof DB, O> implements Returnin
      * ```ts
      * import { sql } from 'kysely'
      *
-     * const { id, full_name } = await db
+     * const { full_name } = await db
      *   .deleteFrom('person')
      *   .output((eb) => sql<string>`concat(${eb.ref('deleted.first_name')}, ' ', ${eb.ref('deleted.last_name')})`.as('full_name'))
      *   .where('created_at', '<', new Date())
      *   .executeTakeFirstOrThrow()
+     * ```
+     *
+     * The generated SQL (MSSQL):
+     *
+     * ```sql
+     * delete from "person"
+     * output concat("deleted"."first_name", ' ', "deleted"."last_name") as "full_name"
+     * where "created_at" < @1
      * ```
      *
      * Return the action performed on the row:
@@ -11455,7 +11844,21 @@ declare class InsertQueryBuilder<DB, TB extends keyof DB, O> implements Returnin
      *     'inserted.id as inserted_id',
      *     'deleted.id as deleted_id',
      *   ])
+     *   .execute()
      * ```
+     *
+     * The generated SQL (MSSQL):
+     *
+     * ```sql
+     * merge into "person"
+     * using "pet" on "pet"."owner_id" = "person"."id"
+     * when matched then delete
+     * when not matched then
+     * insert ("first_name", "last_name", "gender")
+     * values (@1, @2, @3)
+     * output "inserted"."id" as "inserted_id", "deleted"."id" as "deleted_id"
+     * ```
+     *
      */
     output<OE extends OutputExpression<DB, TB, 'inserted'>>(selections: readonly OE[]): InsertQueryBuilder<DB, TB, ReturningRow<DB, TB, O, SelectExpressionFromOutputExpression<OE>>>;
     output<CB extends OutputCallback<DB, TB, 'inserted'>>(callback: CB): InsertQueryBuilder<DB, TB, ReturningRow<DB, TB, O, SelectExpressionFromOutputCallback<CB>>>;
@@ -11473,16 +11876,17 @@ declare class InsertQueryBuilder<DB, TB extends keyof DB, O> implements Returnin
      * ### Examples
      *
      * ```ts
-     * db.insertInto('person')
-     *   .values({ first_name: 'James', last_name: 'Smith', age: 42 })
+     * await db.insertInto('person')
+     *   .values({ first_name: 'James', last_name: 'Smith', gender: 'male' })
      *   .returning(['first_name'])
      *   .clearReturning()
+     *   .execute()
      * ```
      *
      * The generated SQL(PostgreSQL):
      *
      * ```sql
-     * insert into "person" ("James", "Smith", 42)
+     * insert into "person" ("first_name", "last_name", "gender") values ($1, $2, $3)
      * ```
      */
     clearReturning(): InsertQueryBuilder<DB, TB, InsertResult>;
@@ -11498,13 +11902,15 @@ declare class InsertQueryBuilder<DB, TB extends keyof DB, O> implements Returnin
      * The next example uses a helper function `log` to log a query:
      *
      * ```ts
+     * import type { Compilable } from 'kysely'
+     *
      * function log<T extends Compilable>(qb: T): T {
      *   console.log(qb.compile())
      *   return qb
      * }
      *
-     * db.updateTable('person')
-     *   .set(values)
+     * await db.insertInto('person')
+     *   .values({ first_name: 'John', last_name: 'Doe', gender: 'male' })
      *   .$call(log)
      *   .execute()
      * ```
@@ -11523,7 +11929,9 @@ declare class InsertQueryBuilder<DB, TB extends keyof DB, O> implements Returnin
      * ### Examples
      *
      * ```ts
-     * async function insertPerson(values: InsertablePerson, returnLastName: boolean) {
+     * import type { NewPerson } from 'type-editor' // imaginary module
+     *
+     * async function insertPerson(values: NewPerson, returnLastName: boolean) {
      *   return await db
      *     .insertInto('person')
      *     .values(values)
@@ -11571,23 +11979,41 @@ declare class InsertQueryBuilder<DB, TB extends keyof DB, O> implements Returnin
      * Turn this code:
      *
      * ```ts
+     * import type { Person } from 'type-editor' // imaginary module
+     *
      * const person = await db.insertInto('person')
-     *   .values({ ...inputPerson, nullable_column: 'hell yeah!' })
+     *   .values({
+     *     first_name: 'John',
+     *     last_name: 'Doe',
+     *     gender: 'male',
+     *     nullable_column: 'hell yeah!'
+     *   })
      *   .returningAll()
      *   .executeTakeFirstOrThrow()
      *
-     * if (nullable_column) {
+     * if (isWithNoNullValue(person)) {
      *   functionThatExpectsPersonWithNonNullValue(person)
+     * }
+     *
+     * function isWithNoNullValue(person: Person): person is Person & { nullable_column: string } {
+     *   return person.nullable_column != null
      * }
      * ```
      *
      * Into this:
      *
      * ```ts
+     * import type { NotNull } from 'kysely'
+     *
      * const person = await db.insertInto('person')
-     *   .values({ ...inputPerson, nullable_column: 'hell yeah!' })
+     *   .values({
+     *     first_name: 'John',
+     *     last_name: 'Doe',
+     *     gender: 'male',
+     *     nullable_column: 'hell yeah!'
+     *   })
      *   .returningAll()
-     *   .$narrowType<{ nullable_column: string }>()
+     *   .$narrowType<{ nullable_column: NotNull }>()
      *   .executeTakeFirstOrThrow()
      *
      * functionThatExpectsPersonWithNonNullValue(person)
@@ -11617,22 +12043,29 @@ declare class InsertQueryBuilder<DB, TB extends keyof DB, O> implements Returnin
      * ### Examples
      *
      * ```ts
-     * const result = await db
-     *   .with('new_person', (qb) => qb
-     *     .insertInto('person')
-     *     .values(person)
-     *     .returning('id')
-     *     .$assertType<{ id: string }>()
-     *   )
-     *   .with('new_pet', (qb) => qb
-     *     .insertInto('pet')
-     *     .values((eb) => ({ owner_id: eb.selectFrom('new_person').select('id'), ...pet }))
-     *     .returning(['name as pet_name', 'species'])
-     *     .$assertType<{ pet_name: string, species: Species }>()
-     *   )
-     *   .selectFrom(['new_person', 'new_pet'])
-     *   .selectAll()
-     *   .executeTakeFirstOrThrow()
+     * import type { NewPerson, NewPet, Species } from 'type-editor' // imaginary module
+     *
+     * async function insertPersonAndPet(person: NewPerson, pet: Omit<NewPet, 'owner_id'>) {
+     *   return await db
+     *     .with('new_person', (qb) => qb
+     *       .insertInto('person')
+     *       .values(person)
+     *       .returning('id')
+     *       .$assertType<{ id: number }>()
+     *     )
+     *     .with('new_pet', (qb) => qb
+     *       .insertInto('pet')
+     *       .values((eb) => ({
+     *         owner_id: eb.selectFrom('new_person').select('id'),
+     *         ...pet
+     *       }))
+     *       .returning(['name as pet_name', 'species'])
+     *       .$assertType<{ pet_name: string, species: Species }>()
+     *     )
+     *     .selectFrom(['new_person', 'new_pet'])
+     *     .selectAll()
+     *     .executeTakeFirstOrThrow()
+     * }
      * ```
      */
     $assertType<T extends O>(): O extends T ? InsertQueryBuilder<DB, TB, T> : KyselyTypeError<`$assertType() call failed: The type passed in is not equal to the output type of the query.`>;
@@ -11767,6 +12200,8 @@ declare class DeleteQueryBuilder<DB, TB extends keyof DB, O> implements WhereInt
      * you can always use:
      *
      * ```ts
+     * import { sql } from 'kysely'
+     *
      * sql`your operator`
      * ```
      *
@@ -11778,7 +12213,7 @@ declare class DeleteQueryBuilder<DB, TB extends keyof DB, O> implements WhereInt
      * const persons = await db
      *   .selectFrom('person')
      *   .selectAll()
-     *   .where('id', 'in', ['1', '2', '3'])
+     *   .where('id', 'in', [1, 2, 3])
      *   .execute()
      * ```
      *
@@ -12025,6 +12460,8 @@ declare class DeleteQueryBuilder<DB, TB extends keyof DB, O> implements WhereInt
      * ```ts
      * import { sql } from 'kysely'
      * const { ref } = db.dynamic
+     *
+     * const columnFromUserInput: string = 'id'
      *
      * const persons = await db
      *   .selectFrom('person')
@@ -12373,20 +12810,20 @@ declare class DeleteQueryBuilder<DB, TB extends keyof DB, O> implements WhereInt
      *     last_name: 'Aniston'
      *   })
      *   .returning('id')
-     *   .executeTakeFirst()
+     *   .executeTakeFirstOrThrow()
      * ```
      *
      * Return multiple columns:
      *
      * ```ts
-     * const { id, first_name } = await db
+     * const { id, last_name } = await db
      *   .insertInto('person')
      *   .values({
      *     first_name: 'Jennifer',
      *     last_name: 'Aniston'
      *   })
      *   .returning(['id', 'last_name'])
-     *   .executeTakeFirst()
+     *   .executeTakeFirstOrThrow()
      * ```
      *
      * Return arbitrary expressions:
@@ -12403,9 +12840,9 @@ declare class DeleteQueryBuilder<DB, TB extends keyof DB, O> implements WhereInt
      *   .returning((eb) => [
      *     'id as id',
      *     sql<string>`concat(first_name, ' ', last_name)`.as('full_name'),
-     *     eb.selectFrom('pets').select('pet.id').limit(1).as('first_pet_id')
+     *     eb.selectFrom('pet').select('pet.id').limit(1).as('first_pet_id')
      *   ])
-     *   .executeTakeFirst()
+     *   .executeTakeFirstOrThrow()
      * ```
      */
     returning<SE extends SelectExpression<DB, TB>>(selections: ReadonlyArray<SE>): DeleteQueryBuilder<DB, TB, ReturningRow<DB, TB, O, SE>>;
@@ -12530,15 +12967,24 @@ declare class DeleteQueryBuilder<DB, TB extends keyof DB, O> implements WhereInt
      *   .output('inserted.id')
      *   .values({
      *     first_name: 'Jennifer',
-     *     last_name: 'Aniston'
+     *     last_name: 'Aniston',
+     *     gender: 'female',
      *   })
-     *   .executeTakeFirst()
+     *   .executeTakeFirstOrThrow()
+     * ```
+     *
+     * The generated SQL (MSSQL):
+     *
+     * ```sql
+     * insert into "person" ("first_name", "last_name", "gender")
+     * output "inserted"."id"
+     * values (@1, @2, @3)
      * ```
      *
      * Return multiple columns:
      *
      * ```ts
-     * const { id, first_name } = await db
+     * const { old_first_name, old_last_name, new_first_name, new_last_name } = await db
      *   .updateTable('person')
      *   .set({ first_name: 'John', last_name: 'Doe' })
      *   .output([
@@ -12548,7 +12994,19 @@ declare class DeleteQueryBuilder<DB, TB extends keyof DB, O> implements WhereInt
      *     'inserted.last_name as new_last_name',
      *   ])
      *   .where('created_at', '<', new Date())
-     *   .executeTakeFirst()
+     *   .executeTakeFirstOrThrow()
+     * ```
+     *
+     * The generated SQL (MSSQL):
+     *
+     * ```sql
+     * update "person"
+     * set "first_name" = @1, "last_name" = @2
+     * output "deleted"."first_name" as "old_first_name",
+     *   "deleted"."last_name" as "old_last_name",
+     *   "inserted"."first_name" as "new_first_name",
+     *   "inserted"."last_name" as "new_last_name"
+     * where "created_at" < @3
      * ```
      *
      * Return arbitrary expressions:
@@ -12556,11 +13014,19 @@ declare class DeleteQueryBuilder<DB, TB extends keyof DB, O> implements WhereInt
      * ```ts
      * import { sql } from 'kysely'
      *
-     * const { id, full_name } = await db
+     * const { full_name } = await db
      *   .deleteFrom('person')
      *   .output((eb) => sql<string>`concat(${eb.ref('deleted.first_name')}, ' ', ${eb.ref('deleted.last_name')})`.as('full_name'))
      *   .where('created_at', '<', new Date())
      *   .executeTakeFirstOrThrow()
+     * ```
+     *
+     * The generated SQL (MSSQL):
+     *
+     * ```sql
+     * delete from "person"
+     * output concat("deleted"."first_name", ' ', "deleted"."last_name") as "full_name"
+     * where "created_at" < @1
      * ```
      *
      * Return the action performed on the row:
@@ -12581,7 +13047,21 @@ declare class DeleteQueryBuilder<DB, TB extends keyof DB, O> implements WhereInt
      *     'inserted.id as inserted_id',
      *     'deleted.id as deleted_id',
      *   ])
+     *   .execute()
      * ```
+     *
+     * The generated SQL (MSSQL):
+     *
+     * ```sql
+     * merge into "person"
+     * using "pet" on "pet"."owner_id" = "person"."id"
+     * when matched then delete
+     * when not matched then
+     * insert ("first_name", "last_name", "gender")
+     * values (@1, @2, @3)
+     * output "inserted"."id" as "inserted_id", "deleted"."id" as "deleted_id"
+     * ```
+     *
      */
     output<OE extends OutputExpression<DB, TB, 'deleted'>>(selections: readonly OE[]): DeleteQueryBuilder<DB, TB, ReturningRow<DB, TB, O, SelectExpressionFromOutputExpression<OE>>>;
     output<CB extends OutputCallback<DB, TB, 'deleted'>>(callback: CB): DeleteQueryBuilder<DB, TB, ReturningRow<DB, TB, O, SelectExpressionFromOutputCallback<CB>>>;
@@ -13027,6 +13507,8 @@ declare class UpdateQueryBuilder<DB, UT extends keyof DB, TB extends keyof DB, O
      * you can always use:
      *
      * ```ts
+     * import { sql } from 'kysely'
+     *
      * sql`your operator`
      * ```
      *
@@ -13038,7 +13520,7 @@ declare class UpdateQueryBuilder<DB, UT extends keyof DB, TB extends keyof DB, O
      * const persons = await db
      *   .selectFrom('person')
      *   .selectAll()
-     *   .where('id', 'in', ['1', '2', '3'])
+     *   .where('id', 'in', [1, 2, 3])
      *   .execute()
      * ```
      *
@@ -13286,6 +13768,8 @@ declare class UpdateQueryBuilder<DB, UT extends keyof DB, TB extends keyof DB, O
      * import { sql } from 'kysely'
      * const { ref } = db.dynamic
      *
+     * const columnFromUserInput: string = 'id'
+     *
      * const persons = await db
      *   .selectFrom('person')
      *   .selectAll()
@@ -13521,7 +14005,7 @@ declare class UpdateQueryBuilder<DB, UT extends keyof DB, TB extends keyof DB, O
      * ```ts
      * await db.selectFrom('person')
      *   .innerJoin(
-     *     qb.selectFrom('pet')
+     *     db.selectFrom('pet')
      *       .select(['owner_id', 'name'])
      *       .where('name', '=', 'Doggo')
      *       .as('doggos'),
@@ -13570,15 +14054,17 @@ declare class UpdateQueryBuilder<DB, UT extends keyof DB, TB extends keyof DB, O
      * Update the first 2 rows in the 'person' table:
      *
      * ```ts
-     * return await db
+     * await db
      *   .updateTable('person')
      *   .set({ first_name: 'Foo' })
-     *   .limit(2);
+     *   .limit(2)
+     *   .execute()
      * ```
      *
      * The generated SQL (MySQL):
+     *
      * ```sql
-     * update `person` set `first_name` = 'Foo' limit 2
+     * update `person` set `first_name` = ? limit ?
      * ```
      */
     limit(limit: ValueExpression<DB, TB, number>): UpdateQueryBuilder<DB, UT, TB, O>;
@@ -13610,7 +14096,7 @@ declare class UpdateQueryBuilder<DB, UT extends keyof DB, TB extends keyof DB, O
      *     first_name: 'Jennifer',
      *     last_name: 'Aniston'
      *   })
-     *   .where('id', '=', '1')
+     *   .where('id', '=', 1)
      *   .executeTakeFirst()
      *
      * console.log(result.numUpdatedRows)
@@ -13635,7 +14121,7 @@ declare class UpdateQueryBuilder<DB, UT extends keyof DB, TB extends keyof DB, O
      *     first_name: eb.selectFrom('pet').select('name').limit(1),
      *     last_name: 'updated',
      *   }))
-     *   .where('id', '=', '1')
+     *   .where('id', '=', 1)
      *   .executeTakeFirst()
      *
      * console.log(result.numUpdatedRows)
@@ -13657,13 +14143,15 @@ declare class UpdateQueryBuilder<DB, UT extends keyof DB, TB extends keyof DB, O
      * (or other target) and the second as the value:
      *
      * ```ts
+     * import { sql } from 'kysely'
+     *
      * const result = await db
      *   .updateTable('person')
      *   .set('first_name', 'Foo')
      *   // As always, both arguments can be arbitrary expressions or
      *   // callbacks that give you access to an expression builder:
      *   .set(sql<string>`address['postalCode']`, (eb) => eb.val('61710'))
-     *   .where('id', '=', '1')
+     *   .where('id', '=', 1)
      *   .executeTakeFirst()
      * ```
      *
@@ -13748,20 +14236,20 @@ declare class UpdateQueryBuilder<DB, UT extends keyof DB, TB extends keyof DB, O
      *     last_name: 'Aniston'
      *   })
      *   .returning('id')
-     *   .executeTakeFirst()
+     *   .executeTakeFirstOrThrow()
      * ```
      *
      * Return multiple columns:
      *
      * ```ts
-     * const { id, first_name } = await db
+     * const { id, last_name } = await db
      *   .insertInto('person')
      *   .values({
      *     first_name: 'Jennifer',
      *     last_name: 'Aniston'
      *   })
      *   .returning(['id', 'last_name'])
-     *   .executeTakeFirst()
+     *   .executeTakeFirstOrThrow()
      * ```
      *
      * Return arbitrary expressions:
@@ -13778,9 +14266,9 @@ declare class UpdateQueryBuilder<DB, UT extends keyof DB, TB extends keyof DB, O
      *   .returning((eb) => [
      *     'id as id',
      *     sql<string>`concat(first_name, ' ', last_name)`.as('full_name'),
-     *     eb.selectFrom('pets').select('pet.id').limit(1).as('first_pet_id')
+     *     eb.selectFrom('pet').select('pet.id').limit(1).as('first_pet_id')
      *   ])
-     *   .executeTakeFirst()
+     *   .executeTakeFirstOrThrow()
      * ```
      */
     returning<SE extends SelectExpression<DB, TB>>(selections: ReadonlyArray<SE>): UpdateQueryBuilder<DB, UT, TB, ReturningRow<DB, TB, O, SE>>;
@@ -13813,15 +14301,24 @@ declare class UpdateQueryBuilder<DB, UT extends keyof DB, TB extends keyof DB, O
      *   .output('inserted.id')
      *   .values({
      *     first_name: 'Jennifer',
-     *     last_name: 'Aniston'
+     *     last_name: 'Aniston',
+     *     gender: 'female',
      *   })
-     *   .executeTakeFirst()
+     *   .executeTakeFirstOrThrow()
+     * ```
+     *
+     * The generated SQL (MSSQL):
+     *
+     * ```sql
+     * insert into "person" ("first_name", "last_name", "gender")
+     * output "inserted"."id"
+     * values (@1, @2, @3)
      * ```
      *
      * Return multiple columns:
      *
      * ```ts
-     * const { id, first_name } = await db
+     * const { old_first_name, old_last_name, new_first_name, new_last_name } = await db
      *   .updateTable('person')
      *   .set({ first_name: 'John', last_name: 'Doe' })
      *   .output([
@@ -13831,7 +14328,19 @@ declare class UpdateQueryBuilder<DB, UT extends keyof DB, TB extends keyof DB, O
      *     'inserted.last_name as new_last_name',
      *   ])
      *   .where('created_at', '<', new Date())
-     *   .executeTakeFirst()
+     *   .executeTakeFirstOrThrow()
+     * ```
+     *
+     * The generated SQL (MSSQL):
+     *
+     * ```sql
+     * update "person"
+     * set "first_name" = @1, "last_name" = @2
+     * output "deleted"."first_name" as "old_first_name",
+     *   "deleted"."last_name" as "old_last_name",
+     *   "inserted"."first_name" as "new_first_name",
+     *   "inserted"."last_name" as "new_last_name"
+     * where "created_at" < @3
      * ```
      *
      * Return arbitrary expressions:
@@ -13839,11 +14348,19 @@ declare class UpdateQueryBuilder<DB, UT extends keyof DB, TB extends keyof DB, O
      * ```ts
      * import { sql } from 'kysely'
      *
-     * const { id, full_name } = await db
+     * const { full_name } = await db
      *   .deleteFrom('person')
      *   .output((eb) => sql<string>`concat(${eb.ref('deleted.first_name')}, ' ', ${eb.ref('deleted.last_name')})`.as('full_name'))
      *   .where('created_at', '<', new Date())
      *   .executeTakeFirstOrThrow()
+     * ```
+     *
+     * The generated SQL (MSSQL):
+     *
+     * ```sql
+     * delete from "person"
+     * output concat("deleted"."first_name", ' ', "deleted"."last_name") as "full_name"
+     * where "created_at" < @1
      * ```
      *
      * Return the action performed on the row:
@@ -13864,7 +14381,21 @@ declare class UpdateQueryBuilder<DB, UT extends keyof DB, TB extends keyof DB, O
      *     'inserted.id as inserted_id',
      *     'deleted.id as deleted_id',
      *   ])
+     *   .execute()
      * ```
+     *
+     * The generated SQL (MSSQL):
+     *
+     * ```sql
+     * merge into "person"
+     * using "pet" on "pet"."owner_id" = "person"."id"
+     * when matched then delete
+     * when not matched then
+     * insert ("first_name", "last_name", "gender")
+     * values (@1, @2, @3)
+     * output "inserted"."id" as "inserted_id", "deleted"."id" as "deleted_id"
+     * ```
+     *
      */
     output<OE extends OutputExpression<DB, UT>>(selections: readonly OE[]): UpdateQueryBuilder<DB, UT, TB, ReturningRow<DB, TB, O, SelectExpressionFromOutputExpression<OE>>>;
     output<CB extends OutputCallback<DB, TB>>(callback: CB): UpdateQueryBuilder<DB, UT, TB, ReturningRow<DB, TB, O, SelectExpressionFromOutputCallback<CB>>>;
@@ -13882,11 +14413,13 @@ declare class UpdateQueryBuilder<DB, UT extends keyof DB, TB extends keyof DB, O
      * ### Examples
      *
      * ```ts
+     * import { sql } from 'kysely'
+     *
      * await db.updateTable('person')
-     * .set({ age: 39 })
-     * .where('first_name', '=', 'John')
-     * .modifyEnd(sql.raw('-- This is a comment'))
-     * .execute()
+     *   .set({ age: 39 })
+     *   .where('first_name', '=', 'John')
+     *   .modifyEnd(sql.raw('-- This is a comment'))
+     *   .execute()
      * ```
      *
      * The generated SQL (MySQL):
@@ -13930,10 +14463,17 @@ declare class UpdateQueryBuilder<DB, UT extends keyof DB, TB extends keyof DB, O
      * The next example uses a helper function `log` to log a query:
      *
      * ```ts
+     * import type { Compilable } from 'kysely'
+     * import type { PersonUpdate } from 'type-editor' // imaginary module
+     *
      * function log<T extends Compilable>(qb: T): T {
      *   console.log(qb.compile())
      *   return qb
      * }
+     *
+     * const values = {
+     *   first_name: 'John',
+     * } satisfies PersonUpdate
      *
      * db.updateTable('person')
      *   .set(values)
@@ -13955,7 +14495,9 @@ declare class UpdateQueryBuilder<DB, UT extends keyof DB, TB extends keyof DB, O
      * ### Examples
      *
      * ```ts
-     * async function updatePerson(id: number, updates: UpdateablePerson, returnLastName: boolean) {
+     * import type { PersonUpdate } from 'type-editor' // imaginary module
+     *
+     * async function updatePerson(id: number, updates: PersonUpdate, returnLastName: boolean) {
      *   return await db
      *     .updateTable('person')
      *     .set(updates)
@@ -14004,27 +14546,41 @@ declare class UpdateQueryBuilder<DB, UT extends keyof DB, TB extends keyof DB, O
      * Turn this code:
      *
      * ```ts
+     * import type { Person } from 'type-editor' // imaginary module
+     *
+     * const id = 1
+     * const now = new Date().toISOString()
+     *
      * const person = await db.updateTable('person')
-     *   .set({ deletedAt: now })
+     *   .set({ deleted_at: now })
      *   .where('id', '=', id)
      *   .where('nullable_column', 'is not', null)
      *   .returningAll()
      *   .executeTakeFirstOrThrow()
      *
-     * if (person.nullable_column) {
+     * if (isWithNoNullValue(person)) {
      *   functionThatExpectsPersonWithNonNullValue(person)
+     * }
+     *
+     * function isWithNoNullValue(person: Person): person is Person & { nullable_column: string } {
+     *   return person.nullable_column != null
      * }
      * ```
      *
      * Into this:
      *
      * ```ts
+     * import type { NotNull } from 'kysely'
+     *
+     * const id = 1
+     * const now = new Date().toISOString()
+     *
      * const person = await db.updateTable('person')
-     *   .set({ deletedAt: now })
+     *   .set({ deleted_at: now })
      *   .where('id', '=', id)
      *   .where('nullable_column', 'is not', null)
      *   .returningAll()
-     *   .$narrowType<{ deletedAt: Date; nullable_column: string }>()
+     *   .$narrowType<{ deleted_at: Date; nullable_column: NotNull }>()
      *   .executeTakeFirstOrThrow()
      *
      * functionThatExpectsPersonWithNonNullValue(person)
@@ -14054,6 +14610,17 @@ declare class UpdateQueryBuilder<DB, UT extends keyof DB, TB extends keyof DB, O
      * ### Examples
      *
      * ```ts
+     * import type { PersonUpdate, PetUpdate, Species } from 'type-editor' // imaginary module
+     *
+     * const person = {
+     *   id: 1,
+     *   gender: 'other',
+     * } satisfies PersonUpdate
+     *
+     * const pet = {
+     *   name: 'Fluffy',
+     * } satisfies PetUpdate
+     *
      * const result = await db
      *   .with('updated_person', (qb) => qb
      *     .updateTable('person')
@@ -14254,7 +14821,9 @@ declare class MergeQueryBuilder<DB, TT extends keyof DB, O> implements OutputInt
      * ### Examples
      *
      * ```ts
-     * const result = await db
+     * import { sql } from 'kysely'
+     *
+     * await db
      *   .mergeInto('person')
      *   .using('pet', 'pet.owner_id', 'person.id')
      *   .whenMatched()
@@ -14363,15 +14932,24 @@ declare class MergeQueryBuilder<DB, TT extends keyof DB, O> implements OutputInt
      *   .output('inserted.id')
      *   .values({
      *     first_name: 'Jennifer',
-     *     last_name: 'Aniston'
+     *     last_name: 'Aniston',
+     *     gender: 'female',
      *   })
-     *   .executeTakeFirst()
+     *   .executeTakeFirstOrThrow()
+     * ```
+     *
+     * The generated SQL (MSSQL):
+     *
+     * ```sql
+     * insert into "person" ("first_name", "last_name", "gender")
+     * output "inserted"."id"
+     * values (@1, @2, @3)
      * ```
      *
      * Return multiple columns:
      *
      * ```ts
-     * const { id, first_name } = await db
+     * const { old_first_name, old_last_name, new_first_name, new_last_name } = await db
      *   .updateTable('person')
      *   .set({ first_name: 'John', last_name: 'Doe' })
      *   .output([
@@ -14381,7 +14959,19 @@ declare class MergeQueryBuilder<DB, TT extends keyof DB, O> implements OutputInt
      *     'inserted.last_name as new_last_name',
      *   ])
      *   .where('created_at', '<', new Date())
-     *   .executeTakeFirst()
+     *   .executeTakeFirstOrThrow()
+     * ```
+     *
+     * The generated SQL (MSSQL):
+     *
+     * ```sql
+     * update "person"
+     * set "first_name" = @1, "last_name" = @2
+     * output "deleted"."first_name" as "old_first_name",
+     *   "deleted"."last_name" as "old_last_name",
+     *   "inserted"."first_name" as "new_first_name",
+     *   "inserted"."last_name" as "new_last_name"
+     * where "created_at" < @3
      * ```
      *
      * Return arbitrary expressions:
@@ -14389,11 +14979,19 @@ declare class MergeQueryBuilder<DB, TT extends keyof DB, O> implements OutputInt
      * ```ts
      * import { sql } from 'kysely'
      *
-     * const { id, full_name } = await db
+     * const { full_name } = await db
      *   .deleteFrom('person')
      *   .output((eb) => sql<string>`concat(${eb.ref('deleted.first_name')}, ' ', ${eb.ref('deleted.last_name')})`.as('full_name'))
      *   .where('created_at', '<', new Date())
      *   .executeTakeFirstOrThrow()
+     * ```
+     *
+     * The generated SQL (MSSQL):
+     *
+     * ```sql
+     * delete from "person"
+     * output concat("deleted"."first_name", ' ', "deleted"."last_name") as "full_name"
+     * where "created_at" < @1
      * ```
      *
      * Return the action performed on the row:
@@ -14414,7 +15012,21 @@ declare class MergeQueryBuilder<DB, TT extends keyof DB, O> implements OutputInt
      *     'inserted.id as inserted_id',
      *     'deleted.id as deleted_id',
      *   ])
+     *   .execute()
      * ```
+     *
+     * The generated SQL (MSSQL):
+     *
+     * ```sql
+     * merge into "person"
+     * using "pet" on "pet"."owner_id" = "person"."id"
+     * when matched then delete
+     * when not matched then
+     * insert ("first_name", "last_name", "gender")
+     * values (@1, @2, @3)
+     * output "inserted"."id" as "inserted_id", "deleted"."id" as "deleted_id"
+     * ```
+     *
      */
     output<OE extends OutputExpression<DB, TT>>(selections: readonly OE[]): MergeQueryBuilder<DB, TT, ReturningRow<DB, TT, O, SelectExpressionFromOutputExpression<OE>>>;
     output<CB extends OutputCallback<DB, TT>>(callback: CB): MergeQueryBuilder<DB, TT, ReturningRow<DB, TT, O, SelectExpressionFromOutputCallback<CB>>>;
@@ -14441,7 +15053,9 @@ declare class WheneableMergeQueryBuilder<DB, TT extends keyof DB, ST extends key
      * ### Examples
      *
      * ```ts
-     * const result = await db
+     * import { sql } from 'kysely'
+     *
+     * await db
      *   .mergeInto('person')
      *   .using('pet', 'pet.owner_id', 'person.id')
      *   .whenMatched()
@@ -14645,15 +15259,24 @@ declare class WheneableMergeQueryBuilder<DB, TT extends keyof DB, ST extends key
      *   .output('inserted.id')
      *   .values({
      *     first_name: 'Jennifer',
-     *     last_name: 'Aniston'
+     *     last_name: 'Aniston',
+     *     gender: 'female',
      *   })
-     *   .executeTakeFirst()
+     *   .executeTakeFirstOrThrow()
+     * ```
+     *
+     * The generated SQL (MSSQL):
+     *
+     * ```sql
+     * insert into "person" ("first_name", "last_name", "gender")
+     * output "inserted"."id"
+     * values (@1, @2, @3)
      * ```
      *
      * Return multiple columns:
      *
      * ```ts
-     * const { id, first_name } = await db
+     * const { old_first_name, old_last_name, new_first_name, new_last_name } = await db
      *   .updateTable('person')
      *   .set({ first_name: 'John', last_name: 'Doe' })
      *   .output([
@@ -14663,7 +15286,19 @@ declare class WheneableMergeQueryBuilder<DB, TT extends keyof DB, ST extends key
      *     'inserted.last_name as new_last_name',
      *   ])
      *   .where('created_at', '<', new Date())
-     *   .executeTakeFirst()
+     *   .executeTakeFirstOrThrow()
+     * ```
+     *
+     * The generated SQL (MSSQL):
+     *
+     * ```sql
+     * update "person"
+     * set "first_name" = @1, "last_name" = @2
+     * output "deleted"."first_name" as "old_first_name",
+     *   "deleted"."last_name" as "old_last_name",
+     *   "inserted"."first_name" as "new_first_name",
+     *   "inserted"."last_name" as "new_last_name"
+     * where "created_at" < @3
      * ```
      *
      * Return arbitrary expressions:
@@ -14671,11 +15306,19 @@ declare class WheneableMergeQueryBuilder<DB, TT extends keyof DB, ST extends key
      * ```ts
      * import { sql } from 'kysely'
      *
-     * const { id, full_name } = await db
+     * const { full_name } = await db
      *   .deleteFrom('person')
      *   .output((eb) => sql<string>`concat(${eb.ref('deleted.first_name')}, ' ', ${eb.ref('deleted.last_name')})`.as('full_name'))
      *   .where('created_at', '<', new Date())
      *   .executeTakeFirstOrThrow()
+     * ```
+     *
+     * The generated SQL (MSSQL):
+     *
+     * ```sql
+     * delete from "person"
+     * output concat("deleted"."first_name", ' ', "deleted"."last_name") as "full_name"
+     * where "created_at" < @1
      * ```
      *
      * Return the action performed on the row:
@@ -14696,7 +15339,21 @@ declare class WheneableMergeQueryBuilder<DB, TT extends keyof DB, ST extends key
      *     'inserted.id as inserted_id',
      *     'deleted.id as deleted_id',
      *   ])
+     *   .execute()
      * ```
+     *
+     * The generated SQL (MSSQL):
+     *
+     * ```sql
+     * merge into "person"
+     * using "pet" on "pet"."owner_id" = "person"."id"
+     * when matched then delete
+     * when not matched then
+     * insert ("first_name", "last_name", "gender")
+     * values (@1, @2, @3)
+     * output "inserted"."id" as "inserted_id", "deleted"."id" as "deleted_id"
+     * ```
+     *
      */
     output<OE extends OutputExpression<DB, TT>>(selections: readonly OE[]): WheneableMergeQueryBuilder<DB, TT, ST, ReturningRow<DB, TT, O, SelectExpressionFromOutputExpression<OE>>>;
     output<CB extends OutputCallback<DB, TT>>(callback: CB): WheneableMergeQueryBuilder<DB, TT, ST, ReturningRow<DB, TT, O, SelectExpressionFromOutputCallback<CB>>>;
@@ -14720,13 +15377,15 @@ declare class WheneableMergeQueryBuilder<DB, TT extends keyof DB, ST extends key
      * The next example uses a helper function `log` to log a query:
      *
      * ```ts
+     * import type { Compilable } from 'kysely'
+     *
      * function log<T extends Compilable>(qb: T): T {
      *   console.log(qb.compile())
      *   return qb
      * }
      *
-     * db.updateTable('person')
-     *   .set(values)
+     * await db.updateTable('person')
+     *   .set({ first_name: 'John' })
      *   .$call(log)
      *   .execute()
      * ```
@@ -14745,7 +15404,9 @@ declare class WheneableMergeQueryBuilder<DB, TT extends keyof DB, ST extends key
      * ### Examples
      *
      * ```ts
-     * async function updatePerson(id: number, updates: UpdateablePerson, returnLastName: boolean) {
+     * import type { PersonUpdate } from 'type-editor' // imaginary module
+     *
+     * async function updatePerson(id: number, updates: PersonUpdate, returnLastName: boolean) {
      *   return await db
      *     .updateTable('person')
      *     .set(updates)
@@ -14872,7 +15533,7 @@ declare class MatchedThenableMergeQueryBuilder<DB, TT extends keyof DB, ST exten
      *   .thenUpdate((ub) => ub
      *     .set(sql`metadata['has_pets']`, 'Y')
      *     .set({
-     *       updated_at: Date.now(),
+     *       updated_at: new Date().toISOString(),
      *     })
      *   )
      *   .execute()
@@ -15115,20 +15776,19 @@ declare class QueryCreator<DB> {
      * ### Examples
      *
      * ```ts
-     * const result = db.selectNoFrom((eb) => [
+     * const result = await db.selectNoFrom((eb) => [
      *   eb.selectFrom('person')
      *     .select('id')
      *     .where('first_name', '=', 'Jennifer')
      *     .limit(1)
      *     .as('jennifer_id'),
-     *
      *   eb.selectFrom('pet')
      *     .select('id')
      *     .where('name', '=', 'Doggo')
      *     .limit(1)
      *     .as('doggo_id')
-     *   ])
-     *   .executeTakeFirstOrThrow()
+     * ])
+     * .executeTakeFirstOrThrow()
      *
      * console.log(result.jennifer_id)
      * console.log(result.doggo_id)
@@ -15188,7 +15848,7 @@ declare class QueryCreator<DB> {
      *     last_name: 'Aniston'
      *   })
      *   .returning('id')
-     *   .executeTakeFirst()
+     *   .executeTakeFirstOrThrow()
      * ```
      */
     insertInto<T extends keyof DB & string>(table: T): InsertQueryBuilder<DB, T, InsertResult>;
@@ -15236,7 +15896,7 @@ declare class QueryCreator<DB> {
      * ```ts
      * const result = await db
      *   .deleteFrom('person')
-     *   .where('person.id', '=', '1')
+     *   .where('person.id', '=', 1)
      *   .executeTakeFirst()
      *
      * console.log(result.numDeletedRows)
@@ -15254,7 +15914,7 @@ declare class QueryCreator<DB> {
      * const result = await db
      *   .deleteFrom(['person', 'pet'])
      *   .using('person')
-     *   .innerJoin('pet', 'pet.owner_id', '=', 'person.id')
+     *   .innerJoin('pet', 'pet.owner_id', 'person.id')
      *   .where('person.id', '=', 1)
      *   .executeTakeFirst()
      * ```
@@ -15343,24 +16003,24 @@ declare class QueryCreator<DB> {
      *
      * ```ts
      * const result = await db
-     *   .mergeInto("wine as target")
+     *   .mergeInto('wine as target')
      *   .using(
-     *     "wine_stock_change as source",
-     *     "source.wine_name",
-     *     "target.name",
+     *     'wine_stock_change as source',
+     *     'source.wine_name',
+     *     'target.name',
      *   )
-     *   .whenNotMatchedAnd("source.stock_delta", ">", 0)
+     *   .whenNotMatchedAnd('source.stock_delta', '>', 0)
      *   .thenInsertValues(({ ref }) => ({
-     *     name: ref("source.wine_name"),
-     *     stock: ref("source.stock_delta"),
+     *     name: ref('source.wine_name'),
+     *     stock: ref('source.stock_delta'),
      *   }))
      *   .whenMatchedAnd(
-     *     (eb) => eb("target.stock", "+", eb.ref("source.stock_delta")),
-     *     ">",
+     *     (eb) => eb('target.stock', '+', eb.ref('source.stock_delta')),
+     *     '>',
      *     0,
      *   )
-     *   .thenUpdateSet("stock", (eb) =>
-     *     eb("target.stock", "+", eb.ref("source.stock_delta")),
+     *   .thenUpdateSet('stock', (eb) =>
+     *     eb('target.stock', '+', eb.ref('source.stock_delta')),
      *   )
      *   .whenMatched()
      *   .thenDelete()
@@ -15694,8 +16354,11 @@ declare class Kysely<DB> extends QueryCreator<DB> implements QueryExecutorProvid
      * The returned {@link TransactionBuilder} can be used to configure the transaction. The
      * {@link TransactionBuilder.execute} method can then be called to run the transaction.
      * {@link TransactionBuilder.execute} takes a function that is run inside the
-     * transaction. If the function throws, the transaction is rolled back. Otherwise
-     * the transaction is committed.
+     * transaction. If the function throws an exception,
+     * 1. the exception is caught,
+     * 2. the transaction is rolled back, and
+     * 3. the exception is thrown again.
+     * Otherwise the transaction is committed.
      *
      * The callback function passed to the {@link TransactionBuilder.execute | execute}
      * method gets the transaction object as its only argument. The transaction is
@@ -15706,9 +16369,12 @@ declare class Kysely<DB> extends QueryCreator<DB> implements QueryExecutorProvid
      *
      * <!-- siteExample("transactions", "Simple transaction", 10) -->
      *
-     * This example inserts two rows in a transaction. If an error is thrown inside
-     * the callback passed to the `execute` method, the transaction is rolled back.
-     * Otherwise it's committed.
+     * This example inserts two rows in a transaction. If an exception is thrown inside
+     * the callback passed to the `execute` method,
+     * 1. the exception is caught,
+     * 2. the transaction is rolled back, and
+     * 3. the exception is thrown again.
+     * Otherwise the transaction is committed.
      *
      * ```ts
      * const catto = await db.transaction().execute(async (trx) => {
@@ -15845,8 +16511,11 @@ declare class Transaction<DB> extends Kysely<DB> {
      * The returned {@link TransactionBuilder} can be used to configure the transaction. The
      * {@link TransactionBuilder.execute} method can then be called to run the transaction.
      * {@link TransactionBuilder.execute} takes a function that is run inside the
-     * transaction. If the function throws, the transaction is rolled back. Otherwise
-     * the transaction is committed.
+     * transaction. If the function throws an exception,
+     * 1. the exception is caught,
+     * 2. the transaction is rolled back, and
+     * 3. the exception is thrown again.
+     * Otherwise the transaction is committed.
      *
      * The callback function passed to the {@link TransactionBuilder.execute | execute}
      * method gets the transaction object as its only argument. The transaction is
@@ -15857,9 +16526,12 @@ declare class Transaction<DB> extends Kysely<DB> {
      *
      * <!-- siteExample("transactions", "Simple transaction", 10) -->
      *
-     * This example inserts two rows in a transaction. If an error is thrown inside
-     * the callback passed to the `execute` method, the transaction is rolled back.
-     * Otherwise it's committed.
+     * This example inserts two rows in a transaction. If an exception is thrown inside
+     * the callback passed to the `execute` method,
+     * 1. the exception is caught,
+     * 2. the transaction is rolled back, and
+     * 3. the exception is thrown again.
+     * Otherwise the transaction is committed.
      *
      * ```ts
      * const catto = await db.transaction().execute(async (trx) => {
