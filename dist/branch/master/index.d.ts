@@ -2488,6 +2488,13 @@ interface MigratorProps {
      * order.
      */
     readonly allowUnorderedMigrations?: boolean;
+    /**
+     * A function that compares migration names, used when sorting migrations in
+     * ascending order.
+     *
+     * Default is `name0.localeCompare(name1)`.
+     */
+    readonly nameComparator?: (name0: string, name1: string) => number;
 }
 /**
  * All migration methods ({@link Migrator.migrateTo | migrateTo},
