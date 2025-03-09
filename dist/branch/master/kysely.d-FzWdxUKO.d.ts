@@ -16549,6 +16549,7 @@ declare const LOG_LEVELS: readonly ["query", "error"];
 type LogLevel = ArrayItemType<typeof LOG_LEVELS>;
 interface QueryLogEvent {
     readonly level: 'query';
+    readonly isStream?: boolean;
     readonly query: CompiledQuery;
     readonly queryDurationMillis: number;
 }
