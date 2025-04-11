@@ -1,3 +1,103 @@
+type OperationNodeKind = 'IdentifierNode' | 'SchemableIdentifierNode' | 'RawNode' | 'SelectQueryNode' | 'SelectionNode' | 'ReferenceNode' | 'ColumnNode' | 'TableNode' | 'AliasNode' | 'FromNode' | 'SelectAllNode' | 'AndNode' | 'OrNode' | 'ParensNode' | 'ValueNode' | 'ValueListNode' | 'PrimitiveValueListNode' | 'JoinNode' | 'OperatorNode' | 'WhereNode' | 'InsertQueryNode' | 'DeleteQueryNode' | 'ReturningNode' | 'CreateTableNode' | 'ColumnDefinitionNode' | 'AddColumnNode' | 'DropTableNode' | 'DataTypeNode' | 'OrderByNode' | 'OrderByItemNode' | 'GroupByNode' | 'GroupByItemNode' | 'UpdateQueryNode' | 'ColumnUpdateNode' | 'LimitNode' | 'OffsetNode' | 'OnConflictNode' | 'OnDuplicateKeyNode' | 'CreateIndexNode' | 'DropIndexNode' | 'ListNode' | 'ReferencesNode' | 'PrimaryKeyConstraintNode' | 'UniqueConstraintNode' | 'CheckConstraintNode' | 'ForeignKeyConstraintNode' | 'WithNode' | 'CommonTableExpressionNode' | 'HavingNode' | 'CreateSchemaNode' | 'DropSchemaNode' | 'AlterTableNode' | 'ModifyColumnNode' | 'DropColumnNode' | 'RenameColumnNode' | 'AlterColumnNode' | 'AddConstraintNode' | 'DropConstraintNode' | 'CreateViewNode' | 'RefreshMaterializedViewNode' | 'DropViewNode' | 'GeneratedNode' | 'DefaultValueNode' | 'OnNode' | 'ValuesNode' | 'CommonTableExpressionNameNode' | 'SelectModifierNode' | 'CreateTypeNode' | 'DropTypeNode' | 'ExplainNode' | 'DefaultInsertValueNode' | 'AggregateFunctionNode' | 'OverNode' | 'PartitionByNode' | 'PartitionByItemNode' | 'SetOperationNode' | 'BinaryOperationNode' | 'UnaryOperationNode' | 'UsingNode' | 'FunctionNode' | 'CaseNode' | 'WhenNode' | 'JSONReferenceNode' | 'JSONPathNode' | 'JSONPathLegNode' | 'JSONOperatorChainNode' | 'TupleNode' | 'MergeQueryNode' | 'MatchedNode' | 'AddIndexNode' | 'CastNode' | 'FetchNode' | 'TopNode' | 'OutputNode' | 'OrActionNode' | 'CollateNode' | 'RenameConstraintNode';
+interface OperationNode {
+    readonly kind: OperationNodeKind;
+}
+
+interface IdentifierNode extends OperationNode {
+    readonly kind: 'IdentifierNode';
+    readonly name: string;
+}
+/**
+ * @internal
+ */
+declare const IdentifierNode: Readonly<{
+    is(node: OperationNode): node is IdentifierNode;
+    create(name: string): IdentifierNode;
+}>;
+
+interface CheckConstraintNode extends OperationNode {
+    readonly kind: 'CheckConstraintNode';
+    readonly expression: OperationNode;
+    readonly name?: IdentifierNode;
+}
+/**
+ * @internal
+ */
+declare const CheckConstraintNode: Readonly<{
+    is(node: OperationNode): node is CheckConstraintNode;
+    create(expression: OperationNode, constraintName?: string): CheckConstraintNode;
+}>;
+
+interface ColumnNode extends OperationNode {
+    readonly kind: 'ColumnNode';
+    readonly column: IdentifierNode;
+}
+/**
+ * @internal
+ */
+declare const ColumnNode: Readonly<{
+    is(node: OperationNode): node is ColumnNode;
+    create(column: string): ColumnNode;
+}>;
+
+interface DefaultValueNode extends OperationNode {
+    readonly kind: 'DefaultValueNode';
+    readonly defaultValue: OperationNode;
+}
+/**
+ * @internal
+ */
+declare const DefaultValueNode: Readonly<{
+    is(node: OperationNode): node is DefaultValueNode;
+    create(defaultValue: OperationNode): DefaultValueNode;
+}>;
+
+type GeneratedNodeParams = Omit<GeneratedNode, 'kind' | 'expression'>;
+interface GeneratedNode extends OperationNode {
+    readonly kind: 'GeneratedNode';
+    readonly byDefault?: boolean;
+    readonly always?: boolean;
+    readonly identity?: boolean;
+    readonly stored?: boolean;
+    readonly expression?: OperationNode;
+}
+/**
+ * @internal
+ */
+declare const GeneratedNode: Readonly<{
+    is(node: OperationNode): node is GeneratedNode;
+    create(params: GeneratedNodeParams): GeneratedNode;
+    createWithExpression(expression: OperationNode): GeneratedNode;
+    cloneWith(node: GeneratedNode, params: GeneratedNodeParams): GeneratedNode;
+}>;
+
+interface SchemableIdentifierNode extends OperationNode {
+    readonly kind: 'SchemableIdentifierNode';
+    readonly schema?: IdentifierNode;
+    readonly identifier: IdentifierNode;
+}
+/**
+ * @internal
+ */
+declare const SchemableIdentifierNode: Readonly<{
+    is(node: OperationNode): node is SchemableIdentifierNode;
+    create(identifier: string): SchemableIdentifierNode;
+    createWithSchema(schema: string, identifier: string): SchemableIdentifierNode;
+}>;
+
+interface TableNode extends OperationNode {
+    readonly kind: 'TableNode';
+    readonly table: SchemableIdentifierNode;
+}
+/**
+ * @internal
+ */
+declare const TableNode: Readonly<{
+    is(node: OperationNode): node is TableNode;
+    create(table: string): TableNode;
+    createWithSchema(schema: string, table: string): TableNode;
+}>;
+
 /**
  * The result of an insert query.
  *
@@ -237,106 +337,6 @@ type ShallowRecord<K extends keyof any, T> = DrainOuterGeneric<{
     [P in K]: T;
 }>;
 
-type OperationNodeKind = 'IdentifierNode' | 'SchemableIdentifierNode' | 'RawNode' | 'SelectQueryNode' | 'SelectionNode' | 'ReferenceNode' | 'ColumnNode' | 'TableNode' | 'AliasNode' | 'FromNode' | 'SelectAllNode' | 'AndNode' | 'OrNode' | 'ParensNode' | 'ValueNode' | 'ValueListNode' | 'PrimitiveValueListNode' | 'JoinNode' | 'OperatorNode' | 'WhereNode' | 'InsertQueryNode' | 'DeleteQueryNode' | 'ReturningNode' | 'CreateTableNode' | 'ColumnDefinitionNode' | 'AddColumnNode' | 'DropTableNode' | 'DataTypeNode' | 'OrderByNode' | 'OrderByItemNode' | 'GroupByNode' | 'GroupByItemNode' | 'UpdateQueryNode' | 'ColumnUpdateNode' | 'LimitNode' | 'OffsetNode' | 'OnConflictNode' | 'OnDuplicateKeyNode' | 'CreateIndexNode' | 'DropIndexNode' | 'ListNode' | 'ReferencesNode' | 'PrimaryKeyConstraintNode' | 'UniqueConstraintNode' | 'CheckConstraintNode' | 'ForeignKeyConstraintNode' | 'WithNode' | 'CommonTableExpressionNode' | 'HavingNode' | 'CreateSchemaNode' | 'DropSchemaNode' | 'AlterTableNode' | 'ModifyColumnNode' | 'DropColumnNode' | 'RenameColumnNode' | 'AlterColumnNode' | 'AddConstraintNode' | 'DropConstraintNode' | 'CreateViewNode' | 'DropViewNode' | 'GeneratedNode' | 'DefaultValueNode' | 'OnNode' | 'ValuesNode' | 'CommonTableExpressionNameNode' | 'SelectModifierNode' | 'CreateTypeNode' | 'DropTypeNode' | 'ExplainNode' | 'DefaultInsertValueNode' | 'AggregateFunctionNode' | 'OverNode' | 'PartitionByNode' | 'PartitionByItemNode' | 'SetOperationNode' | 'BinaryOperationNode' | 'UnaryOperationNode' | 'UsingNode' | 'FunctionNode' | 'CaseNode' | 'WhenNode' | 'JSONReferenceNode' | 'JSONPathNode' | 'JSONPathLegNode' | 'JSONOperatorChainNode' | 'TupleNode' | 'MergeQueryNode' | 'MatchedNode' | 'AddIndexNode' | 'CastNode' | 'FetchNode' | 'TopNode' | 'OutputNode';
-interface OperationNode {
-    readonly kind: OperationNodeKind;
-}
-
-interface IdentifierNode extends OperationNode {
-    readonly kind: 'IdentifierNode';
-    readonly name: string;
-}
-/**
- * @internal
- */
-declare const IdentifierNode: Readonly<{
-    is(node: OperationNode): node is IdentifierNode;
-    create(name: string): IdentifierNode;
-}>;
-
-interface CheckConstraintNode extends OperationNode {
-    readonly kind: 'CheckConstraintNode';
-    readonly expression: OperationNode;
-    readonly name?: IdentifierNode;
-}
-/**
- * @internal
- */
-declare const CheckConstraintNode: Readonly<{
-    is(node: OperationNode): node is CheckConstraintNode;
-    create(expression: OperationNode, constraintName?: string): CheckConstraintNode;
-}>;
-
-interface ColumnNode extends OperationNode {
-    readonly kind: 'ColumnNode';
-    readonly column: IdentifierNode;
-}
-/**
- * @internal
- */
-declare const ColumnNode: Readonly<{
-    is(node: OperationNode): node is ColumnNode;
-    create(column: string): ColumnNode;
-}>;
-
-interface DefaultValueNode extends OperationNode {
-    readonly kind: 'DefaultValueNode';
-    readonly defaultValue: OperationNode;
-}
-/**
- * @internal
- */
-declare const DefaultValueNode: Readonly<{
-    is(node: OperationNode): node is DefaultValueNode;
-    create(defaultValue: OperationNode): DefaultValueNode;
-}>;
-
-type GeneratedNodeParams = Omit<GeneratedNode, 'kind' | 'expression'>;
-interface GeneratedNode extends OperationNode {
-    readonly kind: 'GeneratedNode';
-    readonly byDefault?: boolean;
-    readonly always?: boolean;
-    readonly identity?: boolean;
-    readonly stored?: boolean;
-    readonly expression?: OperationNode;
-}
-/**
- * @internal
- */
-declare const GeneratedNode: Readonly<{
-    is(node: OperationNode): node is GeneratedNode;
-    create(params: GeneratedNodeParams): GeneratedNode;
-    createWithExpression(expression: OperationNode): GeneratedNode;
-    cloneWith(node: GeneratedNode, params: GeneratedNodeParams): GeneratedNode;
-}>;
-
-interface SchemableIdentifierNode extends OperationNode {
-    readonly kind: 'SchemableIdentifierNode';
-    readonly schema?: IdentifierNode;
-    readonly identifier: IdentifierNode;
-}
-/**
- * @internal
- */
-declare const SchemableIdentifierNode: Readonly<{
-    is(node: OperationNode): node is SchemableIdentifierNode;
-    create(identifier: string): SchemableIdentifierNode;
-    createWithSchema(schema: string, identifier: string): SchemableIdentifierNode;
-}>;
-
-interface TableNode extends OperationNode {
-    readonly kind: 'TableNode';
-    readonly table: SchemableIdentifierNode;
-}
-/**
- * @internal
- */
-declare const TableNode: Readonly<{
-    is(node: OperationNode): node is TableNode;
-    create(table: string): TableNode;
-    createWithSchema(schema: string, table: string): TableNode;
-}>;
-
 declare const ON_MODIFY_FOREIGN_ACTIONS: readonly ["no action", "restrict", "cascade", "set null", "set default"];
 type OnModifyForeignAction = ArrayItemType<typeof ON_MODIFY_FOREIGN_ACTIONS>;
 interface ReferencesNode extends OperationNode {
@@ -467,6 +467,8 @@ interface ForeignKeyConstraintNode extends OperationNode {
     readonly onDelete?: OnModifyForeignAction;
     readonly onUpdate?: OnModifyForeignAction;
     readonly name?: IdentifierNode;
+    readonly deferrable?: boolean;
+    readonly initiallyDeferred?: boolean;
 }
 /**
  * @internal
@@ -478,23 +480,39 @@ declare const ForeignKeyConstraintNode: Readonly<{
         name?: IdentifierNode;
         onDelete?: OnModifyForeignAction;
         onUpdate?: OnModifyForeignAction;
+        deferrable?: boolean;
+        initiallyDeferred?: boolean;
         kind: "ForeignKeyConstraintNode";
         columns: ReadonlyArray<ColumnNode>;
         references: ReferencesNode;
     }>;
 }>;
 
+type PrimaryKeyConstraintNodeProps = Omit<Partial<PrimaryKeyConstraintNode>, 'kind'>;
 interface PrimaryKeyConstraintNode extends OperationNode {
     readonly kind: 'PrimaryKeyConstraintNode';
     readonly columns: ReadonlyArray<ColumnNode>;
     readonly name?: IdentifierNode;
+    readonly deferrable?: boolean;
+    readonly initiallyDeferred?: boolean;
 }
 /**
  * @internal
  */
+declare const PrimaryKeyConstraintNode: Readonly<{
+    is(node: OperationNode): node is PrimaryKeyConstraintNode;
+    create(columns: string[], constraintName?: string): PrimaryKeyConstraintNode;
+    cloneWith(node: PrimaryKeyConstraintNode, props: PrimaryKeyConstraintNodeProps): PrimaryKeyConstraintNode;
+}>;
+/**
+ * Backwards compatibility for a typo in the codebase.
+ *
+ * @deprecated Use {@link PrimaryKeyConstraintNode} instead.
+ */
 declare const PrimaryConstraintNode: Readonly<{
     is(node: OperationNode): node is PrimaryKeyConstraintNode;
     create(columns: string[], constraintName?: string): PrimaryKeyConstraintNode;
+    cloneWith(node: PrimaryKeyConstraintNode, props: PrimaryKeyConstraintNodeProps): PrimaryKeyConstraintNode;
 }>;
 
 type UniqueConstraintNodeProps = Omit<Partial<UniqueConstraintNode>, 'kind'>;
@@ -503,6 +521,8 @@ interface UniqueConstraintNode extends OperationNode {
     readonly columns: ReadonlyArray<ColumnNode>;
     readonly name?: IdentifierNode;
     readonly nullsNotDistinct?: boolean;
+    readonly deferrable?: boolean;
+    readonly initiallyDeferred?: boolean;
 }
 /**
  * @internal
@@ -591,7 +611,20 @@ declare const AddIndexNode: Readonly<{
     cloneWithColumns(node: AddIndexNode, columns: OperationNode[]): AddIndexNode;
 }>;
 
-type AlterTableNodeTableProps = Pick<AlterTableNode, 'renameTo' | 'setSchema' | 'addConstraint' | 'dropConstraint' | 'addIndex' | 'dropIndex'>;
+interface RenameConstraintNode extends OperationNode {
+    readonly kind: 'RenameConstraintNode';
+    readonly oldName: IdentifierNode;
+    readonly newName: IdentifierNode;
+}
+/**
+ * @internal
+ */
+declare const RenameConstraintNode: Readonly<{
+    is(node: OperationNode): node is RenameConstraintNode;
+    create(oldName: string, newName: string): RenameConstraintNode;
+}>;
+
+type AlterTableNodeTableProps = Pick<AlterTableNode, 'renameTo' | 'setSchema' | 'addConstraint' | 'dropConstraint' | 'addIndex' | 'dropIndex' | 'renameConstraint'>;
 type AlterTableColumnAlterationNode = RenameColumnNode | AddColumnNode | DropColumnNode | AlterColumnNode | ModifyColumnNode;
 interface AlterTableNode extends OperationNode {
     readonly kind: 'AlterTableNode';
@@ -601,6 +634,7 @@ interface AlterTableNode extends OperationNode {
     readonly columnAlterations?: ReadonlyArray<AlterTableColumnAlterationNode>;
     readonly addConstraint?: AddConstraintNode;
     readonly dropConstraint?: DropConstraintNode;
+    readonly renameConstraint?: RenameConstraintNode;
     readonly addIndex?: AddIndexNode;
     readonly dropIndex?: DropIndexNode;
 }
@@ -717,7 +751,7 @@ interface CreateTypeNode extends OperationNode {
 declare const CreateTypeNode: Readonly<{
     is(node: OperationNode): node is CreateTypeNode;
     create(name: SchemableIdentifierNode): CreateTypeNode;
-    cloneWithEnum(createType: CreateTypeNode, values: string[]): CreateTypeNode;
+    cloneWithEnum(createType: CreateTypeNode, values: readonly string[]): CreateTypeNode;
 }>;
 
 interface FromNode extends OperationNode {
@@ -784,7 +818,7 @@ declare const OnNode: Readonly<{
     cloneWithOperation(onNode: OnNode, operator: "And" | "Or", operation: OperationNode): OnNode;
 }>;
 
-type JoinType = 'InnerJoin' | 'LeftJoin' | 'RightJoin' | 'FullJoin' | 'LateralInnerJoin' | 'LateralLeftJoin' | 'Using';
+type JoinType = 'InnerJoin' | 'LeftJoin' | 'RightJoin' | 'FullJoin' | 'CrossJoin' | 'LateralInnerJoin' | 'LateralLeftJoin' | 'LateralCrossJoin' | 'Using' | 'OuterApply' | 'CrossApply';
 interface JoinNode extends OperationNode {
     readonly kind: 'JoinNode';
     readonly joinType: JoinType;
@@ -825,10 +859,25 @@ declare const OffsetNode: Readonly<{
     create(offset: OperationNode): OffsetNode;
 }>;
 
+interface CollateNode extends OperationNode {
+    readonly kind: 'CollateNode';
+    readonly collation: IdentifierNode;
+}
+/**
+ * @internal
+ */
+declare const CollateNode: {
+    is(node: OperationNode): node is CollateNode;
+    create(collation: string): CollateNode;
+};
+
+type OrderByItemNodeProps = Omit<OrderByItemNode, 'kind' | 'orderBy'>;
 interface OrderByItemNode extends OperationNode {
     readonly kind: 'OrderByItemNode';
     readonly orderBy: OperationNode;
     readonly direction?: OperationNode;
+    readonly nulls?: 'first' | 'last';
+    readonly collation?: CollateNode;
 }
 /**
  * @internal
@@ -836,6 +885,7 @@ interface OrderByItemNode extends OperationNode {
 declare const OrderByItemNode: Readonly<{
     is(node: OperationNode): node is OrderByItemNode;
     create(orderBy: OperationNode, direction?: OperationNode): OrderByItemNode;
+    cloneWith(node: OrderByItemNode, props: OrderByItemNodeProps): OrderByItemNode;
 }>;
 
 interface OrderByNode extends OperationNode {
@@ -1307,7 +1357,10 @@ declare const SelectQueryNode: Readonly<{
     cloneWithSelections(select: SelectQueryNode, selections: ReadonlyArray<SelectionNode>): SelectQueryNode;
     cloneWithDistinctOn(select: SelectQueryNode, expressions: ReadonlyArray<OperationNode>): SelectQueryNode;
     cloneWithFrontModifier(select: SelectQueryNode, modifier: SelectModifierNode): SelectQueryNode;
-    cloneWithOrderByItems(selectNode: SelectQueryNode, items: ReadonlyArray<OrderByItemNode>): SelectQueryNode;
+    /**
+     * @deprecated Use `QueryNode.cloneWithoutOrderBy` instead.
+     */
+    cloneWithOrderByItems: (node: SelectQueryNode, items: ReadonlyArray<OrderByItemNode>) => SelectQueryNode;
     cloneWithGroupByItems(selectNode: SelectQueryNode, items: ReadonlyArray<GroupByItemNode>): SelectQueryNode;
     cloneWithLimit(selectNode: SelectQueryNode, limit: LimitNode): SelectQueryNode;
     cloneWithOffset(selectNode: SelectQueryNode, offset: OffsetNode): SelectQueryNode;
@@ -1317,7 +1370,10 @@ declare const SelectQueryNode: Readonly<{
     cloneWithoutSelections(select: SelectQueryNode): SelectQueryNode;
     cloneWithoutLimit(select: SelectQueryNode): SelectQueryNode;
     cloneWithoutOffset(select: SelectQueryNode): SelectQueryNode;
-    cloneWithoutOrderBy(select: SelectQueryNode): SelectQueryNode;
+    /**
+     * @deprecated Use `QueryNode.cloneWithoutOrderBy` instead.
+     */
+    cloneWithoutOrderBy: (node: SelectQueryNode) => SelectQueryNode;
     cloneWithoutGroupBy(select: SelectQueryNode): SelectQueryNode;
 }>;
 
@@ -1418,6 +1474,19 @@ declare const OutputNode: Readonly<{
     cloneWithSelections(output: OutputNode, selections: ReadonlyArray<OperationNode>): OutputNode;
 }>;
 
+interface ReturningNode extends OperationNode {
+    readonly kind: 'ReturningNode';
+    readonly selections: ReadonlyArray<SelectionNode>;
+}
+/**
+ * @internal
+ */
+declare const ReturningNode: Readonly<{
+    is(node: OperationNode): node is ReturningNode;
+    create(selections: ReadonlyArray<SelectionNode>): ReturningNode;
+    cloneWithSelections(returning: ReturningNode, selections: ReadonlyArray<SelectionNode>): ReturningNode;
+}>;
+
 interface WhenNode extends OperationNode {
     readonly kind: 'WhenNode';
     readonly condition: OperationNode;
@@ -1439,6 +1508,7 @@ interface MergeQueryNode extends OperationNode {
     readonly whens?: ReadonlyArray<WhenNode>;
     readonly with?: WithNode;
     readonly top?: TopNode;
+    readonly returning?: ReturningNode;
     readonly output?: OutputNode;
     readonly endModifiers?: ReadonlyArray<OperationNode>;
 }
@@ -1505,17 +1575,16 @@ declare const OnDuplicateKeyNode: Readonly<{
     create(updates: ReadonlyArray<ColumnUpdateNode>): OnDuplicateKeyNode;
 }>;
 
-interface ReturningNode extends OperationNode {
-    readonly kind: 'ReturningNode';
-    readonly selections: ReadonlyArray<SelectionNode>;
+interface OrActionNode extends OperationNode {
+    readonly kind: 'OrActionNode';
+    readonly action: string;
 }
 /**
  * @internal
  */
-declare const ReturningNode: Readonly<{
-    is(node: OperationNode): node is ReturningNode;
-    create(selections: ReadonlyArray<SelectionNode>): ReturningNode;
-    cloneWithSelections(returning: ReturningNode, selections: ReadonlyArray<SelectionNode>): ReturningNode;
+declare const OrActionNode: Readonly<{
+    is(node: OperationNode): node is OrActionNode;
+    create(action: string): OrActionNode;
 }>;
 
 type InsertQueryNodeProps = Omit<InsertQueryNode, 'kind' | 'into'>;
@@ -1528,7 +1597,9 @@ interface InsertQueryNode extends OperationNode {
     readonly onConflict?: OnConflictNode;
     readonly onDuplicateKey?: OnDuplicateKeyNode;
     readonly with?: WithNode;
+    /** @deprecated use {@link orAction} instead. */
     readonly ignore?: boolean;
+    readonly orAction?: OrActionNode;
     readonly replace?: boolean;
     readonly explain?: ExplainNode;
     readonly defaultValues?: boolean;
@@ -1546,24 +1617,6 @@ declare const InsertQueryNode: Readonly<{
     cloneWith(insertQuery: InsertQueryNode, props: InsertQueryNodeProps): InsertQueryNode;
 }>;
 
-/**
- * This node is basically just a performance optimization over the normal ValueListNode.
- * The queries often contain large arrays of primitive values (for example in a `where in` list)
- * and we don't want to create a ValueNode for each item in those lists.
- */
-interface PrimitiveValueListNode extends OperationNode {
-    readonly kind: 'PrimitiveValueListNode';
-    readonly values: ReadonlyArray<unknown>;
-}
-/**
- * @internal
- */
-declare const PrimitiveValueListNode: Readonly<{
-    is(node: OperationNode): node is PrimitiveValueListNode;
-    create(values: ReadonlyArray<unknown>): PrimitiveValueListNode;
-}>;
-
-type UpdateValuesNode = ValueListNode | PrimitiveValueListNode;
 interface UpdateQueryNode extends OperationNode {
     readonly kind: 'UpdateQueryNode';
     readonly table?: OperationNode;
@@ -1578,13 +1631,14 @@ interface UpdateQueryNode extends OperationNode {
     readonly limit?: LimitNode;
     readonly top?: TopNode;
     readonly output?: OutputNode;
+    readonly orderBy?: OrderByNode;
 }
 /**
  * @internal
  */
 declare const UpdateQueryNode: Readonly<{
     is(node: OperationNode): node is UpdateQueryNode;
-    create(table: OperationNode, withNode?: WithNode): UpdateQueryNode;
+    create(tables: ReadonlyArray<OperationNode>, withNode?: WithNode): UpdateQueryNode;
     createWithoutTable(): UpdateQueryNode;
     cloneWithFromItems(updateQuery: UpdateQueryNode, fromItems: ReadonlyArray<OperationNode>): UpdateQueryNode;
     cloneWithUpdates(updateQuery: UpdateQueryNode, updates: ReadonlyArray<ColumnUpdateNode>): UpdateQueryNode;
@@ -1625,8 +1679,14 @@ interface DeleteQueryNode extends OperationNode {
 declare const DeleteQueryNode: Readonly<{
     is(node: OperationNode): node is DeleteQueryNode;
     create(fromItems: OperationNode[], withNode?: WithNode): DeleteQueryNode;
-    cloneWithOrderByItems(deleteNode: DeleteQueryNode, items: ReadonlyArray<OrderByItemNode>): DeleteQueryNode;
-    cloneWithoutOrderBy(deleteNode: DeleteQueryNode): DeleteQueryNode;
+    /**
+     * @deprecated Use `QueryNode.cloneWithoutOrderBy` instead.
+     */
+    cloneWithOrderByItems: (node: DeleteQueryNode, items: ReadonlyArray<OrderByItemNode>) => DeleteQueryNode;
+    /**
+     * @deprecated Use `QueryNode.cloneWithoutOrderBy` instead.
+     */
+    cloneWithoutOrderBy: (node: DeleteQueryNode) => DeleteQueryNode;
     cloneWithLimit(deleteNode: DeleteQueryNode, limit: LimitNode): DeleteQueryNode;
     cloneWithoutLimit(deleteNode: DeleteQueryNode): DeleteQueryNode;
     cloneWithUsing(deleteNode: DeleteQueryNode, tables: OperationNode[]): DeleteQueryNode;
@@ -1653,6 +1713,9 @@ type HasOutput = {
 type HasEndModifiers = {
     endModifiers?: ReadonlyArray<OperationNode>;
 };
+type HasOrderBy = {
+    orderBy?: OrderByNode;
+};
 type QueryNode = SelectQueryNode | InsertQueryNode | UpdateQueryNode | DeleteQueryNode | MergeQueryNode;
 /**
  * @internal
@@ -1668,24 +1731,48 @@ declare const QueryNode: Readonly<{
     cloneWithExplain<T extends HasExplain>(node: T, format: ExplainFormat | undefined, options: Expression<any> | undefined): T;
     cloneWithTop<T extends HasTop>(node: T, top: TopNode): T;
     cloneWithOutput<T extends HasOutput>(node: T, selections: ReadonlyArray<SelectionNode>): T;
+    cloneWithOrderByItems<T extends HasOrderBy>(node: T, items: ReadonlyArray<OrderByItemNode>): T;
+    cloneWithoutOrderBy<T extends HasOrderBy>(node: T): T;
 }>;
 
-type RootOperationNode = QueryNode | CreateTableNode | CreateIndexNode | CreateSchemaNode | CreateViewNode | DropTableNode | DropIndexNode | DropSchemaNode | DropViewNode | AlterTableNode | RawNode | CreateTypeNode | DropTypeNode | MergeQueryNode;
-/**
- * a `QueryCompiler` compiles a query expressed as a tree of `OperationNodes` into SQL.
- */
-interface QueryCompiler {
-    compileQuery(node: RootOperationNode): CompiledQuery;
+type RefreshMaterializedViewNodeParams = Omit<Partial<RefreshMaterializedViewNode>, 'kind' | 'name'>;
+interface RefreshMaterializedViewNode extends OperationNode {
+    readonly kind: 'RefreshMaterializedViewNode';
+    readonly name: SchemableIdentifierNode;
+    readonly concurrently?: boolean;
+    readonly withNoData?: boolean;
 }
+/**
+ * @internal
+ */
+declare const RefreshMaterializedViewNode: Readonly<{
+    is(node: OperationNode): node is RefreshMaterializedViewNode;
+    create(name: string): RefreshMaterializedViewNode;
+    cloneWith(createView: RefreshMaterializedViewNode, params: RefreshMaterializedViewNodeParams): RefreshMaterializedViewNode;
+}>;
+
+interface QueryId {
+    readonly queryId: string;
+}
+declare function createQueryId(): QueryId;
 
 interface CompiledQuery<O = unknown> {
     readonly query: RootOperationNode;
+    readonly queryId: QueryId;
     readonly sql: string;
     readonly parameters: ReadonlyArray<unknown>;
 }
 declare const CompiledQuery: Readonly<{
     raw(sql: string, parameters?: unknown[]): CompiledQuery;
 }>;
+
+type RootOperationNode = QueryNode | CreateTableNode | CreateIndexNode | CreateSchemaNode | CreateViewNode | RefreshMaterializedViewNode | DropTableNode | DropIndexNode | DropSchemaNode | DropViewNode | AlterTableNode | RawNode | CreateTypeNode | DropTypeNode | MergeQueryNode;
+/**
+ * a `QueryCompiler` compiles a query expressed as a tree of `OperationNodes` into SQL.
+ */
+interface QueryCompiler {
+    compileQuery(node: RootOperationNode, queryId: QueryId): CompiledQuery;
+}
 
 /**
  * A single connection to the database engine.
@@ -1697,10 +1784,6 @@ interface DatabaseConnection {
     streamQuery<R>(compiledQuery: CompiledQuery, chunkSize?: number): AsyncIterableIterator<QueryResult<R>>;
 }
 interface QueryResult<O> {
-    /**
-     * @deprecated use {@link QueryResult.numAffectedRows} instead.
-     */
-    readonly numUpdatedOrDeletedRows?: bigint;
     /**
      * This is defined for insert, update, delete and merge queries and contains
      * the number of rows the query inserted/updated/deleted.
@@ -1755,6 +1838,18 @@ interface Driver {
      */
     rollbackTransaction(connection: DatabaseConnection): Promise<void>;
     /**
+     * Establishses a new savepoint within a transaction.
+     */
+    savepoint?(connection: DatabaseConnection, savepointName: string, compileQuery: QueryCompiler['compileQuery']): Promise<void>;
+    /**
+     * Rolls back to a savepoint within a transaction.
+     */
+    rollbackToSavepoint?(connection: DatabaseConnection, savepointName: string, compileQuery: QueryCompiler['compileQuery']): Promise<void>;
+    /**
+     * Releases a savepoint within a transaction.
+     */
+    releaseSavepoint?(connection: DatabaseConnection, savepointName: string, compileQuery: QueryCompiler['compileQuery']): Promise<void>;
+    /**
      * Releases a connection back to the pool.
      */
     releaseConnection(connection: DatabaseConnection): Promise<void>;
@@ -1764,10 +1859,14 @@ interface Driver {
     destroy(): Promise<void>;
 }
 interface TransactionSettings {
+    readonly accessMode?: AccessMode;
     readonly isolationLevel?: IsolationLevel;
 }
+declare const TRANSACTION_ACCESS_MODES: readonly ["read only", "read write"];
+type AccessMode = ArrayItemType<typeof TRANSACTION_ACCESS_MODES>;
 declare const TRANSACTION_ISOLATION_LEVELS: readonly ["read uncommitted", "read committed", "repeatable read", "serializable", "snapshot"];
 type IsolationLevel = ArrayItemType<typeof TRANSACTION_ISOLATION_LEVELS>;
+declare function validateTransactionSettings(settings: TransactionSettings): void;
 
 /**
  * An interface for getting the database metadata (names of the tables and columns etc.)
@@ -1983,10 +2082,6 @@ interface ConnectionProvider {
      * the connection after the callback has been run.
      */
     provideConnection<T>(consumer: (connection: DatabaseConnection) => Promise<T>): Promise<T>;
-}
-
-interface QueryId {
-    readonly queryId: string;
 }
 
 interface KyselyPlugin {
@@ -2662,6 +2757,32 @@ declare function isColumnDataType(dataType: string): dataType is ColumnDataType;
 
 type DataTypeExpression = ColumnDataType | Expression<any>;
 
+interface ForeignKeyConstraintBuilderInterface<R> {
+    onDelete(onDelete: OnModifyForeignAction): R;
+    onUpdate(onUpdate: OnModifyForeignAction): R;
+    deferrable(): R;
+    notDeferrable(): R;
+    initiallyDeferred(): R;
+    initiallyImmediate(): R;
+}
+declare class ForeignKeyConstraintBuilder implements ForeignKeyConstraintBuilderInterface<ForeignKeyConstraintBuilder>, OperationNodeSource {
+    #private;
+    constructor(node: ForeignKeyConstraintNode);
+    onDelete(onDelete: OnModifyForeignAction): ForeignKeyConstraintBuilder;
+    onUpdate(onUpdate: OnModifyForeignAction): ForeignKeyConstraintBuilder;
+    deferrable(): ForeignKeyConstraintBuilder;
+    notDeferrable(): ForeignKeyConstraintBuilder;
+    initiallyDeferred(): ForeignKeyConstraintBuilder;
+    initiallyImmediate(): ForeignKeyConstraintBuilder;
+    /**
+     * Simply calls the provided function passing `this` as the only argument. `$call` returns
+     * what the provided function returns.
+     */
+    $call<T>(func: (qb: this) => T): T;
+    toOperationNode(): ForeignKeyConstraintNode;
+}
+type ForeignKeyConstraintBuilderCallback = (builder: ForeignKeyConstraintBuilder) => ForeignKeyConstraintBuilder;
+
 declare class AlterColumnBuilder {
     #private;
     constructor(column: string);
@@ -2725,28 +2846,15 @@ interface AlterTableExecutorProps {
     readonly node: AlterTableNode;
 }
 
-interface ForeignKeyConstraintBuilderInterface<R> {
-    onDelete(onDelete: OnModifyForeignAction): R;
-    onUpdate(onUpdate: OnModifyForeignAction): R;
-}
-declare class ForeignKeyConstraintBuilder implements ForeignKeyConstraintBuilderInterface<ForeignKeyConstraintBuilder>, OperationNodeSource {
-    #private;
-    constructor(node: ForeignKeyConstraintNode);
-    onDelete(onDelete: OnModifyForeignAction): ForeignKeyConstraintBuilder;
-    onUpdate(onUpdate: OnModifyForeignAction): ForeignKeyConstraintBuilder;
-    /**
-     * Simply calls the provided function passing `this` as the only argument. `$call` returns
-     * what the provided function returns.
-     */
-    $call<T>(func: (qb: this) => T): T;
-    toOperationNode(): ForeignKeyConstraintNode;
-}
-
 declare class AlterTableAddForeignKeyConstraintBuilder implements ForeignKeyConstraintBuilderInterface<AlterTableAddForeignKeyConstraintBuilder>, OperationNodeSource, Compilable {
     #private;
     constructor(props: AlterTableAddForeignKeyConstraintBuilderProps);
     onDelete(onDelete: OnModifyForeignAction): AlterTableAddForeignKeyConstraintBuilder;
     onUpdate(onUpdate: OnModifyForeignAction): AlterTableAddForeignKeyConstraintBuilder;
+    deferrable(): AlterTableAddForeignKeyConstraintBuilder;
+    notDeferrable(): AlterTableAddForeignKeyConstraintBuilder;
+    initiallyDeferred(): AlterTableAddForeignKeyConstraintBuilder;
+    initiallyImmediate(): AlterTableAddForeignKeyConstraintBuilder;
     /**
      * Simply calls the provided function passing `this` as the only argument. `$call` returns
      * what the provided function returns.
@@ -2810,21 +2918,6 @@ interface SelectQueryBuilderExpression<O> extends AliasableExpression<O> {
      */
     toOperationNode(): SelectQueryNode;
 }
-
-type TableExpression<DB, TB extends keyof DB> = AnyAliasedTable<DB> | AnyTable<DB> | AliasedExpressionOrFactory<DB, TB>;
-type TableExpressionOrList<DB, TB extends keyof DB> = TableExpression<DB, TB> | ReadonlyArray<TableExpression<DB, TB>>;
-type TableReference<DB> = SimpleTableReference<DB> | AliasedExpression<any, any>;
-type SimpleTableReference<DB> = AnyAliasedTable<DB> | AnyTable<DB>;
-type AnyAliasedTable<DB> = `${AnyTable<DB>} as ${string}`;
-type From<DB, TE> = DrainOuterGeneric<{
-    [C in keyof DB | ExtractAliasFromTableExpression<DB, TE>]: C extends ExtractAliasFromTableExpression<DB, TE> ? ExtractRowTypeFromTableExpression<DB, TE, C> : C extends keyof DB ? DB[C] : never;
-}>;
-type FromTables<DB, TB extends keyof DB, TE> = DrainOuterGeneric<TB | ExtractAliasFromTableExpression<DB, TE>>;
-type ExtractTableAlias<DB, TE> = TE extends `${string} as ${infer TA}` ? TA extends keyof DB ? TA : never : TE extends keyof DB ? TE : never;
-type PickTableWithAlias<DB, T extends AnyAliasedTable<DB>> = T extends `${infer TB} as ${infer A}` ? TB extends keyof DB ? ShallowRecord<A, DB[TB]> : never : never;
-type ExtractAliasFromTableExpression<DB, TE> = TE extends string ? TE extends `${string} as ${infer TA}` ? TA : TE extends keyof DB ? TE : never : TE extends AliasedExpression<any, infer QA> ? QA : TE extends (qb: any) => AliasedExpression<any, infer QA> ? QA : never;
-type ExtractRowTypeFromTableExpression<DB, TE, A extends keyof any> = TE extends `${infer T} as ${infer TA}` ? TA extends A ? T extends keyof DB ? DB[T] : never : never : TE extends A ? TE extends keyof DB ? DB[TE] : never : TE extends AliasedExpression<infer O, infer QA> ? QA extends A ? O : never : TE extends (qb: any) => AliasedExpression<infer O, infer QA> ? QA extends A ? O : never : never;
-type AnyTable<DB> = keyof DB & string;
 
 declare const COMPARISON_OPERATORS: readonly ["=", "==", "!=", "<>", ">", ">=", "<", "<=", "in", "not in", "is", "is not", "like", "not like", "match", "ilike", "not ilike", "@>", "<@", "^@", "&&", "?", "?&", "?|", "!<", "!>", "<=>", "!~", "~", "~*", "!~*", "@@", "@@@", "!!", "<->", "regexp", "is distinct from", "is not distinct from"];
 declare const ARITHMETIC_OPERATORS: readonly ["+", "-", "*", "/", "%", "^", "&", "|", "#", "<<", ">>"];
@@ -3077,6 +3170,19 @@ interface JoinBuilderProps {
     readonly joinNode: JoinNode;
 }
 
+type TableExpression<DB, TB extends keyof DB> = AnyAliasedTable<DB> | AnyTable<DB> | AliasedExpressionOrFactory<DB, TB>;
+type TableExpressionOrList<DB, TB extends keyof DB> = TableExpression<DB, TB> | ReadonlyArray<TableExpression<DB, TB>>;
+type SimpleTableReference<DB> = AnyAliasedTable<DB> | AnyTable<DB>;
+type AnyAliasedTable<DB> = `${AnyTable<DB>} as ${string}`;
+type AnyTable<DB> = keyof DB & string;
+type From<DB, TE> = DrainOuterGeneric<{
+    [C in keyof DB | ExtractAliasFromTableExpression<DB, TE>]: C extends ExtractAliasFromTableExpression<DB, TE> ? ExtractRowTypeFromTableExpression<DB, TE, C> : C extends keyof DB ? DB[C] : never;
+}>;
+type FromTables<DB, TB extends keyof DB, TE> = DrainOuterGeneric<TB | ExtractAliasFromTableExpression<DB, TE>>;
+type ExtractTableAlias<DB, TE> = TE extends `${string} as ${infer TA}` ? TA extends keyof DB ? TA : never : TE extends keyof DB ? TE : never;
+type ExtractAliasFromTableExpression<DB, TE> = TE extends string ? TE extends `${string} as ${infer TA}` ? TA : TE extends keyof DB ? TE : never : TE extends AliasedExpression<any, infer QA> ? QA : TE extends (qb: any) => AliasedExpression<any, infer QA> ? QA : never;
+type ExtractRowTypeFromTableExpression<DB, TE, A extends keyof any> = TE extends `${infer T} as ${infer TA}` ? TA extends A ? T extends keyof DB ? DB[T] : never : never : TE extends A ? TE extends keyof DB ? DB[TE] : never : TE extends AliasedExpression<infer O, infer QA> ? QA extends A ? O : never : TE extends (qb: any) => AliasedExpression<infer O, infer QA> ? QA extends A ? O : never : never;
+
 type JoinReferenceExpression<DB, TB extends keyof DB, TE> = DrainOuterGeneric<AnyJoinColumn<DB, TB, TE> | AnyJoinColumnWithTable<DB, TB, TE>>;
 type JoinCallbackExpression<DB, TB extends keyof DB, TE> = (join: JoinBuilder<From<DB, TE>, FromTables<DB, TB, TE>>) => JoinBuilder<any, any>;
 type AnyJoinColumn<DB, TB extends keyof DB, TE> = AnyColumn<From<DB, TE>, FromTables<DB, TB, TE>>;
@@ -3124,10 +3230,60 @@ type AllSelection<DB, TB extends keyof DB> = DrainOuterGeneric<{
     }[TB];
 }>;
 
+type Collation = 'nocase' | 'binary' | 'rtrim' | (string & {});
+
+declare class OrderByItemBuilder implements OperationNodeSource {
+    #private;
+    constructor(props: OrderByItemBuilderProps);
+    /**
+     * Adds `desc` to the `order by` item.
+     *
+     * See {@link asc} for the opposite.
+     */
+    desc(): OrderByItemBuilder;
+    /**
+     * Adds `asc` to the `order by` item.
+     *
+     * See {@link desc} for the opposite.
+     */
+    asc(): OrderByItemBuilder;
+    /**
+     * Adds `nulls last` to the `order by` item.
+     *
+     * This is only supported by some dialects like PostgreSQL and SQLite.
+     *
+     * See {@link nullsFirst} for the opposite.
+     */
+    nullsLast(): OrderByItemBuilder;
+    /**
+     * Adds `nulls first` to the `order by` item.
+     *
+     * This is only supported by some dialects like PostgreSQL and SQLite.
+     *
+     * See {@link nullsLast} for the opposite.
+     */
+    nullsFirst(): OrderByItemBuilder;
+    /**
+     * Adds `collate <collationName>` to the `order by` item.
+     */
+    collate(collation: Collation): OrderByItemBuilder;
+    toOperationNode(): OrderByItemNode;
+}
+interface OrderByItemBuilderProps {
+    readonly node: OrderByItemNode;
+}
+
+type OrderByExpression<DB, TB extends keyof DB, O> = StringReference<DB, TB> | (keyof O & string) | ExpressionOrFactory<DB, TB, any> | DynamicReferenceBuilder<any>;
+type OrderByModifiers = OrderByDirection | OrderByModifiersCallbackExpression;
 type OrderByDirection = 'asc' | 'desc';
+type OrderByModifiersCallbackExpression = (builder: OrderByItemBuilder) => OrderByItemBuilder;
+/**
+ * @deprecated performance reasons, use {@link OrderByExpression} instead.
+ */
 type DirectedOrderByStringReference<DB, TB extends keyof DB, O> = `${StringReference<DB, TB> | (keyof O & string)} ${OrderByDirection}`;
-type UndirectedOrderByExpression<DB, TB extends keyof DB, O> = ReferenceExpression<DB, TB> | (keyof O & string);
-type OrderByExpression<DB, TB extends keyof DB, O> = UndirectedOrderByExpression<DB, TB, O> | DirectedOrderByStringReference<DB, TB, O>;
+/**
+ * @deprecated replaced with {@link OrderByModifiers}
+ */
 type OrderByDirectionExpression = OrderByDirection | Expression<any>;
 
 type GroupByExpression<DB, TB extends keyof DB, O> = ReferenceExpression<DB, TB> | (keyof O & string);
@@ -4227,7 +4383,182 @@ declare class AndWrapper<DB, TB extends keyof DB, T extends SqlBool> implements 
     toOperationNode(): ParensNode;
 }
 
-interface SelectQueryBuilder<DB, TB extends keyof DB, O> extends WhereInterface<DB, TB>, HavingInterface<DB, TB>, SelectQueryBuilderExpression<O>, Compilable<O>, Explainable, Streamable<O> {
+interface OrderByInterface<DB, TB extends keyof DB, O> {
+    /**
+     * Adds an `order by` clause to the query.
+     *
+     * `orderBy` calls are additive. Meaning, additional `orderBy` calls append to
+     * the existing order by clause.
+     *
+     * `orderBy` is supported in select queries on all dialects. In MySQL, you can
+     * also use `orderBy` in update and delete queries.
+     *
+     * In a single call you can add a single column/expression or multiple columns/expressions.
+     *
+     * Single column/expression calls can have 1-2 arguments. The first argument is
+     * the expression to order by, while the second optional argument is the direction
+     * (`asc` or `desc`), a callback that accepts and returns an {@link OrderByItemBuilder}
+     * or an expression.
+     *
+     * See {@link clearOrderBy} to remove the `order by` clause from a query.
+     *
+     * ### Examples
+     *
+     * Single column/expression per call:
+     *
+     * ```ts
+     * await db
+     *   .selectFrom('person')
+     *   .select('person.first_name as fn')
+     *   .orderBy('id')
+     *   .orderBy('fn', 'desc')
+     *   .execute()
+     * ```
+     *
+     * The generated SQL (PostgreSQL):
+     *
+     * ```sql
+     * select "person"."first_name" as "fn"
+     * from "person"
+     * order by "id", "fn" desc
+     * ```
+     *
+     * Multiple columns/expressions per call:
+     *
+     * ```ts
+     * await db
+     *   .selectFrom('person')
+     *   .select('person.first_name as fn')
+     *   .orderBy(['id', 'fn'])
+     *   .execute()
+     * ```
+     *
+     * The generated SQL (PostgreSQL):
+     *
+     * ```sql
+     * select "person"."first_name" as "fn"
+     * from "person"
+     * order by "id", "fn"
+     * ```
+     *
+     * Building advanced modifiers:
+     *
+     * ```ts
+     * await db
+     *   .selectFrom('person')
+     *   .select('person.first_name as fn')
+     *   .orderBy('id', (ob) => ob.desc().nullsFirst())
+     *   .execute()
+     * ```
+     *
+     * The generated SQL (PostgreSQL):
+     *
+     * ```sql
+     * select "person"."first_name" as "fn"
+     * from "person"
+     * order by "id" desc nulls first
+     * ```
+     *
+     * The order by expression can also be a raw sql expression or a subquery
+     * in addition to column references:
+     *
+     * ```ts
+     * import { sql } from 'kysely'
+     *
+     * await db
+     *   .selectFrom('person')
+     *   .selectAll()
+     *   .orderBy((eb) => eb.selectFrom('pet')
+     *     .select('pet.name')
+     *     .whereRef('pet.owner_id', '=', 'person.id')
+     *     .limit(1)
+     *   )
+     *   .orderBy(
+     *     sql<string>`concat(first_name, last_name) asc`
+     *   )
+     *   .execute()
+     * ```
+     *
+     * The generated SQL (PostgreSQL):
+     *
+     * ```sql
+     * select *
+     * from "person"
+     * order by
+     *   ( select "pet"."name"
+     *     from "pet"
+     *     where "pet"."owner_id" = "person"."id"
+     *     limit $1
+     *   ) asc,
+     *   concat(first_name, last_name) asc
+     * ```
+     *
+     * `dynamic.ref` can be used to refer to columns not known at
+     * compile time:
+     *
+     * ```ts
+     * async function someQuery(orderBy: string) {
+     *   const { ref } = db.dynamic
+     *
+     *   return await db
+     *     .selectFrom('person')
+     *     .select('person.first_name as fn')
+     *     .orderBy(ref(orderBy))
+     *     .execute()
+     * }
+     *
+     * someQuery('fn')
+     * ```
+     *
+     * The generated SQL (PostgreSQL):
+     *
+     * ```sql
+     * select "person"."first_name" as "fn"
+     * from "person"
+     * order by "fn"
+     * ```
+     */
+    orderBy<OE extends OrderByExpression<DB, TB, O>>(expr: OE, modifiers?: OrderByModifiers): OrderByInterface<DB, TB, O>;
+    /**
+     * @deprecated It does ~2-2.6x more compile-time instantiations compared to multiple chained `orderBy(expr, modifiers?)` calls (in `order by` clauses with reasonable item counts), and has broken autocompletion.
+     */
+    orderBy<OE extends OrderByExpression<DB, TB, O> | DirectedOrderByStringReference<DB, TB, O>>(exprs: ReadonlyArray<OE>): OrderByInterface<DB, TB, O>;
+    /**
+     * @deprecated It does ~2.9x more compile-time instantiations compared to a `orderBy(expr, direction)` call.
+     */
+    orderBy<OE extends DirectedOrderByStringReference<DB, TB, O>>(expr: OE): OrderByInterface<DB, TB, O>;
+    /**
+     * @deprecated Use `orderBy(expr, (ob) => ...)` instead.
+     */
+    orderBy<OE extends OrderByExpression<DB, TB, O>>(expr: OE, modifiers: Expression<any>): OrderByInterface<DB, TB, O>;
+    /**
+     * Clears the `order by` clause from the query.
+     *
+     * See {@link orderBy} for adding an `order by` clause or item to a query.
+     *
+     * ### Examples
+     *
+     * ```ts
+     * const query = db
+     *   .selectFrom('person')
+     *   .selectAll()
+     *   .orderBy('id', 'desc')
+     *
+     * const results = await query
+     *   .clearOrderBy()
+     *   .execute()
+     * ```
+     *
+     * The generated SQL (PostgreSQL):
+     *
+     * ```sql
+     * select * from "person"
+     * ```
+     */
+    clearOrderBy(): OrderByInterface<DB, TB, O>;
+}
+
+interface SelectQueryBuilder<DB, TB extends keyof DB, O> extends WhereInterface<DB, TB>, HavingInterface<DB, TB>, OrderByInterface<DB, TB, O>, SelectQueryBuilderExpression<O>, Compilable<O>, Explainable, Streamable<O> {
     /**
      * Adds a `where` expression to the query.
      *
@@ -4704,7 +5035,7 @@ interface SelectQueryBuilder<DB, TB extends keyof DB, O> extends WhereInterface<
      * import { sql } from 'kysely'
      *
      * const persons = await db.selectFrom('person')
-     *   .select(({ eb, selectFrom, or }) => [
+     *   .select(({ eb, selectFrom, or, val, lit }) => [
      *     // Select a correlated subquery
      *     selectFrom('pet')
      *       .whereRef('person.id', '=', 'pet.owner_id')
@@ -4721,7 +5052,13 @@ interface SelectQueryBuilder<DB, TB extends keyof DB, O> extends WhereInterface<
      *     ]).as('is_jennifer_or_arnold'),
      *
      *     // Select a raw sql expression
-     *     sql<string>`concat(first_name, ' ', last_name)`.as('full_name')
+     *     sql<string>`concat(first_name, ' ', last_name)`.as('full_name'),
+     *
+     *     // Select a static string value
+     *     val('Some value').as('string_value'),
+     *
+     *     // Select a literal value
+     *     lit(42).as('literal_value'),
      *   ])
      *   .execute()
      * ```
@@ -4738,7 +5075,9 @@ interface SelectQueryBuilder<DB, TB extends keyof DB, O> extends WhereInterface<
      *     limit $1
      *   ) as "pet_name",
      *   ("first_name" = $2 or "first_name" = $3) as "jennifer_or_arnold",
-     *   concat(first_name, ' ', last_name) as "full_name"
+     *   concat(first_name, ' ', last_name) as "full_name",
+     *   $4 as "string_value",
+     *   42 as "literal_value"
      * from "person"
      * ```
      *
@@ -5002,13 +5341,13 @@ interface SelectQueryBuilder<DB, TB extends keyof DB, O> extends WhereInterface<
     selectAll<T extends TB>(table: T): SelectQueryBuilder<DB, TB, O & Selectable<DB[T]>>;
     selectAll(): SelectQueryBuilder<DB, TB, O & AllSelection<DB, TB>>;
     /**
-     * Joins another table to the query using an inner join.
+     * Joins another table to the query using an `inner join`.
      *
      * ### Examples
      *
      * <!-- siteExample("join", "Simple inner join", 10) -->
      *
-     * Simple inner joins can be done by providing a table name and two columns to join:
+     * Simple `inner join`s can be done by providing a table name and two columns to join:
      *
      * ```ts
      * const result = await db
@@ -5128,22 +5467,30 @@ interface SelectQueryBuilder<DB, TB extends keyof DB, O> extends WhereInterface<
     innerJoin<TE extends TableExpression<DB, TB>, K1 extends JoinReferenceExpression<DB, TB, TE>, K2 extends JoinReferenceExpression<DB, TB, TE>>(table: TE, k1: K1, k2: K2): SelectQueryBuilderWithInnerJoin<DB, TB, O, TE>;
     innerJoin<TE extends TableExpression<DB, TB>, FN extends JoinCallbackExpression<DB, TB, TE>>(table: TE, callback: FN): SelectQueryBuilderWithInnerJoin<DB, TB, O, TE>;
     /**
-     * Just like {@link innerJoin} but adds a left join instead of an inner join.
+     * Just like {@link innerJoin} but adds a `left join` instead of an `inner join`.
      */
     leftJoin<TE extends TableExpression<DB, TB>, K1 extends JoinReferenceExpression<DB, TB, TE>, K2 extends JoinReferenceExpression<DB, TB, TE>>(table: TE, k1: K1, k2: K2): SelectQueryBuilderWithLeftJoin<DB, TB, O, TE>;
     leftJoin<TE extends TableExpression<DB, TB>, FN extends JoinCallbackExpression<DB, TB, TE>>(table: TE, callback: FN): SelectQueryBuilderWithLeftJoin<DB, TB, O, TE>;
     /**
-     * Just like {@link innerJoin} but adds a right join instead of an inner join.
+     * Just like {@link innerJoin} but adds a `right join` instead of an `inner join`.
      */
     rightJoin<TE extends TableExpression<DB, TB>, K1 extends JoinReferenceExpression<DB, TB, TE>, K2 extends JoinReferenceExpression<DB, TB, TE>>(table: TE, k1: K1, k2: K2): SelectQueryBuilderWithRightJoin<DB, TB, O, TE>;
     rightJoin<TE extends TableExpression<DB, TB>, FN extends JoinCallbackExpression<DB, TB, TE>>(table: TE, callback: FN): SelectQueryBuilderWithRightJoin<DB, TB, O, TE>;
     /**
-     * Just like {@link innerJoin} but adds a full join instead of an inner join.
+     * Just like {@link innerJoin} but adds a `full join` instead of an `inner join`.
+     *
+     * This is only supported by some dialects like PostgreSQL, MS SQL Server and SQLite.
      */
     fullJoin<TE extends TableExpression<DB, TB>, K1 extends JoinReferenceExpression<DB, TB, TE>, K2 extends JoinReferenceExpression<DB, TB, TE>>(table: TE, k1: K1, k2: K2): SelectQueryBuilderWithFullJoin<DB, TB, O, TE>;
     fullJoin<TE extends TableExpression<DB, TB>, FN extends JoinCallbackExpression<DB, TB, TE>>(table: TE, callback: FN): SelectQueryBuilderWithFullJoin<DB, TB, O, TE>;
     /**
+     * Just like {@link innerJoin} but adds a `cross join` instead of an `inner join`.
+     */
+    crossJoin<TE extends TableExpression<DB, TB>>(table: TE): SelectQueryBuilderWithInnerJoin<DB, TB, O, TE>;
+    /**
      * Just like {@link innerJoin} but adds a lateral join instead of an inner join.
+     *
+     * This is only supported by some dialects like PostgreSQL and MySQL.
      *
      * ### Examples
      *
@@ -5178,7 +5525,10 @@ interface SelectQueryBuilder<DB, TB extends keyof DB, O> extends WhereInterface<
     innerJoinLateral<TE extends TableExpression<DB, TB>, K1 extends JoinReferenceExpression<DB, TB, TE>, K2 extends JoinReferenceExpression<DB, TB, TE>>(table: TE, k1: K1, k2: K2): SelectQueryBuilderWithInnerJoin<DB, TB, O, TE>;
     innerJoinLateral<TE extends TableExpression<DB, TB>, FN extends JoinCallbackExpression<DB, TB, TE>>(table: TE, callback: FN): SelectQueryBuilderWithInnerJoin<DB, TB, O, TE>;
     /**
-     * Just like {@link innerJoin} but adds a lateral left join instead of an inner join.
+     * Just like {@link innerJoin} but adds a `left join lateral` instead of an `inner join`.
+     *
+     * This is only supported by some dialects like PostgreSQL and MySQL.
+     *
      * ### Examples
      *
      * ```ts
@@ -5212,119 +5562,81 @@ interface SelectQueryBuilder<DB, TB extends keyof DB, O> extends WhereInterface<
     leftJoinLateral<TE extends TableExpression<DB, TB>, K1 extends JoinReferenceExpression<DB, TB, TE>, K2 extends JoinReferenceExpression<DB, TB, TE>>(table: TE, k1: K1, k2: K2): SelectQueryBuilderWithLeftJoin<DB, TB, O, TE>;
     leftJoinLateral<TE extends TableExpression<DB, TB>, FN extends JoinCallbackExpression<DB, TB, TE>>(table: TE, callback: FN): SelectQueryBuilderWithLeftJoin<DB, TB, O, TE>;
     /**
-     * Adds an `order by` clause to the query.
+     * Just like {@link innerJoin} but adds a `cross join lateral` instead of an `inner join`.
      *
-     * `orderBy` calls are additive. Meaning, additional `orderBy` calls append to
-     * the existing order by clause.
-     *
-     * In a single call you can add a single column/expression or multiple columns/expressions.
-     *
-     * Single column/expression calls can have 1-2 arguments. The first argument is
-     * the expression to order by (optionally including the direction) while the second
-     * optional argument is the direction (`asc` or `desc`).
+     * This is only supported by some dialects like PostgreSQL.
      *
      * ### Examples
      *
-     * Single column/expression per call:
-     *
      * ```ts
-     * await db
-     *   .selectFrom('person')
-     *   .select('person.first_name as fn')
-     *   .orderBy('id')
-     *   .orderBy('fn desc')
-     *   .execute()
-     * ```
-     *
-     * ```ts
-     * await db
-     *   .selectFrom('person')
-     *   .select('person.first_name as fn')
-     *   .orderBy('id')
-     *   .orderBy('fn', 'desc')
-     *   .execute()
-     * ```
-     *
-     * The generated SQL (PostgreSQL):
-     *
-     * ```sql
-     * select "person"."first_name" as "fn"
-     * from "person"
-     * order by "id" asc, "fn" desc
-     * ```
-     *
-     * Multiple columns/expressions per call:
-     *
-     * ```ts
-     * await db
-     *   .selectFrom('person')
-     *   .select('person.first_name as fn')
-     *   .orderBy(['id', 'fn desc'])
-     *   .execute()
-     * ```
-     *
-     * The order by expression can also be a raw sql expression or a subquery
-     * in addition to column references:
-     *
-     * ```ts
-     * import { sql } from 'kysely'
-     *
-     * await db
-     *   .selectFrom('person')
-     *   .selectAll()
-     *   .orderBy((eb) => eb.selectFrom('pet')
-     *     .select('pet.name')
-     *     .whereRef('pet.owner_id', '=', 'person.id')
-     *     .limit(1)
+     * await db.selectFrom('person')
+     *   .crossJoinLateral(
+     *     (eb) =>
+     *       eb.selectFrom('pet')
+     *         .select('name')
+     *         .whereRef('pet.owner_id', '=', 'person.id')
+     *         .as('p')
      *   )
-     *   .orderBy(
-     *     sql<string>`concat(first_name, last_name)`
-     *   )
+     *   .select(['first_name', 'p.name'])
+     *   .orderBy('first_name')
      *   .execute()
      * ```
      *
      * The generated SQL (PostgreSQL):
      *
      * ```sql
-     * select *
+     * select "person"."first_name", "p"."name"
      * from "person"
-     * order by
-     *   ( select "pet"."name"
-     *     from "pet"
-     *     where "pet"."owner_id" = "person"."id"
-     *     limit 1
-     *   ) asc,
-     *   concat(first_name, last_name) asc
-     * ```
-     *
-     * `dynamic.ref` can be used to refer to columns not known at
-     * compile time:
-     *
-     * ```ts
-     * async function someQuery(orderBy: string) {
-     *   const { ref } = db.dynamic
-     *
-     *   return await db
-     *     .selectFrom('person')
-     *     .select('person.first_name as fn')
-     *     .orderBy(ref(orderBy))
-     *     .execute()
-     * }
-     *
-     * someQuery('fn')
-     * ```
-     *
-     * The generated SQL (PostgreSQL):
-     *
-     * ```sql
-     * select "person"."first_name" as "fn"
-     * from "person"
-     * order by "fn" asc
+     * cross join lateral (
+     *   select "name"
+     *   from "pet"
+     *   where "pet"."owner_id" = "person"."id"
+     * ) as "p"
+     * order by "first_name"
      * ```
      */
-    orderBy<OE extends UndirectedOrderByExpression<DB, TB, O>>(orderBy: OE, direction?: OrderByDirectionExpression): SelectQueryBuilder<DB, TB, O>;
-    orderBy<OE extends DirectedOrderByStringReference<DB, TB, O>>(ref: OE): SelectQueryBuilder<DB, TB, O>;
-    orderBy<OE extends OrderByExpression<DB, TB, O>>(refs: ReadonlyArray<OE>): SelectQueryBuilder<DB, TB, O>;
+    crossJoinLateral<TE extends TableExpression<DB, TB>>(table: TE): SelectQueryBuilderWithInnerJoin<DB, TB, O, TE>;
+    /**
+     * Joins another table to the query using a `cross apply`.
+     *
+     * This is only supported by some dialects like MS SQL Server.
+     *
+     * ### Examples
+     *
+     * ```ts
+     * await db.selectFrom('person')
+     *   .crossApply(
+     *     (eb) =>
+     *       eb.selectFrom('pet')
+     *         .select('name')
+     *         .whereRef('pet.owner_id', '=', 'person.id')
+     *         .as('p')
+     *   )
+     *   .select(['first_name', 'p.name'])
+     *   .orderBy('first_name')
+     *   .execute()
+     * ```
+     *
+     * The generated SQL (MS SQL Server):
+     *
+     * ```sql
+     * select "person"."first_name", "p"."name"
+     * from "person"
+     * cross apply (
+     *   select "name"
+     *   from "pet"
+     *   where "pet"."owner_id" = "person"."id"
+     * ) as "p"
+     * order by "first_name"
+     * ```
+     */
+    crossApply<TE extends TableExpression<DB, TB>>(table: TE): SelectQueryBuilderWithInnerJoin<DB, TB, O, TE>;
+    /**
+     * Just like {@link crossApply} but adds an `outer apply` instead of a `cross apply`.
+     *
+     * This is only supported by some dialects like MS SQL Server.
+     */
+    outerApply<TE extends TableExpression<DB, TB>>(table: TE): SelectQueryBuilderWithLeftJoin<DB, TB, O, TE>;
     /**
      * Adds a `group by` clause to the query.
      *
@@ -5425,7 +5737,157 @@ interface SelectQueryBuilder<DB, TB extends keyof DB, O> extends WhereInterface<
      */
     groupBy<GE extends GroupByArg<DB, TB, O>>(groupBy: GE): SelectQueryBuilder<DB, TB, O>;
     /**
+     * Adds an `order by` clause to the query.
+     *
+     * `orderBy` calls are additive. Meaning, additional `orderBy` calls append to
+     * the existing order by clause.
+     *
+     * `orderBy` is supported in select queries on all dialects. In MySQL, you can
+     * also use `orderBy` in update and delete queries.
+     *
+     * In a single call you can add a single column/expression or multiple columns/expressions.
+     *
+     * Single column/expression calls can have 1-2 arguments. The first argument is
+     * the expression to order by, while the second optional argument is the direction
+     * (`asc` or `desc`), a callback that accepts and returns an {@link OrderByItemBuilder}
+     * or an expression.
+     *
+     * See {@link clearOrderBy} to remove the `order by` clause from a query.
+     *
+     * ### Examples
+     *
+     * Single column/expression per call:
+     *
+     * ```ts
+     * await db
+     *   .selectFrom('person')
+     *   .select('person.first_name as fn')
+     *   .orderBy('id')
+     *   .orderBy('fn', 'desc')
+     *   .execute()
+     * ```
+     *
+     * The generated SQL (PostgreSQL):
+     *
+     * ```sql
+     * select "person"."first_name" as "fn"
+     * from "person"
+     * order by "id", "fn" desc
+     * ```
+     *
+     * Multiple columns/expressions per call:
+     *
+     * ```ts
+     * await db
+     *   .selectFrom('person')
+     *   .select('person.first_name as fn')
+     *   .orderBy(['id', 'fn'])
+     *   .execute()
+     * ```
+     *
+     * The generated SQL (PostgreSQL):
+     *
+     * ```sql
+     * select "person"."first_name" as "fn"
+     * from "person"
+     * order by "id", "fn"
+     * ```
+     *
+     * Building advanced modifiers:
+     *
+     * ```ts
+     * await db
+     *   .selectFrom('person')
+     *   .select('person.first_name as fn')
+     *   .orderBy('id', (ob) => ob.desc().nullsFirst())
+     *   .execute()
+     * ```
+     *
+     * The generated SQL (PostgreSQL):
+     *
+     * ```sql
+     * select "person"."first_name" as "fn"
+     * from "person"
+     * order by "id" desc nulls first
+     * ```
+     *
+     * The order by expression can also be a raw sql expression or a subquery
+     * in addition to column references:
+     *
+     * ```ts
+     * import { sql } from 'kysely'
+     *
+     * await db
+     *   .selectFrom('person')
+     *   .selectAll()
+     *   .orderBy((eb) => eb.selectFrom('pet')
+     *     .select('pet.name')
+     *     .whereRef('pet.owner_id', '=', 'person.id')
+     *     .limit(1)
+     *   )
+     *   .orderBy(
+     *     sql<string>`concat(first_name, last_name) asc`
+     *   )
+     *   .execute()
+     * ```
+     *
+     * The generated SQL (PostgreSQL):
+     *
+     * ```sql
+     * select *
+     * from "person"
+     * order by
+     *   ( select "pet"."name"
+     *     from "pet"
+     *     where "pet"."owner_id" = "person"."id"
+     *     limit $1
+     *   ) asc,
+     *   concat(first_name, last_name) asc
+     * ```
+     *
+     * `dynamic.ref` can be used to refer to columns not known at
+     * compile time:
+     *
+     * ```ts
+     * async function someQuery(orderBy: string) {
+     *   const { ref } = db.dynamic
+     *
+     *   return await db
+     *     .selectFrom('person')
+     *     .select('person.first_name as fn')
+     *     .orderBy(ref(orderBy))
+     *     .execute()
+     * }
+     *
+     * someQuery('fn')
+     * ```
+     *
+     * The generated SQL (PostgreSQL):
+     *
+     * ```sql
+     * select "person"."first_name" as "fn"
+     * from "person"
+     * order by "fn"
+     * ```
+     */
+    orderBy<OE extends OrderByExpression<DB, TB, O>>(expr: OE, modifiers?: OrderByModifiers): SelectQueryBuilder<DB, TB, O>;
+    /**
+     * @deprecated It does ~2-2.5x more compile-time instantiations than multiple `orderBy(expr, modifiers?)` calls, and has broken autocompletion.
+     */
+    orderBy<OE extends OrderByExpression<DB, TB, O> | DirectedOrderByStringReference<DB, TB, O>>(exprs: ReadonlyArray<OE>): SelectQueryBuilder<DB, TB, O>;
+    /**
+     * @deprecated Use orderBy(expr, direction) instead.
+     */
+    orderBy<OE extends DirectedOrderByStringReference<DB, TB, O>>(expr: OE): SelectQueryBuilder<DB, TB, O>;
+    /**
+     * @deprecated Use `orderBy(expr, (ob) => ...)` instead.
+     */
+    orderBy<OE extends OrderByExpression<DB, TB, O>>(expr: OE, modifiers: Expression<any>): SelectQueryBuilder<DB, TB, O>;
+    /**
      * Adds a limit clause to the query.
+     *
+     * Passing a `null` value is only supported by some dialects like PostgreSQL,
+     * and will result in a no-op limit clause.
      *
      * ### Examples
      *
@@ -5462,7 +5924,7 @@ interface SelectQueryBuilder<DB, TB extends keyof DB, O> extends WhereInterface<
      * select "first_name" from "person" limit $1 offset $2
      * ```
      */
-    limit(limit: ValueExpression<DB, TB, number | bigint>): SelectQueryBuilder<DB, TB, O>;
+    limit(limit: ValueExpression<DB, TB, number | bigint | null>): SelectQueryBuilder<DB, TB, O>;
     /**
      * Adds an `offset` clause to the query.
      *
@@ -6178,6 +6640,55 @@ interface SelectQueryBuilder<DB, TB extends keyof DB, O> extends WhereInterface<
     $asTuple<K1 extends keyof O, K2 extends Exclude<keyof O, K1>, K3 extends Exclude<keyof O, K1 | K2>, K4 extends Exclude<keyof O, K1 | K2 | K3>>(key1: K1, key2: K2, key3: K3, key4: K4): keyof O extends K1 | K2 | K3 | K4 ? ExpressionWrapper<DB, TB, [O[K1], O[K2], O[K3], O[K4]]> : KyselyTypeError<'$asTuple() call failed: All selected columns must be provided as arguments'>;
     $asTuple<K1 extends keyof O, K2 extends Exclude<keyof O, K1>, K3 extends Exclude<keyof O, K1 | K2>, K4 extends Exclude<keyof O, K1 | K2 | K3>, K5 extends Exclude<keyof O, K1 | K2 | K3 | K4>>(key1: K1, key2: K2, key3: K3, key4: K4, key5: K5): keyof O extends K1 | K2 | K3 | K4 | K5 ? ExpressionWrapper<DB, TB, [O[K1], O[K2], O[K3], O[K4], O[K5]]> : KyselyTypeError<'$asTuple() call failed: All selected columns must be provided as arguments'>;
     /**
+     * Plucks the value type of the output record.
+     *
+     * In SQL, any record type that only has one column can be used as a scalar.
+     * For example a query like this works:
+     *
+     * ```sql
+     * select
+     *   id,
+     *   first_name
+     * from
+     *   person as p
+     * where
+     *   -- This is ok since the query only selects one row
+     *   -- and one column.
+     *  (select name from pet where pet.owner_id = p.id limit 1) = 'Doggo'
+     * ```
+     *
+     * In many cases Kysely handles this automatically and picks the correct
+     * scalar type instead of the record type, but sometimes you need to give
+     * Kysely a hint.
+     *
+     * One such case are custom helper functions that take `Expression<T>`
+     * instances as inputs:
+     *
+     * ```ts
+     * import type { Expression } from 'kysely'
+     *
+     * function doStuff(expr: Expression<string>) {
+     *   // ...
+     * }
+     *
+     * // Error! This is not ok because the expression type is
+     * // `{ first_name: string }` instead of `string`.
+     * // doStuff(db.selectFrom('person').select('first_name'))
+     *
+     * // Ok! This is ok since we've plucked the `string` type of the
+     * // only column in the output type.
+     * doStuff(db.selectFrom('person').select('first_name').$asScalar())
+     * ```
+     *
+     * This function has absolutely no effect on the generated SQL. It's
+     * purely a type-level helper.
+     *
+     * This method returns an `ExpressionWrapper` instead of a `SelectQueryBuilder`
+     * since the return value should only be used as a part of an expression
+     * and never executed as the main query.
+     */
+    $asScalar<K extends keyof O = keyof O>(): ExpressionWrapper<DB, TB, O[K]>;
+    /**
      * Narrows (parts of) the output type of the query.
      *
      * Kysely tries to be as type-safe as possible, but in some cases we have to make
@@ -6482,6 +6993,7 @@ interface AggregateFunctionNode extends OperationNode {
     readonly aggregated: readonly OperationNode[];
     readonly distinct?: boolean;
     readonly orderBy?: OrderByNode;
+    readonly withinGroup?: OrderByNode;
     readonly filter?: WhereNode;
     readonly over?: OverNode;
 }
@@ -6492,7 +7004,7 @@ declare const AggregateFunctionNode: Readonly<{
     is(node: OperationNode): node is AggregateFunctionNode;
     create(aggregateFunction: string, aggregated?: readonly OperationNode[]): AggregateFunctionNode;
     cloneWithDistinct(aggregateFunctionNode: AggregateFunctionNode): AggregateFunctionNode;
-    cloneWithOrderBy(aggregateFunctionNode: AggregateFunctionNode, orderItems: ReadonlyArray<OrderByItemNode>): AggregateFunctionNode;
+    cloneWithOrderBy(aggregateFunctionNode: AggregateFunctionNode, orderItems: ReadonlyArray<OrderByItemNode>, withinGroup?: boolean): AggregateFunctionNode;
     cloneWithFilter(aggregateFunctionNode: AggregateFunctionNode, filter: OperationNode): AggregateFunctionNode;
     cloneWithOrFilter(aggregateFunctionNode: AggregateFunctionNode, filter: OperationNode): AggregateFunctionNode;
     cloneWithOver(aggregateFunctionNode: AggregateFunctionNode, over?: OverNode): AggregateFunctionNode;
@@ -6500,11 +7012,11 @@ declare const AggregateFunctionNode: Readonly<{
 
 type PartitionByExpression<DB, TB extends keyof DB> = StringReference<DB, TB> | DynamicReferenceBuilder<any>;
 
-declare class OverBuilder<DB, TB extends keyof DB> implements OperationNodeSource {
+declare class OverBuilder<DB, TB extends keyof DB> implements OrderByInterface<DB, TB, {}>, OperationNodeSource {
     #private;
     constructor(props: OverBuilderProps);
     /**
-     * Adds an order by clause item inside the over function.
+     * Adds an `order by` clause or item inside the `over` function.
      *
      * ```ts
      * const result = await db
@@ -6524,7 +7036,44 @@ declare class OverBuilder<DB, TB extends keyof DB> implements OperationNodeSourc
      * from "person"
      * ```
      */
-    orderBy<OE extends StringReference<DB, TB> | DynamicReferenceBuilder<any>>(orderBy: OE, direction?: OrderByDirectionExpression): OverBuilder<DB, TB>;
+    orderBy<OE extends OrderByExpression<DB, TB, {}>>(expr: OE, modifiers?: OrderByModifiers): OverBuilder<DB, TB>;
+    /**
+     * @deprecated It does ~2-2.6x more compile-time instantiations compared to multiple chained `orderBy(expr, modifiers?)` calls (in `order by` clauses with reasonable item counts), and has broken autocompletion.
+     */
+    orderBy<OE extends OrderByExpression<DB, TB, {}> | DirectedOrderByStringReference<DB, TB, {}>>(exprs: ReadonlyArray<OE>): OverBuilder<DB, TB>;
+    /**
+     * @deprecated It does ~2.9x more compile-time instantiations compared to a `orderBy(expr, direction)` call.
+     */
+    orderBy<OE extends DirectedOrderByStringReference<DB, TB, {}>>(expr: OE): OverBuilder<DB, TB>;
+    /**
+     * @deprecated Use `orderBy(expr, (ob) => ...)` instead.
+     */
+    orderBy<OE extends OrderByExpression<DB, TB, {}>>(expr: OE, modifiers: Expression<any>): OverBuilder<DB, TB>;
+    /**
+     * Clears the `order by` clause from the query.
+     *
+     * See {@link orderBy} for adding an `order by` clause or item to a query.
+     *
+     * ### Examples
+     *
+     * ```ts
+     * const query = db
+     *   .selectFrom('person')
+     *   .selectAll()
+     *   .orderBy('id', 'desc')
+     *
+     * const results = await query
+     *   .clearOrderBy()
+     *   .execute()
+     * ```
+     *
+     * The generated SQL (PostgreSQL):
+     *
+     * ```sql
+     * select * from "person"
+     * ```
+     */
+    clearOrderBy(): OverBuilder<DB, TB>;
     /**
      * Adds partition by clause item/s inside the over function.
      *
@@ -6559,7 +7108,7 @@ interface OverBuilderProps {
     readonly overNode: OverNode;
 }
 
-declare class AggregateFunctionBuilder<DB, TB extends keyof DB, O = unknown> implements AliasableExpression<O> {
+declare class AggregateFunctionBuilder<DB, TB extends keyof DB, O = unknown> implements OrderByInterface<DB, TB, {}>, AliasableExpression<O> {
     #private;
     constructor(props: AggregateFunctionBuilderProps);
     /** @private */
@@ -6659,7 +7208,85 @@ declare class AggregateFunctionBuilder<DB, TB extends keyof DB, O = unknown> imp
      * inner join "pet" ON "pet"."owner_id" = "person"."id"
      * ```
      */
-    orderBy<OE extends StringReference<DB, TB> | DynamicReferenceBuilder<any>>(orderBy: OE, direction?: OrderByDirectionExpression): AggregateFunctionBuilder<DB, TB, O>;
+    orderBy<OE extends OrderByExpression<DB, TB, {}>>(expr: OE, modifiers?: OrderByModifiers): AggregateFunctionBuilder<DB, TB, O>;
+    /**
+     * @deprecated It does ~2-2.6x more compile-time instantiations compared to multiple chained `orderBy(expr, modifiers?)` calls (in `order by` clauses with reasonable item counts), and has broken autocompletion.
+     */
+    orderBy<OE extends OrderByExpression<DB, TB, {}> | DirectedOrderByStringReference<DB, TB, {}>>(exprs: ReadonlyArray<OE>): AggregateFunctionBuilder<DB, TB, O>;
+    /**
+     * @deprecated It does ~2.9x more compile-time instantiations compared to a `orderBy(expr, direction)` call.
+     */
+    orderBy<OE extends DirectedOrderByStringReference<DB, TB, {}>>(expr: OE): AggregateFunctionBuilder<DB, TB, O>;
+    /**
+     * @deprecated Use `orderBy(expr, (ob) => ...)` instead.
+     */
+    orderBy<OE extends OrderByExpression<DB, TB, {}>>(expr: OE, modifiers: Expression<any>): AggregateFunctionBuilder<DB, TB, O>;
+    /**
+     * Clears the `order by` clause from the query.
+     *
+     * See {@link orderBy} for adding an `order by` clause or item to a query.
+     *
+     * ### Examples
+     *
+     * ```ts
+     * const query = db
+     *   .selectFrom('person')
+     *   .selectAll()
+     *   .orderBy('id', 'desc')
+     *
+     * const results = await query
+     *   .clearOrderBy()
+     *   .execute()
+     * ```
+     *
+     * The generated SQL (PostgreSQL):
+     *
+     * ```sql
+     * select * from "person"
+     * ```
+     */
+    clearOrderBy(): AggregateFunctionBuilder<DB, TB, O>;
+    /**
+     * Adds a `withing group` clause with a nested `order by` clause after the function.
+     *
+     * This is only supported by some dialects like PostgreSQL or MS SQL Server.
+     *
+     * ### Examples
+     *
+     * Most frequent person name:
+     *
+     * ```ts
+     * const result = await db
+     *   .selectFrom('person')
+     *   .select((eb) => [
+     *     eb.fn
+     *       .agg<string>('mode')
+     *       .withinGroupOrderBy('person.first_name')
+     *       .as('most_frequent_name')
+     *   ])
+     *   .executeTakeFirstOrThrow()
+     * ```
+     *
+     * The generated SQL (PostgreSQL):
+     *
+     * ```sql
+     * select mode() within group (order by "person"."first_name") as "most_frequent_name"
+     * from "person"
+     * ```
+     */
+    withinGroupOrderBy<OE extends OrderByExpression<DB, TB, {}>>(expr: OE, modifiers?: OrderByModifiers): AggregateFunctionBuilder<DB, TB, O>;
+    /**
+     * @deprecated It does ~2-2.6x more compile-time instantiations compared to multiple chained `withinGroupOrderBy(expr, modifiers?)` calls (in `order by` clauses with reasonable item counts), and has broken autocompletion.
+     */
+    withinGroupOrderBy<OE extends OrderByExpression<DB, TB, {}> | DirectedOrderByStringReference<DB, TB, {}>>(exprs: ReadonlyArray<OE>): AggregateFunctionBuilder<DB, TB, O>;
+    /**
+     * @deprecated It does ~2.9x more compile-time instantiations compared to a `withinGroupOrderBy(expr, direction)` call.
+     */
+    withinGroupOrderBy<OE extends DirectedOrderByStringReference<DB, TB, {}>>(expr: OE): AggregateFunctionBuilder<DB, TB, O>;
+    /**
+     * @deprecated Use `withinGroupOrderBy(expr, (ob) => ...)` instead.
+     */
+    withinGroupOrderBy<OE extends OrderByExpression<DB, TB, {}>>(expr: OE, modifiers: Expression<any>): AggregateFunctionBuilder<DB, TB, O>;
     /**
      * Adds a `filter` clause with a nested `where` clause after the function.
      *
@@ -7237,7 +7864,7 @@ interface FunctionModule<DB, TB extends keyof DB> {
      *   .execute()
      * ```
      */
-    max<O extends number | string | bigint | null = never, RE extends ReferenceExpression<DB, TB> = ReferenceExpression<DB, TB>>(expr: RE): AggregateFunctionBuilder<DB, TB, IsNever<O> extends true ? ExtractTypeFromReferenceExpression<DB, TB, RE, number | string | bigint> : O>;
+    max<O extends number | string | Date | bigint | null = never, RE extends ReferenceExpression<DB, TB> = ReferenceExpression<DB, TB>>(expr: RE): AggregateFunctionBuilder<DB, TB, IsNever<O> extends true ? ExtractTypeFromReferenceExpression<DB, TB, RE, number | string | Date | bigint> : O>;
     /**
      * Calls the `min` function for the column or expression given as the argument.
      *
@@ -7276,7 +7903,7 @@ interface FunctionModule<DB, TB extends keyof DB> {
      *   .execute()
      * ```
      */
-    min<O extends number | string | bigint | null = never, RE extends ReferenceExpression<DB, TB> = ReferenceExpression<DB, TB>>(expr: RE): AggregateFunctionBuilder<DB, TB, IsNever<O> extends true ? ExtractTypeFromReferenceExpression<DB, TB, RE, number | string | bigint> : O>;
+    min<O extends number | string | Date | bigint | null = never, RE extends ReferenceExpression<DB, TB> = ReferenceExpression<DB, TB>>(expr: RE): AggregateFunctionBuilder<DB, TB, IsNever<O> extends true ? ExtractTypeFromReferenceExpression<DB, TB, RE, number | string | Date | bigint> : O>;
     /**
      * Calls the `sum` function for the column or expression given as the argument.
      *
@@ -7362,9 +7989,13 @@ interface FunctionModule<DB, TB extends keyof DB> {
     any<T>(subquery: SelectQueryBuilderExpression<Record<string, T>>): ExpressionWrapper<DB, TB, T>;
     any<T>(expr: Expression<ReadonlyArray<T>>): ExpressionWrapper<DB, TB, T>;
     /**
-     * Creates a json_agg function call.
+     * Creates a `json_agg` function call.
      *
-     * This function is only available on PostgreSQL.
+     * This is only supported by some dialects like PostgreSQL.
+     *
+     * ### Examples
+     *
+     * You can use it on table expressions:
      *
      * ```ts
      * await db.selectFrom('person')
@@ -7382,8 +8013,31 @@ interface FunctionModule<DB, TB extends keyof DB> {
      * inner join "pet" on "pet"."owner_id" = "person"."id"
      * group by "person"."first_name"
      * ```
+     *
+     * or on columns:
+     *
+     * ```ts
+     * await db.selectFrom('person')
+     *   .innerJoin('pet', 'pet.owner_id', 'person.id')
+     *   .select((eb) => [
+     *     'first_name',
+     *     eb.fn.jsonAgg('pet.name').as('pet_names'),
+     *   ])
+     *   .groupBy('person.first_name')
+     *   .execute()
+     * ```
+     *
+     * The generated SQL (PostgreSQL):
+     *
+     * ```sql
+     * select "first_name", json_agg("pet"."name") AS "pet_names"
+     * from "person"
+     * inner join "pet" ON "pet"."owner_id" = "person"."id"
+     * group by "person"."first_name"
+     * ```
      */
     jsonAgg<T extends (TB & string) | Expression<unknown>>(table: T): AggregateFunctionBuilder<DB, TB, T extends TB ? Selectable<DB[T]>[] : T extends Expression<infer O> ? O[] : never>;
+    jsonAgg<RE extends StringReference<DB, TB>>(column: RE): AggregateFunctionBuilder<DB, TB, ExtractTypeFromStringReference<DB, TB, RE>[] | null>;
     /**
      * Creates a to_json function call.
      *
@@ -7922,6 +8576,8 @@ type ValTuple5<V1, V2, V3, V4, V5> = DrainOuterGeneric<[
     ExtractTypeFromValueExpression<V5>
 ]>;
 
+type SelectFrom<DB, TB extends keyof DB, TE extends TableExpressionOrList<DB, TB>> = TE extends keyof DB & string ? SelectQueryBuilder<DB, TB | ExtractTableAlias<DB, TE>, {}> : TE extends `${infer T} as ${infer A}` ? T extends keyof DB ? SelectQueryBuilder<DB & ShallowRecord<A, DB[T]>, TB | A, {}> : never : TE extends ReadonlyArray<infer T> ? SelectQueryBuilder<From<DB, T>, FromTables<DB, TB, T>, {}> : SelectQueryBuilder<From<DB, TE>, FromTables<DB, TB, TE>, {}>;
+
 interface ExpressionBuilder<DB, TB extends keyof DB> {
     /**
      * Creates a binary expression.
@@ -8022,9 +8678,9 @@ interface ExpressionBuilder<DB, TB extends keyof DB> {
      * ```ts
      * const result = await db.selectFrom('person')
      *   .where(({ eb, exists, selectFrom }) =>
-     *     eb('first_name', '=', 'Jennifer').and(
-     *       exists(selectFrom('pet').whereRef('owner_id', '=', 'person.id').select('pet.id'))
-     *     )
+     *     eb('first_name', '=', 'Jennifer').and(exists(
+     *       selectFrom('pet').whereRef('owner_id', '=', 'person.id').select('pet.id')
+     *     ))
      *   )
      *   .selectAll()
      *   .execute()
@@ -8115,11 +8771,7 @@ interface ExpressionBuilder<DB, TB extends keyof DB> {
      * that case Kysely typings wouldn't allow you to reference `pet.owner_id`
      * because `pet` is not joined to that query.
      */
-    selectFrom<TE extends keyof DB & string>(from: TE[]): SelectQueryBuilder<DB, TB | ExtractTableAlias<DB, TE>, {}>;
-    selectFrom<TE extends TableExpression<DB, TB>>(from: TE[]): SelectQueryBuilder<From<DB, TE>, FromTables<DB, TB, TE>, {}>;
-    selectFrom<TE extends keyof DB & string>(from: TE): SelectQueryBuilder<DB, TB | ExtractTableAlias<DB, TE>, {}>;
-    selectFrom<TE extends AnyAliasedTable<DB>>(from: TE): SelectQueryBuilder<DB & PickTableWithAlias<DB, TE>, TB | ExtractTableAlias<DB & PickTableWithAlias<DB, TE>, TE>, {}>;
-    selectFrom<TE extends TableExpression<DB, TB>>(from: TE): SelectQueryBuilder<From<DB, TE>, FromTables<DB, TB, TE>, {}>;
+    selectFrom<TE extends TableExpressionOrList<DB, TB>>(from: TE): SelectFrom<DB, TB, TE>;
     /**
      * Creates a `case` statement/operator.
      *
@@ -8825,7 +9477,7 @@ interface ExpressionBuilder<DB, TB extends keyof DB> {
     withSchema(schema: string): ExpressionBuilder<DB, TB>;
 }
 declare function expressionBuilder<DB, TB extends keyof DB>(_: SelectQueryBuilder<DB, TB, any>): ExpressionBuilder<DB, TB>;
-declare function expressionBuilder<DB, TB extends keyof DB>(): ExpressionBuilder<DB, TB>;
+declare function expressionBuilder<DB, TB extends keyof DB = never>(): ExpressionBuilder<DB, TB>;
 
 /**
  * Like `Expression<V>` but also accepts a select query with an output
@@ -8981,15 +9633,52 @@ interface AlterTableAddIndexBuilderProps {
 declare class UniqueConstraintNodeBuilder implements OperationNodeSource {
     #private;
     constructor(node: UniqueConstraintNode);
-    toOperationNode(): UniqueConstraintNode;
     /**
      * Adds `nulls not distinct` to the unique constraint definition
      *
      * Supported by PostgreSQL dialect only
      */
     nullsNotDistinct(): UniqueConstraintNodeBuilder;
+    deferrable(): UniqueConstraintNodeBuilder;
+    notDeferrable(): UniqueConstraintNodeBuilder;
+    initiallyDeferred(): UniqueConstraintNodeBuilder;
+    initiallyImmediate(): UniqueConstraintNodeBuilder;
+    /**
+     * Simply calls the provided function passing `this` as the only argument. `$call` returns
+     * what the provided function returns.
+     */
+    $call<T>(func: (qb: this) => T): T;
+    toOperationNode(): UniqueConstraintNode;
 }
 type UniqueConstraintNodeBuilderCallback = (builder: UniqueConstraintNodeBuilder) => UniqueConstraintNodeBuilder;
+
+declare class PrimaryKeyConstraintBuilder implements OperationNodeSource {
+    #private;
+    constructor(node: PrimaryKeyConstraintNode);
+    deferrable(): PrimaryKeyConstraintBuilder;
+    notDeferrable(): PrimaryKeyConstraintBuilder;
+    initiallyDeferred(): PrimaryKeyConstraintBuilder;
+    initiallyImmediate(): PrimaryKeyConstraintBuilder;
+    /**
+     * Simply calls the provided function passing `this` as the only argument. `$call` returns
+     * what the provided function returns.
+     */
+    $call<T>(func: (qb: this) => T): T;
+    toOperationNode(): PrimaryKeyConstraintNode;
+}
+type PrimaryKeyConstraintBuilderCallback = (builder: PrimaryKeyConstraintBuilder) => PrimaryKeyConstraintBuilder;
+
+declare class CheckConstraintBuilder implements OperationNodeSource {
+    #private;
+    constructor(node: CheckConstraintNode);
+    /**
+     * Simply calls the provided function passing `this` as the only argument. `$call` returns
+     * what the provided function returns.
+     */
+    $call<T>(func: (qb: this) => T): T;
+    toOperationNode(): CheckConstraintNode;
+}
+type CheckConstraintBuilderCallback = (builder: CheckConstraintBuilder) => CheckConstraintBuilder;
 
 /**
  * This builder can be used to create a `alter table` query.
@@ -9019,7 +9708,7 @@ declare class AlterTableBuilder implements ColumnAlteringInterface {
     /**
      * See {@link CreateTableBuilder.addCheckConstraint}
      */
-    addCheckConstraint(constraintName: string, checkExpression: Expression<any>): AlterTableExecutor;
+    addCheckConstraint(constraintName: string, checkExpression: Expression<any>, build?: CheckConstraintBuilderCallback): AlterTableExecutor;
     /**
      * See {@link CreateTableBuilder.addForeignKeyConstraint}
      *
@@ -9027,12 +9716,13 @@ declare class AlterTableBuilder implements ColumnAlteringInterface {
      * the constraint builder and doesn't take a callback as the last argument. This
      * is because you can only add one column per `ALTER TABLE` query.
      */
-    addForeignKeyConstraint(constraintName: string, columns: string[], targetTable: string, targetColumns: string[]): AlterTableAddForeignKeyConstraintBuilder;
+    addForeignKeyConstraint(constraintName: string, columns: string[], targetTable: string, targetColumns: string[], build?: ForeignKeyConstraintBuilderCallback): AlterTableAddForeignKeyConstraintBuilder;
     /**
      * See {@link CreateTableBuilder.addPrimaryKeyConstraint}
      */
-    addPrimaryKeyConstraint(constraintName: string, columns: string[]): AlterTableExecutor;
+    addPrimaryKeyConstraint(constraintName: string, columns: string[], build?: PrimaryKeyConstraintBuilderCallback): AlterTableExecutor;
     dropConstraint(constraintName: string): AlterTableDropConstraintBuilder;
+    renameConstraint(oldName: string, newName: string): AlterTableDropConstraintBuilder;
     /**
      * This can be used to add index to table.
      *
@@ -9400,7 +10090,7 @@ declare class CreateTableBuilder<TB extends string, C extends string = never> im
      *   .execute()
      * ```
      */
-    addPrimaryKeyConstraint(constraintName: string, columns: C[]): CreateTableBuilder<TB, C>;
+    addPrimaryKeyConstraint(constraintName: string, columns: C[], build?: PrimaryKeyConstraintBuilderCallback): CreateTableBuilder<TB, C>;
     /**
      * Adds a unique constraint for one or more columns.
      *
@@ -9455,7 +10145,7 @@ declare class CreateTableBuilder<TB extends string, C extends string = never> im
      *   .execute()
      * ```
      */
-    addCheckConstraint(constraintName: string, checkExpression: Expression<any>): CreateTableBuilder<TB, C>;
+    addCheckConstraint(constraintName: string, checkExpression: Expression<any>, build?: CheckConstraintBuilderCallback): CreateTableBuilder<TB, C>;
     /**
      * Adds a foreign key constraint.
      *
@@ -9621,7 +10311,6 @@ interface CreateTableBuilderProps {
     readonly node: CreateTableNode;
 }
 type ColumnBuilderCallback = (builder: ColumnDefinitionBuilder) => ColumnDefinitionBuilder;
-type ForeignKeyConstraintBuilderCallback = (builder: ForeignKeyConstraintBuilder) => ForeignKeyConstraintBuilder;
 
 declare class DropIndexBuilder implements OperationNodeSource, Compilable {
     #private;
@@ -9983,7 +10672,7 @@ declare class CreateTypeBuilder implements OperationNodeSource, Compilable {
      * db.schema.createType('species').asEnum(['cat', 'dog', 'frog'])
      * ```
      */
-    asEnum(values: string[]): CreateTypeBuilder;
+    asEnum(values: readonly string[]): CreateTypeBuilder;
     /**
      * Simply calls the provided function passing `this` as the only argument. `$call` returns
      * what the provided function returns.
@@ -10015,6 +10704,48 @@ interface DropTypeBuilderProps {
     readonly queryId: QueryId;
     readonly executor: QueryExecutor;
     readonly node: DropTypeNode;
+}
+
+declare class RefreshMaterializedViewBuilder implements OperationNodeSource, Compilable {
+    #private;
+    constructor(props: RefreshMaterializedViewBuilderProps);
+    /**
+     * Adds the "concurrently" modifier.
+     *
+     * Use this to refresh the view without locking out concurrent selects on the materialized view.
+     *
+     * WARNING!
+     * This cannot be used with the "with no data" modifier.
+     */
+    concurrently(): RefreshMaterializedViewBuilder;
+    /**
+     * Adds the "with data" modifier.
+     *
+     * If specified (or defaults) the backing query is executed to provide the new data, and the materialized view is left in a scannable state
+     */
+    withData(): RefreshMaterializedViewBuilder;
+    /**
+     * Adds the "with no data" modifier.
+     *
+     * If specified, no new data is generated and the materialized view is left in an unscannable state.
+     *
+     * WARNING!
+     * This cannot be used with the "concurrently" modifier.
+     */
+    withNoData(): RefreshMaterializedViewBuilder;
+    /**
+     * Simply calls the provided function passing `this` as the only argument. `$call` returns
+     * what the provided function returns.
+     */
+    $call<T>(func: (qb: this) => T): T;
+    toOperationNode(): RefreshMaterializedViewNode;
+    compile(): CompiledQuery;
+    execute(): Promise<void>;
+}
+interface RefreshMaterializedViewBuilderProps {
+    readonly queryId: QueryId;
+    readonly executor: QueryExecutor;
+    readonly node: RefreshMaterializedViewNode;
 }
 
 /**
@@ -10164,6 +10895,19 @@ declare class SchemaModule {
      * ```
      */
     createView(viewName: string): CreateViewBuilder;
+    /**
+     * Refresh a materialized view.
+     *
+     * ### Examples
+     *
+     * ```ts
+     * await db.schema
+     *   .refreshMaterializedView('my_view')
+     *   .concurrently()
+     *   .execute()
+     * ```
+     */
+    refreshMaterializedView(viewName: string): RefreshMaterializedViewBuilder;
     /**
      * Drop a view.
      *
@@ -10319,9 +11063,11 @@ type InsertObjectOrList<DB, TB extends keyof DB> = InsertObject<DB, TB> | Readon
 type InsertObjectOrListFactory<DB, TB extends keyof DB, UT extends keyof DB = never> = (eb: ExpressionBuilder<DB, TB | UT>) => InsertObjectOrList<DB, TB>;
 type InsertExpression<DB, TB extends keyof DB, UT extends keyof DB = never> = InsertObjectOrList<DB, TB> | InsertObjectOrListFactory<DB, TB, UT>;
 
-type UpdateObject<DB, TB extends keyof DB, UT extends keyof DB = TB> = {
-    [C in UpdateKeys<DB[UT]>]?: ValueExpression<DB, TB, UpdateType<DB[UT][C]>> | undefined;
-};
+type UpdateObject<DB, TB extends keyof DB, UT extends keyof DB = TB> = DrainOuterGeneric<{
+    [C in AnyColumn<DB, UT>]?: {
+        [T in UT]: C extends keyof DB[T] ? ValueExpression<DB, TB, UpdateType<DB[T][C]>> | undefined : never;
+    }[UT];
+}>;
 type UpdateObjectFactory<DB, TB extends keyof DB, UT extends keyof DB> = (eb: ExpressionBuilder<DB, TB>) => UpdateObject<DB, TB, UT>;
 type UpdateObjectExpression<DB, TB extends keyof DB, UT extends keyof DB = TB> = UpdateObject<DB, TB, UT> | UpdateObjectFactory<DB, TB, UT>;
 type ExtractUpdateTypeFromReferenceExpression<DB, TB extends keyof DB, RE, DV = unknown> = UpdateType<ExtractRawTypeFromReferenceExpression<DB, TB, RE, DV>>;
@@ -10335,7 +11081,7 @@ interface ReturningInterface<DB, TB extends keyof DB, O> {
      * Allows you to return data from modified rows.
      *
      * On supported databases like PostgreSQL, this method can be chained to
-     * `insert`, `update` and `delete` queries to return data.
+     * `insert`, `update`, `delete` and `merge` queries to return data.
      *
      * Note that on SQLite you need to give aliases for the expressions to avoid
      * [this bug](https://sqlite.org/forum/forumpost/033daf0b32) in SQLite.
@@ -10394,11 +11140,28 @@ interface ReturningInterface<DB, TB extends keyof DB, O> {
     returning<CB extends SelectCallback<DB, TB>>(callback: CB): ReturningInterface<DB, TB, ReturningCallbackRow<DB, TB, O, CB>>;
     returning<SE extends SelectExpression<DB, TB>>(selection: SE): ReturningInterface<DB, TB, ReturningRow<DB, TB, O, SE>>;
     /**
-     * Adds a `returning *` to an insert/update/delete query on databases
+     * Adds a `returning *` to an insert/update/delete/merge query on databases
      * that support `returning` such as PostgreSQL.
      *
      * Also see the {@link returning} method.
      */
+    returningAll(): ReturningInterface<DB, TB, Selectable<DB[TB]>>;
+}
+interface MultiTableReturningInterface<DB, TB extends keyof DB, O> extends ReturningInterface<DB, TB, O> {
+    /**
+     * Adds a `returning *` or `returning table.*` to an insert/update/delete/merge
+     * query on databases that support `returning` such as PostgreSQL.
+     *
+     * Also see the {@link returning} method.
+     */
+    returningAll<T extends TB>(tables: ReadonlyArray<T>): MultiTableReturningInterface<DB, TB, ReturningAllRow<DB, T, O>>;
+    /**
+     * Adds a `returning *` to an insert/update/delete/merge query on databases
+     * that support `returning` such as PostgreSQL.
+     *
+     * Also see the {@link returning} method.
+     */
+    returningAll<T extends TB>(table: T): MultiTableReturningInterface<DB, TB, ReturningAllRow<DB, T, O>>;
     returningAll(): ReturningInterface<DB, TB, Selectable<DB[TB]>>;
 }
 
@@ -11685,14 +12448,17 @@ declare class InsertQueryBuilder<DB, TB extends keyof DB, O> implements Returnin
     /**
      * Changes an `insert into` query to an `insert ignore into` query.
      *
+     * This is only supported by some dialects like MySQL.
+     *
+     * To avoid a footgun, when invoked with the SQLite dialect, this method will
+     * be handled like {@link orIgnore}. See also, {@link orAbort}, {@link orFail},
+     * {@link orReplace}, and {@link orRollback}.
+     *
      * If you use the ignore modifier, ignorable errors that occur while executing the
      * insert statement are ignored. For example, without ignore, a row that duplicates
      * an existing unique index or primary key value in the table causes a duplicate-key
      * error and the statement is aborted. With ignore, the row is discarded and no error
      * occurs.
-     *
-     * This is only supported on some dialects like MySQL. On most dialects you should
-     * use the {@link onConflict} method.
      *
      * ### Examples
      *
@@ -11710,10 +12476,162 @@ declare class InsertQueryBuilder<DB, TB extends keyof DB, O> implements Returnin
      * The generated SQL (MySQL):
      *
      * ```sql
-     * insert ignore into `person` ("first_name", "last_name", "gender") values (?, ?, ?)
+     * insert ignore into `person` (`first_name`, `last_name`, `gender`) values (?, ?, ?)
+     * ```
+     *
+     * The generated SQL (SQLite):
+     *
+     * ```sql
+     * insert or ignore into "person" ("first_name", "last_name", "gender") values (?, ?, ?)
      * ```
      */
     ignore(): InsertQueryBuilder<DB, TB, O>;
+    /**
+     * Changes an `insert into` query to an `insert or ignore into` query.
+     *
+     * This is only supported by some dialects like SQLite.
+     *
+     * To avoid a footgun, when invoked with the MySQL dialect, this method will
+     * be handled like {@link ignore}.
+     *
+     * See also, {@link orAbort}, {@link orFail}, {@link orReplace}, and {@link orRollback}.
+     *
+     * ### Examples
+     *
+     * ```ts
+     * await db.insertInto('person')
+     *   .orIgnore()
+     *   .values({
+     *     first_name: 'John',
+     *     last_name: 'Doe',
+     *     gender: 'female',
+     *   })
+     *   .execute()
+     * ```
+     *
+     * The generated SQL (SQLite):
+     *
+     * ```sql
+     * insert or ignore into "person" ("first_name", "last_name", "gender") values (?, ?, ?)
+     * ```
+     *
+     * The generated SQL (MySQL):
+     *
+     * ```sql
+     * insert ignore into `person` (`first_name`, `last_name`, `gender`) values (?, ?, ?)
+     * ```
+     */
+    orIgnore(): InsertQueryBuilder<DB, TB, O>;
+    /**
+     * Changes an `insert into` query to an `insert or abort into` query.
+     *
+     * This is only supported by some dialects like SQLite.
+     *
+     * See also, {@link orIgnore}, {@link orFail}, {@link orReplace}, and {@link orRollback}.
+     *
+     * ### Examples
+     *
+     * ```ts
+     * await db.insertInto('person')
+     *   .orAbort()
+     *   .values({
+     *     first_name: 'John',
+     *     last_name: 'Doe',
+     *     gender: 'female',
+     *   })
+     *   .execute()
+     * ```
+     *
+     * The generated SQL (SQLite):
+     *
+     * ```sql
+     * insert or abort into "person" ("first_name", "last_name", "gender") values (?, ?, ?)
+     * ```
+     */
+    orAbort(): InsertQueryBuilder<DB, TB, O>;
+    /**
+     * Changes an `insert into` query to an `insert or fail into` query.
+     *
+     * This is only supported by some dialects like SQLite.
+     *
+     * See also, {@link orIgnore}, {@link orAbort}, {@link orReplace}, and {@link orRollback}.
+     *
+     * ### Examples
+     *
+     * ```ts
+     * await db.insertInto('person')
+     *   .orFail()
+     *   .values({
+     *     first_name: 'John',
+     *     last_name: 'Doe',
+     *     gender: 'female',
+     *   })
+     *   .execute()
+     * ```
+     *
+     * The generated SQL (SQLite):
+     *
+     * ```sql
+     * insert or fail into "person" ("first_name", "last_name", "gender") values (?, ?, ?)
+     * ```
+     */
+    orFail(): InsertQueryBuilder<DB, TB, O>;
+    /**
+     * Changes an `insert into` query to an `insert or replace into` query.
+     *
+     * This is only supported by some dialects like SQLite.
+     *
+     * You can also use {@link Kysely.replaceInto} to achieve the same result.
+     *
+     * See also, {@link orIgnore}, {@link orAbort}, {@link orFail}, and {@link orRollback}.
+     *
+     * ### Examples
+     *
+     * ```ts
+     * await db.insertInto('person')
+     *   .orReplace()
+     *   .values({
+     *     first_name: 'John',
+     *     last_name: 'Doe',
+     *     gender: 'female',
+     *   })
+     *   .execute()
+     * ```
+     *
+     * The generated SQL (SQLite):
+     *
+     * ```sql
+     * insert or replace into "person" ("first_name", "last_name", "gender") values (?, ?, ?)
+     * ```
+     */
+    orReplace(): InsertQueryBuilder<DB, TB, O>;
+    /**
+     * Changes an `insert into` query to an `insert or rollback into` query.
+     *
+     * This is only supported by some dialects like SQLite.
+     *
+     * See also, {@link orIgnore}, {@link orAbort}, {@link orFail}, and {@link orReplace}.
+     *
+     * ### Examples
+     *
+     * ```ts
+     * await db.insertInto('person')
+     *   .orRollback()
+     *   .values({
+     *     first_name: 'John',
+     *     last_name: 'Doe',
+     *     gender: 'female',
+     *   })
+     *   .execute()
+     * ```
+     *
+     * The generated SQL (SQLite):
+     *
+     * ```sql
+     * insert or rollback into "person" ("first_name", "last_name", "gender") values (?, ?, ?)
+     * ```
+     */
+    orRollback(): InsertQueryBuilder<DB, TB, O>;
     /**
      * Changes an `insert into` query to an `insert top into` query.
      *
@@ -11973,7 +12891,7 @@ declare class InsertQueryBuilder<DB, TB extends keyof DB, O> implements Returnin
      * Allows you to return data from modified rows.
      *
      * On supported databases like PostgreSQL, this method can be chained to
-     * `insert`, `update` and `delete` queries to return data.
+     * `insert`, `update`, `delete` and `merge` queries to return data.
      *
      * Note that on SQLite you need to give aliases for the expressions to avoid
      * [this bug](https://sqlite.org/forum/forumpost/033daf0b32) in SQLite.
@@ -12032,7 +12950,7 @@ declare class InsertQueryBuilder<DB, TB extends keyof DB, O> implements Returnin
     returning<CB extends SelectCallback<DB, TB>>(callback: CB): InsertQueryBuilder<DB, TB, ReturningCallbackRow<DB, TB, O, CB>>;
     returning<SE extends SelectExpression<DB, TB>>(selection: SE): InsertQueryBuilder<DB, TB, ReturningRow<DB, TB, O, SE>>;
     /**
-     * Adds a `returning *` to an insert/update/delete query on databases
+     * Adds a `returning *` to an insert/update/delete/merge query on databases
      * that support `returning` such as PostgreSQL.
      *
      * Also see the {@link returning} method.
@@ -12457,7 +13375,1370 @@ interface InsertQueryBuilderProps {
     readonly executor: QueryExecutor;
 }
 
-declare class DeleteQueryBuilder<DB, TB extends keyof DB, O> implements WhereInterface<DB, TB>, ReturningInterface<DB, TB, O>, OutputInterface<DB, TB, O, 'deleted'>, OperationNodeSource, Compilable<O>, Explainable, Streamable<O> {
+declare class UpdateQueryBuilder<DB, UT extends keyof DB, TB extends keyof DB, O> implements WhereInterface<DB, TB>, MultiTableReturningInterface<DB, TB, O>, OutputInterface<DB, TB, O>, OrderByInterface<DB, TB, never>, OperationNodeSource, Compilable<O>, Explainable, Streamable<O> {
+    #private;
+    constructor(props: UpdateQueryBuilderProps);
+    /**
+     * Adds a `where` expression to the query.
+     *
+     * Calling this method multiple times will combine the expressions using `and`.
+     *
+     * Also see {@link whereRef}
+     *
+     * ### Examples
+     *
+     * <!-- siteExample("where", "Simple where clause", 10) -->
+     *
+     * `where` method calls are combined with `AND`:
+     *
+     * ```ts
+     * const person = await db
+     *   .selectFrom('person')
+     *   .selectAll()
+     *   .where('first_name', '=', 'Jennifer')
+     *   .where('age', '>', 40)
+     *   .executeTakeFirst()
+     * ```
+     *
+     * The generated SQL (PostgreSQL):
+     *
+     * ```sql
+     * select * from "person" where "first_name" = $1 and "age" > $2
+     * ```
+     *
+     * Operator can be any supported operator or if the typings don't support it
+     * you can always use:
+     *
+     * ```ts
+     * import { sql } from 'kysely'
+     *
+     * sql`your operator`
+     * ```
+     *
+     * <!-- siteExample("where", "Where in", 20) -->
+     *
+     * Find multiple items using a list of identifiers:
+     *
+     * ```ts
+     * const persons = await db
+     *   .selectFrom('person')
+     *   .selectAll()
+     *   .where('id', 'in', [1, 2, 3])
+     *   .execute()
+     * ```
+     *
+     * The generated SQL (PostgreSQL):
+     *
+     * ```sql
+     * select * from "person" where "id" in ($1, $2, $3)
+     * ```
+     *
+     * <!-- siteExample("where", "Object filter", 30) -->
+     *
+     * You can use the `and` function to create a simple equality
+     * filter using an object
+     *
+     * ```ts
+     * const persons = await db
+     *   .selectFrom('person')
+     *   .selectAll()
+     *   .where((eb) => eb.and({
+     *     first_name: 'Jennifer',
+     *     last_name: eb.ref('first_name')
+     *   }))
+     *   .execute()
+     * ```
+     *
+     * The generated SQL (PostgreSQL):
+     *
+     * ```sql
+     * select *
+     * from "person"
+     * where (
+     *   "first_name" = $1
+     *   and "last_name" = "first_name"
+     * )
+     * ```
+     *
+     * <!-- siteExample("where", "OR where", 40) -->
+     *
+     * To combine conditions using `OR`, you can use the expression builder.
+     * There are two ways to create `OR` expressions. Both are shown in this
+     * example:
+     *
+     * ```ts
+     * const persons = await db
+     *   .selectFrom('person')
+     *   .selectAll()
+     *   // 1. Using the `or` method on the expression builder:
+     *   .where((eb) => eb.or([
+     *     eb('first_name', '=', 'Jennifer'),
+     *     eb('first_name', '=', 'Sylvester')
+     *   ]))
+     *   // 2. Chaining expressions using the `or` method on the
+     *   // created expressions:
+     *   .where((eb) =>
+     *     eb('last_name', '=', 'Aniston').or('last_name', '=', 'Stallone')
+     *   )
+     *   .execute()
+     * ```
+     *
+     * The generated SQL (PostgreSQL):
+     *
+     * ```sql
+     * select *
+     * from "person"
+     * where (
+     *   ("first_name" = $1 or "first_name" = $2)
+     *   and
+     *   ("last_name" = $3 or "last_name" = $4)
+     * )
+     * ```
+     *
+     * <!-- siteExample("where", "Conditional where calls", 50) -->
+     *
+     * You can add expressions conditionally like this:
+     *
+     * ```ts
+     * import { Expression, SqlBool } from 'kysely'
+     *
+     * const firstName: string | undefined = 'Jennifer'
+     * const lastName: string | undefined = 'Aniston'
+     * const under18 = true
+     * const over60 = true
+     *
+     * let query = db
+     *   .selectFrom('person')
+     *   .selectAll()
+     *
+     * if (firstName) {
+     *   // The query builder is immutable. Remember to reassign
+     *   // the result back to the query variable.
+     *   query = query.where('first_name', '=', firstName)
+     * }
+     *
+     * if (lastName) {
+     *   query = query.where('last_name', '=', lastName)
+     * }
+     *
+     * if (under18 || over60) {
+     *   // Conditional OR expressions can be added like this.
+     *   query = query.where((eb) => {
+     *     const ors: Expression<SqlBool>[] = []
+     *
+     *     if (under18) {
+     *       ors.push(eb('age', '<', 18))
+     *     }
+     *
+     *     if (over60) {
+     *       ors.push(eb('age', '>', 60))
+     *     }
+     *
+     *     return eb.or(ors)
+     *   })
+     * }
+     *
+     * const persons = await query.execute()
+     * ```
+     *
+     * Both the first and third argument can also be arbitrary expressions like
+     * subqueries. An expression can defined by passing a function and calling
+     * the methods of the {@link ExpressionBuilder} passed to the callback:
+     *
+     * ```ts
+     * const persons = await db
+     *   .selectFrom('person')
+     *   .selectAll()
+     *   .where(
+     *     (qb) => qb.selectFrom('pet')
+     *       .select('pet.name')
+     *       .whereRef('pet.owner_id', '=', 'person.id')
+     *       .limit(1),
+     *     '=',
+     *     'Fluffy'
+     *   )
+     *   .execute()
+     * ```
+     *
+     * The generated SQL (PostgreSQL):
+     *
+     * ```sql
+     * select *
+     * from "person"
+     * where (
+     *   select "pet"."name"
+     *   from "pet"
+     *   where "pet"."owner_id" = "person"."id"
+     *   limit $1
+     * ) = $2
+     * ```
+     *
+     * A `where in` query can be built by using the `in` operator and an array
+     * of values. The values in the array can also be expressions:
+     *
+     * ```ts
+     * const persons = await db
+     *   .selectFrom('person')
+     *   .selectAll()
+     *   .where('person.id', 'in', [100, 200, 300])
+     *   .execute()
+     * ```
+     *
+     * The generated SQL (PostgreSQL):
+     *
+     * ```sql
+     * select * from "person" where "id" in ($1, $2, $3)
+     * ```
+     *
+     * <!-- siteExample("where", "Complex where clause", 60) -->
+     *
+     * For complex `where` expressions you can pass in a single callback and
+     * use the `ExpressionBuilder` to build your expression:
+     *
+     * ```ts
+     * const firstName = 'Jennifer'
+     * const maxAge = 60
+     *
+     * const persons = await db
+     *   .selectFrom('person')
+     *   .selectAll('person')
+     *   .where(({ eb, or, and, not, exists, selectFrom }) => and([
+     *     or([
+     *       eb('first_name', '=', firstName),
+     *       eb('age', '<', maxAge)
+     *     ]),
+     *     not(exists(
+     *       selectFrom('pet')
+     *         .select('pet.id')
+     *         .whereRef('pet.owner_id', '=', 'person.id')
+     *     ))
+     *   ]))
+     *   .execute()
+     * ```
+     *
+     * The generated SQL (PostgreSQL):
+     *
+     * ```sql
+     * select "person".*
+     * from "person"
+     * where (
+     *   (
+     *     "first_name" = $1
+     *     or "age" < $2
+     *   )
+     *   and not exists (
+     *     select "pet"."id" from "pet" where "pet"."owner_id" = "person"."id"
+     *   )
+     * )
+     * ```
+     *
+     * If everything else fails, you can always use the {@link sql} tag
+     * as any of the arguments, including the operator:
+     *
+     * ```ts
+     * import { sql } from 'kysely'
+     *
+     * const persons = await db
+     *   .selectFrom('person')
+     *   .selectAll()
+     *   .where(
+     *     sql<string>`coalesce(first_name, last_name)`,
+     *     'like',
+     *     '%' + name + '%',
+     *   )
+     *   .execute()
+     * ```
+     *
+     * The generated SQL (PostgreSQL):
+     *
+     * ```sql
+     * select * from "person"
+     * where coalesce(first_name, last_name) like $1
+     * ```
+     *
+     * In all examples above the columns were known at compile time
+     * (except for the raw {@link sql} expressions). By default kysely only
+     * allows you to refer to columns that exist in the database **and**
+     * can be referred to in the current query and context.
+     *
+     * Sometimes you may want to refer to columns that come from the user
+     * input and thus are not available at compile time.
+     *
+     * You have two options, the {@link sql} tag or `db.dynamic`. The example below
+     * uses both:
+     *
+     * ```ts
+     * import { sql } from 'kysely'
+     * const { ref } = db.dynamic
+     *
+     * const columnFromUserInput: string = 'id'
+     *
+     * const persons = await db
+     *   .selectFrom('person')
+     *   .selectAll()
+     *   .where(ref(columnFromUserInput), '=', 1)
+     *   .where(sql.id(columnFromUserInput), '=', 2)
+     *   .execute()
+     * ```
+     */
+    where<RE extends ReferenceExpression<DB, TB>, VE extends OperandValueExpressionOrList<DB, TB, RE>>(lhs: RE, op: ComparisonOperatorExpression, rhs: VE): UpdateQueryBuilder<DB, UT, TB, O>;
+    where<E extends ExpressionOrFactory<DB, TB, SqlBool>>(expression: E): UpdateQueryBuilder<DB, UT, TB, O>;
+    /**
+     * Adds a `where` clause where both sides of the operator are references
+     * to columns.
+     *
+     * The normal `where` method treats the right hand side argument as a
+     * value by default. `whereRef` treats it as a column reference. This method is
+     * expecially useful with joins and correlated subqueries.
+     *
+     * ### Examples
+     *
+     * Usage with a join:
+     *
+     * ```ts
+     * db.selectFrom(['person', 'pet'])
+     *   .selectAll()
+     *   .whereRef('person.first_name', '=', 'pet.name')
+     * ```
+     *
+     * The generated SQL (PostgreSQL):
+     *
+     * ```sql
+     * select * from "person", "pet" where "person"."first_name" = "pet"."name"
+     * ```
+     *
+     * Usage in a subquery:
+     *
+     * ```ts
+     * const persons = await db
+     *   .selectFrom('person')
+     *   .selectAll('person')
+     *   .select((eb) => eb
+     *     .selectFrom('pet')
+     *     .select('name')
+     *     .whereRef('pet.owner_id', '=', 'person.id')
+     *     .limit(1)
+     *     .as('pet_name')
+     *   )
+     *   .execute()
+     * ```
+     *
+     * The generated SQL (PostgreSQL):
+     *
+     * ```sql
+     * select "person".*, (
+     *   select "name"
+     *   from "pet"
+     *   where "pet"."owner_id" = "person"."id"
+     *   limit $1
+     * ) as "pet_name"
+     * from "person"
+     */
+    whereRef<LRE extends ReferenceExpression<DB, TB>, RRE extends ReferenceExpression<DB, TB>>(lhs: LRE, op: ComparisonOperatorExpression, rhs: RRE): UpdateQueryBuilder<DB, UT, TB, O>;
+    /**
+     * Clears all where expressions from the query.
+     *
+     * ### Examples
+     *
+     * ```ts
+     * db.selectFrom('person')
+     *   .selectAll()
+     *   .where('id','=',42)
+     *   .clearWhere()
+     * ```
+     *
+     * The generated SQL(PostgreSQL):
+     *
+     * ```sql
+     * select * from "person"
+     * ```
+     */
+    clearWhere(): UpdateQueryBuilder<DB, UT, TB, O>;
+    /**
+     * Changes an `update` query into a `update top` query.
+     *
+     * `top` clause is only supported by some dialects like MS SQL Server.
+     *
+     * ### Examples
+     *
+     * Update the first row:
+     *
+     * ```ts
+     * await db.updateTable('person')
+     *   .top(1)
+     *   .set({ first_name: 'Foo' })
+     *   .where('age', '>', 18)
+     *   .executeTakeFirstOrThrow()
+     * ```
+     *
+     * The generated SQL (MS SQL Server):
+     *
+     * ```sql
+     * update top(1) "person" set "first_name" = @1 where "age" > @2
+     * ```
+     *
+     * Update the 50% first rows:
+     *
+     * ```ts
+     * await db.updateTable('person')
+     *   .top(50, 'percent')
+     *   .set({ first_name: 'Foo' })
+     *   .where('age', '>', 18)
+     *   .executeTakeFirstOrThrow()
+     * ```
+     *
+     * The generated SQL (MS SQL Server):
+     *
+     * ```sql
+     * update top(50) percent "person" set "first_name" = @1 where "age" > @2
+     * ```
+     */
+    top(expression: number | bigint, modifiers?: 'percent'): UpdateQueryBuilder<DB, UT, TB, O>;
+    /**
+     * Adds a from clause to the update query.
+     *
+     * This is supported only on some databases like PostgreSQL.
+     *
+     * The API is the same as {@link QueryCreator.selectFrom}.
+     *
+     * ### Examples
+     *
+     * ```ts
+     * db.updateTable('person')
+     *   .from('pet')
+     *   .set((eb) => ({
+     *     first_name: eb.ref('pet.name')
+     *   }))
+     *   .whereRef('pet.owner_id', '=', 'person.id')
+     * ```
+     *
+     * The generated SQL (PostgreSQL):
+     *
+     * ```sql
+     * update "person"
+     * set "first_name" = "pet"."name"
+     * from "pet"
+     * where "pet"."owner_id" = "person"."id"
+     * ```
+     */
+    from<TE extends TableExpression<DB, TB>>(table: TE): UpdateQueryBuilder<From<DB, TE>, UT, FromTables<DB, TB, TE>, O>;
+    from<TE extends TableExpression<DB, TB>>(table: TE[]): UpdateQueryBuilder<From<DB, TE>, UT, FromTables<DB, TB, TE>, O>;
+    /**
+     * Joins another table to the query using an inner join.
+     *
+     * ### Examples
+     *
+     * Simple usage by providing a table name and two columns to join:
+     *
+     * ```ts
+     * const result = await db
+     *   .selectFrom('person')
+     *   .innerJoin('pet', 'pet.owner_id', 'person.id')
+     *   // `select` needs to come after the call to `innerJoin` so
+     *   // that you can select from the joined table.
+     *   .select(['person.id', 'pet.name'])
+     *   .execute()
+     *
+     * result[0].id
+     * result[0].name
+     * ```
+     *
+     * The generated SQL (PostgreSQL):
+     *
+     * ```sql
+     * select "person"."id", "pet"."name"
+     * from "person"
+     * inner join "pet"
+     * on "pet"."owner_id" = "person"."id"
+     * ```
+     *
+     * You can give an alias for the joined table like this:
+     *
+     * ```ts
+     * await db.selectFrom('person')
+     *   .innerJoin('pet as p', 'p.owner_id', 'person.id')
+     *   .where('p.name', '=', 'Doggo')
+     *   .selectAll()
+     *   .execute()
+     * ```
+     *
+     * The generated SQL (PostgreSQL):
+     *
+     * ```sql
+     * select *
+     * from "person"
+     * inner join "pet" as "p"
+     * on "p"."owner_id" = "person"."id"
+     * where "p".name" = $1
+     * ```
+     *
+     * You can provide a function as the second argument to get a join
+     * builder for creating more complex joins. The join builder has a
+     * bunch of `on*` methods for building the `on` clause of the join.
+     * There's basically an equivalent for every `where` method
+     * (`on`, `onRef`, `onExists` etc.). You can do all the same things
+     * with the `on` method that you can with the corresponding `where`
+     * method. See the `where` method documentation for more examples.
+     *
+     * ```ts
+     * await db.selectFrom('person')
+     *   .innerJoin(
+     *     'pet',
+     *     (join) => join
+     *       .onRef('pet.owner_id', '=', 'person.id')
+     *       .on('pet.name', '=', 'Doggo')
+     *   )
+     *   .selectAll()
+     *   .execute()
+     * ```
+     *
+     * The generated SQL (PostgreSQL):
+     *
+     * ```sql
+     * select *
+     * from "person"
+     * inner join "pet"
+     * on "pet"."owner_id" = "person"."id"
+     * and "pet"."name" = $1
+     * ```
+     *
+     * You can join a subquery by providing a select query (or a callback)
+     * as the first argument:
+     *
+     * ```ts
+     * await db.selectFrom('person')
+     *   .innerJoin(
+     *     db.selectFrom('pet')
+     *       .select(['owner_id', 'name'])
+     *       .where('name', '=', 'Doggo')
+     *       .as('doggos'),
+     *     'doggos.owner_id',
+     *     'person.id',
+     *   )
+     *   .selectAll()
+     *   .execute()
+     * ```
+     *
+     * The generated SQL (PostgreSQL):
+     *
+     * ```sql
+     * select *
+     * from "person"
+     * inner join (
+     *   select "owner_id", "name"
+     *   from "pet"
+     *   where "name" = $1
+     * ) as "doggos"
+     * on "doggos"."owner_id" = "person"."id"
+     * ```
+     */
+    innerJoin<TE extends TableExpression<DB, TB>, K1 extends JoinReferenceExpression<DB, TB, TE>, K2 extends JoinReferenceExpression<DB, TB, TE>>(table: TE, k1: K1, k2: K2): UpdateQueryBuilderWithInnerJoin<DB, UT, TB, O, TE>;
+    innerJoin<TE extends TableExpression<DB, TB>, FN extends JoinCallbackExpression<DB, TB, TE>>(table: TE, callback: FN): UpdateQueryBuilderWithInnerJoin<DB, UT, TB, O, TE>;
+    /**
+     * Just like {@link innerJoin} but adds a left join instead of an inner join.
+     */
+    leftJoin<TE extends TableExpression<DB, TB>, K1 extends JoinReferenceExpression<DB, TB, TE>, K2 extends JoinReferenceExpression<DB, TB, TE>>(table: TE, k1: K1, k2: K2): UpdateQueryBuilderWithLeftJoin<DB, UT, TB, O, TE>;
+    leftJoin<TE extends TableExpression<DB, TB>, FN extends JoinCallbackExpression<DB, TB, TE>>(table: TE, callback: FN): UpdateQueryBuilderWithLeftJoin<DB, UT, TB, O, TE>;
+    /**
+     * Just like {@link innerJoin} but adds a right join instead of an inner join.
+     */
+    rightJoin<TE extends TableExpression<DB, TB>, K1 extends JoinReferenceExpression<DB, TB, TE>, K2 extends JoinReferenceExpression<DB, TB, TE>>(table: TE, k1: K1, k2: K2): UpdateQueryBuilderWithRightJoin<DB, UT, TB, O, TE>;
+    rightJoin<TE extends TableExpression<DB, TB>, FN extends JoinCallbackExpression<DB, TB, TE>>(table: TE, callback: FN): UpdateQueryBuilderWithRightJoin<DB, UT, TB, O, TE>;
+    /**
+     * Just like {@link innerJoin} but adds a full join instead of an inner join.
+     */
+    fullJoin<TE extends TableExpression<DB, TB>, K1 extends JoinReferenceExpression<DB, TB, TE>, K2 extends JoinReferenceExpression<DB, TB, TE>>(table: TE, k1: K1, k2: K2): UpdateQueryBuilderWithFullJoin<DB, UT, TB, O, TE>;
+    fullJoin<TE extends TableExpression<DB, TB>, FN extends JoinCallbackExpression<DB, TB, TE>>(table: TE, callback: FN): UpdateQueryBuilderWithFullJoin<DB, UT, TB, O, TE>;
+    /**
+     * @description This is only supported by some dialects like MySQL or SQLite with `SQLITE_ENABLE_UPDATE_DELETE_LIMIT`.
+     */
+    orderBy<OE extends OrderByExpression<DB, TB, {}>>(expr: OE, modifiers?: OrderByModifiers): UpdateQueryBuilder<DB, UT, TB, O>;
+    /**
+     * @description This is only supported by some dialects like MySQL or SQLite with `SQLITE_ENABLE_UPDATE_DELETE_LIMIT`.
+     * @deprecated It does ~2-2.6x more compile-time instantiations compared to multiple chained `orderBy(expr, modifiers?)` calls (in `order by` clauses with reasonable item counts), and has broken autocompletion.
+     */
+    orderBy<OE extends OrderByExpression<DB, TB, {}> | DirectedOrderByStringReference<DB, TB, {}>>(exprs: ReadonlyArray<OE>): UpdateQueryBuilder<DB, UT, TB, O>;
+    /**
+     * @description This is only supported by some dialects like MySQL or SQLite with `SQLITE_ENABLE_UPDATE_DELETE_LIMIT`.
+     * @deprecated It does ~2.9x more compile-time instantiations compared to a `orderBy(expr, direction)` call.
+     */
+    orderBy<OE extends DirectedOrderByStringReference<DB, TB, {}>>(expr: OE): UpdateQueryBuilder<DB, UT, TB, O>;
+    /**
+     * @description This is only supported by some dialects like MySQL or SQLite with `SQLITE_ENABLE_UPDATE_DELETE_LIMIT`.
+     * @deprecated Use `orderBy(expr, (ob) => ...)` instead.
+     */
+    orderBy<OE extends OrderByExpression<DB, TB, {}>>(expr: OE, modifiers: Expression<any>): UpdateQueryBuilder<DB, UT, TB, O>;
+    /**
+     * Clears the `order by` clause from the query.
+     *
+     * See {@link orderBy} for adding an `order by` clause or item to a query.
+     *
+     * ### Examples
+     *
+     * ```ts
+     * const query = db
+     *   .selectFrom('person')
+     *   .selectAll()
+     *   .orderBy('id', 'desc')
+     *
+     * const results = await query
+     *   .clearOrderBy()
+     *   .execute()
+     * ```
+     *
+     * The generated SQL (PostgreSQL):
+     *
+     * ```sql
+     * select * from "person"
+     * ```
+     */
+    clearOrderBy(): UpdateQueryBuilder<DB, UT, TB, O>;
+    /**
+     * Adds a limit clause to the update query for supported databases, such as MySQL.
+     *
+     * ### Examples
+     *
+     * Update the first 2 rows in the 'person' table:
+     *
+     * ```ts
+     * await db
+     *   .updateTable('person')
+     *   .set({ first_name: 'Foo' })
+     *   .limit(2)
+     *   .execute()
+     * ```
+     *
+     * The generated SQL (MySQL):
+     *
+     * ```sql
+     * update `person` set `first_name` = ? limit ?
+     * ```
+     */
+    limit(limit: ValueExpression<DB, TB, number>): UpdateQueryBuilder<DB, UT, TB, O>;
+    /**
+     * Sets the values to update for an {@link Kysely.updateTable | update} query.
+     *
+     * This method takes an object whose keys are column names and values are
+     * values to update. In addition to the column's type, the values can be
+     * any expressions such as raw {@link sql} snippets or select queries.
+     *
+     * This method also accepts a callback that returns the update object. The
+     * callback takes an instance of {@link ExpressionBuilder} as its only argument.
+     * The expression builder can be used to create arbitrary update expressions.
+     *
+     * The return value of an update query is an instance of {@link UpdateResult}.
+     * You can use the {@link returning} method on supported databases to get out
+     * the updated rows.
+     *
+     * ### Examples
+     *
+     * <!-- siteExample("update", "Single row", 10) -->
+     *
+     * Update a row in `person` table:
+     *
+     * ```ts
+     * const result = await db
+     *   .updateTable('person')
+     *   .set({
+     *     first_name: 'Jennifer',
+     *     last_name: 'Aniston'
+     *   })
+     *   .where('id', '=', 1)
+     *   .executeTakeFirst()
+     * ```
+     *
+     * The generated SQL (PostgreSQL):
+     *
+     * ```sql
+     * update "person" set "first_name" = $1, "last_name" = $2 where "id" = $3
+     * ```
+     *
+     * <!-- siteExample("update", "Complex values", 20) -->
+     *
+     * As always, you can provide a callback to the `set` method to get access
+     * to an expression builder:
+     *
+     * ```ts
+     * const result = await db
+     *   .updateTable('person')
+     *   .set((eb) => ({
+     *     age: eb('age', '+', 1),
+     *     first_name: eb.selectFrom('pet').select('name').limit(1),
+     *     last_name: 'updated',
+     *   }))
+     *   .where('id', '=', 1)
+     *   .executeTakeFirst()
+     * ```
+     *
+     * The generated SQL (PostgreSQL):
+     *
+     * ```sql
+     * update "person"
+     * set
+     *   "first_name" = (select "name" from "pet" limit $1),
+     *   "age" = "age" + $2,
+     *   "last_name" = $3
+     * where
+     *   "id" = $4
+     * ```
+     *
+     * If you provide two arguments the first one is interpreted as the column
+     * (or other target) and the second as the value:
+     *
+     * ```ts
+     * import { sql } from 'kysely'
+     *
+     * const result = await db
+     *   .updateTable('person')
+     *   .set('first_name', 'Foo')
+     *   // As always, both arguments can be arbitrary expressions or
+     *   // callbacks that give you access to an expression builder:
+     *   .set(sql<string>`address['postalCode']`, (eb) => eb.val('61710'))
+     *   .where('id', '=', 1)
+     *   .executeTakeFirst()
+     * ```
+     *
+     * On PostgreSQL you can chain `returning` to the query to get
+     * the updated rows' columns (or any other expression) as the
+     * return value:
+     *
+     * ```ts
+     * const row = await db
+     *   .updateTable('person')
+     *   .set({
+     *     first_name: 'Jennifer',
+     *     last_name: 'Aniston'
+     *   })
+     *   .where('id', '=', 1)
+     *   .returning('id')
+     *   .executeTakeFirstOrThrow()
+     *
+     * row.id
+     * ```
+     *
+     * The generated SQL (PostgreSQL):
+     *
+     * ```sql
+     * update "person" set "first_name" = $1, "last_name" = $2 where "id" = $3 returning "id"
+     * ```
+     *
+     * In addition to primitives, the values can arbitrary expressions including
+     * raw `sql` snippets or subqueries:
+     *
+     * ```ts
+     * import { sql } from 'kysely'
+     *
+     * const result = await db
+     *   .updateTable('person')
+     *   .set(({ selectFrom, ref, fn, eb }) => ({
+     *     first_name: selectFrom('person').select('first_name').limit(1),
+     *     middle_name: ref('first_name'),
+     *     age: eb('age', '+', 1),
+     *     last_name: sql<string>`${'Ani'} || ${'ston'}`,
+     *   }))
+     *   .where('id', '=', 1)
+     *   .executeTakeFirst()
+     *
+     * console.log(result.numUpdatedRows)
+     * ```
+     *
+     * The generated SQL (PostgreSQL):
+     *
+     * ```sql
+     * update "person" set
+     * "first_name" = (select "first_name" from "person" limit $1),
+     * "middle_name" = "first_name",
+     * "age" = "age" + $2,
+     * "last_name" = $3 || $4
+     * where "id" = $5
+     * ```
+     *
+     * <!-- siteExample("update", "MySQL joins", 30) -->
+     *
+     * MySQL allows you to join tables directly to the "main" table and update
+     * rows of all joined tables. This is possible by passing all tables to the
+     * `updateTable` method as a list and adding the `ON` conditions as `WHERE`
+     * statements. You can then use the `set(column, value)` variant to update
+     * columns using table qualified names.
+     *
+     * The `UpdateQueryBuilder` also has `innerJoin` etc. join methods, but those
+     * can only be used as part of a PostgreSQL `update set from join` query.
+     * Due to type complexity issues, we unfortunately can't make the same
+     * methods work in both cases.
+     *
+     * ```ts
+     * const result = await db
+     *   .updateTable(['person', 'pet'])
+     *   .set('person.first_name', 'Updated person')
+     *   .set('pet.name', 'Updated doggo')
+     *   .whereRef('person.id', '=', 'pet.owner_id')
+     *   .where('person.id', '=', 1)
+     *   .executeTakeFirst()
+     * ```
+     *
+     * The generated SQL (MySQL):
+     *
+     * ```sql
+     * update
+     *   `person`,
+     *   `pet`
+     * set
+     *   `person`.`first_name` = ?,
+     *   `pet`.`name` = ?
+     * where
+     *   `person`.`id` = `pet`.`owner_id`
+     *   and `person`.`id` = ?
+     * ```
+     */
+    set(update: UpdateObjectExpression<DB, TB, UT>): UpdateQueryBuilder<DB, UT, TB, O>;
+    set<RE extends ReferenceExpression<DB, UT>>(key: RE, value: ValueExpression<DB, TB, ExtractUpdateTypeFromReferenceExpression<DB, UT, RE>>): UpdateQueryBuilder<DB, UT, TB, O>;
+    /**
+     * Allows you to return data from modified rows.
+     *
+     * On supported databases like PostgreSQL, this method can be chained to
+     * `insert`, `update`, `delete` and `merge` queries to return data.
+     *
+     * Note that on SQLite you need to give aliases for the expressions to avoid
+     * [this bug](https://sqlite.org/forum/forumpost/033daf0b32) in SQLite.
+     * For example `.returning('id as id')`.
+     *
+     * Also see the {@link returningAll} method.
+     *
+     * ### Examples
+     *
+     * Return one column:
+     *
+     * ```ts
+     * const { id } = await db
+     *   .insertInto('person')
+     *   .values({
+     *     first_name: 'Jennifer',
+     *     last_name: 'Aniston'
+     *   })
+     *   .returning('id')
+     *   .executeTakeFirstOrThrow()
+     * ```
+     *
+     * Return multiple columns:
+     *
+     * ```ts
+     * const { id, last_name } = await db
+     *   .insertInto('person')
+     *   .values({
+     *     first_name: 'Jennifer',
+     *     last_name: 'Aniston'
+     *   })
+     *   .returning(['id', 'last_name'])
+     *   .executeTakeFirstOrThrow()
+     * ```
+     *
+     * Return arbitrary expressions:
+     *
+     * ```ts
+     * import { sql } from 'kysely'
+     *
+     * const { id, full_name, first_pet_id } = await db
+     *   .insertInto('person')
+     *   .values({
+     *     first_name: 'Jennifer',
+     *     last_name: 'Aniston'
+     *   })
+     *   .returning((eb) => [
+     *     'id as id',
+     *     sql<string>`concat(first_name, ' ', last_name)`.as('full_name'),
+     *     eb.selectFrom('pet').select('pet.id').limit(1).as('first_pet_id')
+     *   ])
+     *   .executeTakeFirstOrThrow()
+     * ```
+     */
+    returning<SE extends SelectExpression<DB, TB>>(selections: ReadonlyArray<SE>): UpdateQueryBuilder<DB, UT, TB, ReturningRow<DB, TB, O, SE>>;
+    returning<CB extends SelectCallback<DB, TB>>(callback: CB): UpdateQueryBuilder<DB, UT, TB, ReturningCallbackRow<DB, TB, O, CB>>;
+    returning<SE extends SelectExpression<DB, TB>>(selection: SE): UpdateQueryBuilder<DB, UT, TB, ReturningRow<DB, TB, O, SE>>;
+    /**
+     * Adds a `returning *` or `returning table.*` to an insert/update/delete/merge
+     * query on databases that support `returning` such as PostgreSQL.
+     *
+     * Also see the {@link returning} method.
+     */
+    returningAll<T extends TB>(tables: ReadonlyArray<T>): UpdateQueryBuilder<DB, UT, TB, ReturningAllRow<DB, T, O>>;
+    returningAll<T extends TB>(table: T): UpdateQueryBuilder<DB, UT, TB, ReturningAllRow<DB, T, O>>;
+    returningAll(): UpdateQueryBuilder<DB, UT, TB, ReturningAllRow<DB, TB, O>>;
+    /**
+     * Allows you to return data from modified rows.
+     *
+     * On supported databases like MS SQL Server (MSSQL), this method can be chained
+     * to `insert`, `update`, `delete` and `merge` queries to return data.
+     *
+     * Also see the {@link outputAll} method.
+     *
+     * ### Examples
+     *
+     * Return one column:
+     *
+     * ```ts
+     * const { id } = await db
+     *   .insertInto('person')
+     *   .output('inserted.id')
+     *   .values({
+     *     first_name: 'Jennifer',
+     *     last_name: 'Aniston',
+     *     gender: 'female',
+     *   })
+     *   .executeTakeFirstOrThrow()
+     * ```
+     *
+     * The generated SQL (MSSQL):
+     *
+     * ```sql
+     * insert into "person" ("first_name", "last_name", "gender")
+     * output "inserted"."id"
+     * values (@1, @2, @3)
+     * ```
+     *
+     * Return multiple columns:
+     *
+     * ```ts
+     * const { old_first_name, old_last_name, new_first_name, new_last_name } = await db
+     *   .updateTable('person')
+     *   .set({ first_name: 'John', last_name: 'Doe' })
+     *   .output([
+     *     'deleted.first_name as old_first_name',
+     *     'deleted.last_name as old_last_name',
+     *     'inserted.first_name as new_first_name',
+     *     'inserted.last_name as new_last_name',
+     *   ])
+     *   .where('created_at', '<', new Date())
+     *   .executeTakeFirstOrThrow()
+     * ```
+     *
+     * The generated SQL (MSSQL):
+     *
+     * ```sql
+     * update "person"
+     * set "first_name" = @1, "last_name" = @2
+     * output "deleted"."first_name" as "old_first_name",
+     *   "deleted"."last_name" as "old_last_name",
+     *   "inserted"."first_name" as "new_first_name",
+     *   "inserted"."last_name" as "new_last_name"
+     * where "created_at" < @3
+     * ```
+     *
+     * Return arbitrary expressions:
+     *
+     * ```ts
+     * import { sql } from 'kysely'
+     *
+     * const { full_name } = await db
+     *   .deleteFrom('person')
+     *   .output((eb) => sql<string>`concat(${eb.ref('deleted.first_name')}, ' ', ${eb.ref('deleted.last_name')})`.as('full_name'))
+     *   .where('created_at', '<', new Date())
+     *   .executeTakeFirstOrThrow()
+     * ```
+     *
+     * The generated SQL (MSSQL):
+     *
+     * ```sql
+     * delete from "person"
+     * output concat("deleted"."first_name", ' ', "deleted"."last_name") as "full_name"
+     * where "created_at" < @1
+     * ```
+     *
+     * Return the action performed on the row:
+     *
+     * ```ts
+     * await db
+     *   .mergeInto('person')
+     *   .using('pet', 'pet.owner_id', 'person.id')
+     *   .whenMatched()
+     *   .thenDelete()
+     *   .whenNotMatched()
+     *   .thenInsertValues({
+     *     first_name: 'John',
+     *     last_name: 'Doe',
+     *     gender: 'male'
+     *   })
+     *   .output([
+     *     'inserted.id as inserted_id',
+     *     'deleted.id as deleted_id',
+     *   ])
+     *   .execute()
+     * ```
+     *
+     * The generated SQL (MSSQL):
+     *
+     * ```sql
+     * merge into "person"
+     * using "pet" on "pet"."owner_id" = "person"."id"
+     * when matched then delete
+     * when not matched then
+     * insert ("first_name", "last_name", "gender")
+     * values (@1, @2, @3)
+     * output "inserted"."id" as "inserted_id", "deleted"."id" as "deleted_id"
+     * ```
+     *
+     */
+    output<OE extends OutputExpression<DB, UT>>(selections: readonly OE[]): UpdateQueryBuilder<DB, UT, TB, ReturningRow<DB, TB, O, SelectExpressionFromOutputExpression<OE>>>;
+    output<CB extends OutputCallback<DB, TB>>(callback: CB): UpdateQueryBuilder<DB, UT, TB, ReturningRow<DB, TB, O, SelectExpressionFromOutputCallback<CB>>>;
+    output<OE extends OutputExpression<DB, TB>>(selection: OE): UpdateQueryBuilder<DB, UT, TB, ReturningRow<DB, TB, O, SelectExpressionFromOutputExpression<OE>>>;
+    /**
+     * Adds an `output {prefix}.*` to an `insert`/`update`/`delete`/`merge` query on databases
+     * that support `output` such as MS SQL Server (MSSQL).
+     *
+     * Also see the {@link output} method.
+     */
+    outputAll(table: OutputPrefix): UpdateQueryBuilder<DB, UT, TB, ReturningAllRow<DB, TB, O>>;
+    /**
+     * This can be used to add any additional SQL to the end of the query.
+     *
+     * ### Examples
+     *
+     * ```ts
+     * import { sql } from 'kysely'
+     *
+     * await db.updateTable('person')
+     *   .set({ age: 39 })
+     *   .where('first_name', '=', 'John')
+     *   .modifyEnd(sql.raw('-- This is a comment'))
+     *   .execute()
+     * ```
+     *
+     * The generated SQL (MySQL):
+     *
+     * ```sql
+     * update `person`
+     * set `age` = 39
+     * where `first_name` = "John" -- This is a comment
+     * ```
+     */
+    modifyEnd(modifier: Expression<any>): UpdateQueryBuilder<DB, UT, TB, O>;
+    /**
+     * Clears all `returning` clauses from the query.
+     *
+     * ### Examples
+     *
+     * ```ts
+     * db.updateTable('person')
+     *   .returningAll()
+     *   .set({ age: 39 })
+     *   .where('first_name', '=', 'John')
+     *   .clearReturning()
+     * ```
+     *
+     * The generated SQL(PostgreSQL):
+     *
+     * ```sql
+     * update "person" set "age" = 39 where "first_name" = "John"
+     * ```
+     */
+    clearReturning(): UpdateQueryBuilder<DB, UT, TB, UpdateResult>;
+    /**
+     * Simply calls the provided function passing `this` as the only argument. `$call` returns
+     * what the provided function returns.
+     *
+     * If you want to conditionally call a method on `this`, see
+     * the {@link $if} method.
+     *
+     * ### Examples
+     *
+     * The next example uses a helper function `log` to log a query:
+     *
+     * ```ts
+     * import type { Compilable } from 'kysely'
+     * import type { PersonUpdate } from 'type-editor' // imaginary module
+     *
+     * function log<T extends Compilable>(qb: T): T {
+     *   console.log(qb.compile())
+     *   return qb
+     * }
+     *
+     * const values = {
+     *   first_name: 'John',
+     * } satisfies PersonUpdate
+     *
+     * db.updateTable('person')
+     *   .set(values)
+     *   .$call(log)
+     *   .execute()
+     * ```
+     */
+    $call<T>(func: (qb: this) => T): T;
+    /**
+     * Call `func(this)` if `condition` is true.
+     *
+     * This method is especially handy with optional selects. Any `returning` or `returningAll`
+     * method calls add columns as optional fields to the output type when called inside
+     * the `func` callback. This is because we can't know if those selections were actually
+     * made before running the code.
+     *
+     * You can also call any other methods inside the callback.
+     *
+     * ### Examples
+     *
+     * ```ts
+     * import type { PersonUpdate } from 'type-editor' // imaginary module
+     *
+     * async function updatePerson(id: number, updates: PersonUpdate, returnLastName: boolean) {
+     *   return await db
+     *     .updateTable('person')
+     *     .set(updates)
+     *     .where('id', '=', id)
+     *     .returning(['id', 'first_name'])
+     *     .$if(returnLastName, (qb) => qb.returning('last_name'))
+     *     .executeTakeFirstOrThrow()
+     * }
+     * ```
+     *
+     * Any selections added inside the `if` callback will be added as optional fields to the
+     * output type since we can't know if the selections were actually made before running
+     * the code. In the example above the return type of the `updatePerson` function is:
+     *
+     * ```ts
+     * Promise<{
+     *   id: number
+     *   first_name: string
+     *   last_name?: string
+     * }>
+     * ```
+     */
+    $if<O2>(condition: boolean, func: (qb: this) => UpdateQueryBuilder<any, any, any, O2>): O2 extends UpdateResult ? UpdateQueryBuilder<DB, UT, TB, UpdateResult> : O2 extends O & infer E ? UpdateQueryBuilder<DB, UT, TB, O & Partial<E>> : UpdateQueryBuilder<DB, UT, TB, Partial<O2>>;
+    /**
+     * Change the output type of the query.
+     *
+     * This method call doesn't change the SQL in any way. This methods simply
+     * returns a copy of this `UpdateQueryBuilder` with a new output type.
+     */
+    $castTo<C>(): UpdateQueryBuilder<DB, UT, TB, C>;
+    /**
+     * Narrows (parts of) the output type of the query.
+     *
+     * Kysely tries to be as type-safe as possible, but in some cases we have to make
+     * compromises for better maintainability and compilation performance. At present,
+     * Kysely doesn't narrow the output type of the query based on {@link set} input
+     * when using {@link where} and/or {@link returning} or {@link returningAll}.
+     *
+     * This utility method is very useful for these situations, as it removes unncessary
+     * runtime assertion/guard code. Its input type is limited to the output type
+     * of the query, so you can't add a column that doesn't exist, or change a column's
+     * type to something that doesn't exist in its union type.
+     *
+     * ### Examples
+     *
+     * Turn this code:
+     *
+     * ```ts
+     * import type { Person } from 'type-editor' // imaginary module
+     *
+     * const id = 1
+     * const now = new Date().toISOString()
+     *
+     * const person = await db.updateTable('person')
+     *   .set({ deleted_at: now })
+     *   .where('id', '=', id)
+     *   .where('nullable_column', 'is not', null)
+     *   .returningAll()
+     *   .executeTakeFirstOrThrow()
+     *
+     * if (isWithNoNullValue(person)) {
+     *   functionThatExpectsPersonWithNonNullValue(person)
+     * }
+     *
+     * function isWithNoNullValue(person: Person): person is Person & { nullable_column: string } {
+     *   return person.nullable_column != null
+     * }
+     * ```
+     *
+     * Into this:
+     *
+     * ```ts
+     * import type { NotNull } from 'kysely'
+     *
+     * const id = 1
+     * const now = new Date().toISOString()
+     *
+     * const person = await db.updateTable('person')
+     *   .set({ deleted_at: now })
+     *   .where('id', '=', id)
+     *   .where('nullable_column', 'is not', null)
+     *   .returningAll()
+     *   .$narrowType<{ deleted_at: Date; nullable_column: NotNull }>()
+     *   .executeTakeFirstOrThrow()
+     *
+     * functionThatExpectsPersonWithNonNullValue(person)
+     * ```
+     */
+    $narrowType<T>(): UpdateQueryBuilder<DB, UT, TB, NarrowPartial<O, T>>;
+    /**
+     * Asserts that query's output row type equals the given type `T`.
+     *
+     * This method can be used to simplify excessively complex types to make TypeScript happy
+     * and much faster.
+     *
+     * Kysely uses complex type magic to achieve its type safety. This complexity is sometimes too much
+     * for TypeScript and you get errors like this:
+     *
+     * ```
+     * error TS2589: Type instantiation is excessively deep and possibly infinite.
+     * ```
+     *
+     * In these case you can often use this method to help TypeScript a little bit. When you use this
+     * method to assert the output type of a query, Kysely can drop the complex output type that
+     * consists of multiple nested helper types and replace it with the simple asserted type.
+     *
+     * Using this method doesn't reduce type safety at all. You have to pass in a type that is
+     * structurally equal to the current type.
+     *
+     * ### Examples
+     *
+     * ```ts
+     * import type { PersonUpdate, PetUpdate, Species } from 'type-editor' // imaginary module
+     *
+     * const person = {
+     *   id: 1,
+     *   gender: 'other',
+     * } satisfies PersonUpdate
+     *
+     * const pet = {
+     *   name: 'Fluffy',
+     * } satisfies PetUpdate
+     *
+     * const result = await db
+     *   .with('updated_person', (qb) => qb
+     *     .updateTable('person')
+     *     .set(person)
+     *     .where('id', '=', person.id)
+     *     .returning('first_name')
+     *     .$assertType<{ first_name: string }>()
+     *   )
+     *   .with('updated_pet', (qb) => qb
+     *     .updateTable('pet')
+     *     .set(pet)
+     *     .where('owner_id', '=', person.id)
+     *     .returning(['name as pet_name', 'species'])
+     *     .$assertType<{ pet_name: string, species: Species }>()
+     *   )
+     *   .selectFrom(['updated_person', 'updated_pet'])
+     *   .selectAll()
+     *   .executeTakeFirstOrThrow()
+     * ```
+     */
+    $assertType<T extends O>(): O extends T ? UpdateQueryBuilder<DB, UT, TB, T> : KyselyTypeError<`$assertType() call failed: The type passed in is not equal to the output type of the query.`>;
+    /**
+     * Returns a copy of this UpdateQueryBuilder instance with the given plugin installed.
+     */
+    withPlugin(plugin: KyselyPlugin): UpdateQueryBuilder<DB, UT, TB, O>;
+    toOperationNode(): UpdateQueryNode;
+    compile(): CompiledQuery<SimplifyResult<O>>;
+    /**
+     * Executes the query and returns an array of rows.
+     *
+     * Also see the {@link executeTakeFirst} and {@link executeTakeFirstOrThrow} methods.
+     */
+    execute(): Promise<SimplifyResult<O>[]>;
+    /**
+     * Executes the query and returns the first result or undefined if
+     * the query returned no result.
+     */
+    executeTakeFirst(): Promise<SimplifySingleResult<O>>;
+    /**
+     * Executes the query and returns the first result or throws if
+     * the query returned no result.
+     *
+     * By default an instance of {@link NoResultError} is thrown, but you can
+     * provide a custom error class, or callback as the only argument to throw a different
+     * error.
+     */
+    executeTakeFirstOrThrow(errorConstructor?: NoResultErrorConstructor | ((node: QueryNode) => Error)): Promise<SimplifyResult<O>>;
+    /**
+     * Executes the query and streams the rows.
+     *
+     * The optional argument `chunkSize` defines how many rows to fetch from the database
+     * at a time. It only affects some dialects like PostgreSQL that support it.
+     *
+     * ### Examples
+     *
+     * ```ts
+     * const stream = db
+     *   .selectFrom('person')
+     *   .select(['first_name', 'last_name'])
+     *   .where('gender', '=', 'other')
+     *   .stream()
+     *
+     * for await (const person of stream) {
+     *   console.log(person.first_name)
+     *
+     *   if (person.last_name === 'Something') {
+     *     // Breaking or returning before the stream has ended will release
+     *     // the database connection and invalidate the stream.
+     *     break
+     *   }
+     * }
+     * ```
+     */
+    stream(chunkSize?: number): AsyncIterableIterator<O>;
+    /**
+     * Executes query with `explain` statement before the main query.
+     *
+     * ```ts
+     * const explained = await db
+     *  .selectFrom('person')
+     *  .where('gender', '=', 'female')
+     *  .selectAll()
+     *  .explain('json')
+     * ```
+     *
+     * The generated SQL (MySQL):
+     *
+     * ```sql
+     * explain format=json select * from `person` where `gender` = ?
+     * ```
+     *
+     * You can also execute `explain analyze` statements.
+     *
+     * ```ts
+     * import { sql } from 'kysely'
+     *
+     * const explained = await db
+     *  .selectFrom('person')
+     *  .where('gender', '=', 'female')
+     *  .selectAll()
+     *  .explain('json', sql`analyze`)
+     * ```
+     *
+     * The generated SQL (PostgreSQL):
+     *
+     * ```sql
+     * explain (analyze, format json) select * from "person" where "gender" = $1
+     * ```
+     */
+    explain<ER extends Record<string, any> = Record<string, any>>(format?: ExplainFormat, options?: Expression<any>): Promise<ER[]>;
+}
+interface UpdateQueryBuilderProps {
+    readonly queryId: QueryId;
+    readonly queryNode: UpdateQueryNode;
+    readonly executor: QueryExecutor;
+}
+type UpdateQueryBuilderWithInnerJoin<DB, UT extends keyof DB, TB extends keyof DB, O, TE extends TableExpression<DB, TB>> = TE extends `${infer T} as ${infer A}` ? T extends keyof DB ? InnerJoinedBuilder$1<DB, UT, TB, O, A, DB[T]> : never : TE extends keyof DB ? UpdateQueryBuilder<DB, UT, TB | TE, O> : TE extends AliasedExpression<infer QO, infer QA> ? InnerJoinedBuilder$1<DB, UT, TB, O, QA, QO> : TE extends (qb: any) => AliasedExpression<infer QO, infer QA> ? InnerJoinedBuilder$1<DB, UT, TB, O, QA, QO> : never;
+type InnerJoinedBuilder$1<DB, UT extends keyof DB, TB extends keyof DB, O, A extends string, R> = A extends keyof DB ? UpdateQueryBuilder<InnerJoinedDB$1<DB, A, R>, UT, TB | A, O> : UpdateQueryBuilder<DB & ShallowRecord<A, R>, UT, TB | A, O>;
+type InnerJoinedDB$1<DB, A extends string, R> = DrainOuterGeneric<{
+    [C in keyof DB | A]: C extends A ? R : C extends keyof DB ? DB[C] : never;
+}>;
+type UpdateQueryBuilderWithLeftJoin<DB, UT extends keyof DB, TB extends keyof DB, O, TE extends TableExpression<DB, TB>> = TE extends `${infer T} as ${infer A}` ? T extends keyof DB ? LeftJoinedBuilder$1<DB, UT, TB, O, A, DB[T]> : never : TE extends keyof DB ? LeftJoinedBuilder$1<DB, UT, TB, O, TE, DB[TE]> : TE extends AliasedExpression<infer QO, infer QA> ? LeftJoinedBuilder$1<DB, UT, TB, O, QA, QO> : TE extends (qb: any) => AliasedExpression<infer QO, infer QA> ? LeftJoinedBuilder$1<DB, UT, TB, O, QA, QO> : never;
+type LeftJoinedBuilder$1<DB, UT extends keyof DB, TB extends keyof DB, O, A extends keyof any, R> = A extends keyof DB ? UpdateQueryBuilder<LeftJoinedDB$1<DB, A, R>, UT, TB | A, O> : UpdateQueryBuilder<DB & ShallowRecord<A, Nullable<R>>, UT, TB | A, O>;
+type LeftJoinedDB$1<DB, A extends keyof any, R> = DrainOuterGeneric<{
+    [C in keyof DB | A]: C extends A ? Nullable<R> : C extends keyof DB ? DB[C] : never;
+}>;
+type UpdateQueryBuilderWithRightJoin<DB, UT extends keyof DB, TB extends keyof DB, O, TE extends TableExpression<DB, TB>> = TE extends `${infer T} as ${infer A}` ? T extends keyof DB ? RightJoinedBuilder$1<DB, UT, TB, O, A, DB[T]> : never : TE extends keyof DB ? RightJoinedBuilder$1<DB, UT, TB, O, TE, DB[TE]> : TE extends AliasedExpression<infer QO, infer QA> ? RightJoinedBuilder$1<DB, UT, TB, O, QA, QO> : TE extends (qb: any) => AliasedExpression<infer QO, infer QA> ? RightJoinedBuilder$1<DB, UT, TB, O, QA, QO> : never;
+type RightJoinedBuilder$1<DB, UT extends keyof DB, TB extends keyof DB, O, A extends keyof any, R> = UpdateQueryBuilder<RightJoinedDB$1<DB, TB, A, R>, UT, TB | A, O>;
+type RightJoinedDB$1<DB, TB extends keyof DB, A extends keyof any, R> = DrainOuterGeneric<{
+    [C in keyof DB | A]: C extends A ? R : C extends TB ? Nullable<DB[C]> : C extends keyof DB ? DB[C] : never;
+}>;
+type UpdateQueryBuilderWithFullJoin<DB, UT extends keyof DB, TB extends keyof DB, O, TE extends TableExpression<DB, TB>> = TE extends `${infer T} as ${infer A}` ? T extends keyof DB ? OuterJoinedBuilder$1<DB, UT, TB, O, A, DB[T]> : never : TE extends keyof DB ? OuterJoinedBuilder$1<DB, UT, TB, O, TE, DB[TE]> : TE extends AliasedExpression<infer QO, infer QA> ? OuterJoinedBuilder$1<DB, UT, TB, O, QA, QO> : TE extends (qb: any) => AliasedExpression<infer QO, infer QA> ? OuterJoinedBuilder$1<DB, UT, TB, O, QA, QO> : never;
+type OuterJoinedBuilder$1<DB, UT extends keyof DB, TB extends keyof DB, O, A extends keyof any, R> = UpdateQueryBuilder<OuterJoinedBuilderDB$1<DB, TB, A, R>, UT, TB | A, O>;
+type OuterJoinedBuilderDB$1<DB, TB extends keyof DB, A extends keyof any, R> = DrainOuterGeneric<{
+    [C in keyof DB | A]: C extends A ? Nullable<R> : C extends TB ? Nullable<DB[C]> : C extends keyof DB ? DB[C] : never;
+}>;
+
+declare class DeleteQueryBuilder<DB, TB extends keyof DB, O> implements WhereInterface<DB, TB>, MultiTableReturningInterface<DB, TB, O>, OutputInterface<DB, TB, O, 'deleted'>, OrderByInterface<DB, TB, {}>, OperationNodeSource, Compilable<O>, Explainable, Streamable<O> {
     #private;
     constructor(props: DeleteQueryBuilderProps);
     /**
@@ -13082,7 +15363,7 @@ declare class DeleteQueryBuilder<DB, TB extends keyof DB, O> implements WhereInt
      * Allows you to return data from modified rows.
      *
      * On supported databases like PostgreSQL, this method can be chained to
-     * `insert`, `update` and `delete` queries to return data.
+     * `insert`, `update`, `delete` and `merge` queries to return data.
      *
      * Note that on SQLite you need to give aliases for the expressions to avoid
      * [this bug](https://sqlite.org/forum/forumpost/033daf0b32) in SQLite.
@@ -13234,8 +15515,8 @@ declare class DeleteQueryBuilder<DB, TB extends keyof DB, O> implements WhereInt
      */
     returningAll<T extends TB>(tables: ReadonlyArray<T>): DeleteQueryBuilder<DB, TB, ReturningAllRow<DB, T, O>>;
     /**
-     * Adds a `returning *` to an insert/update/delete query on databases
-     * that support `returning` such as PostgreSQL.
+     * Adds a `returning *` or `returning table.*` to an insert/update/delete/merge
+     * query on databases that support `returning` such as PostgreSQL.
      *
      * Also see the {@link returning} method.
      */
@@ -13407,61 +15688,49 @@ declare class DeleteQueryBuilder<DB, TB extends keyof DB, O> implements WhereInt
      */
     clearLimit(): DeleteQueryBuilder<DB, TB, O>;
     /**
+     * @description This is only supported by some dialects like MySQL or SQLite with `SQLITE_ENABLE_UPDATE_DELETE_LIMIT`.
+     */
+    orderBy<OE extends OrderByExpression<DB, TB, {}>>(expr: OE, modifiers?: OrderByModifiers): DeleteQueryBuilder<DB, TB, O>;
+    /**
+     * @description This is only supported by some dialects like MySQL or SQLite with `SQLITE_ENABLE_UPDATE_DELETE_LIMIT`.
+     * @deprecated It does ~2-2.6x more compile-time instantiations compared to multiple chained `orderBy(expr, modifiers?)` calls (in `order by` clauses with reasonable item counts), and has broken autocompletion.
+     */
+    orderBy<OE extends OrderByExpression<DB, TB, {}> | DirectedOrderByStringReference<DB, TB, {}>>(exprs: ReadonlyArray<OE>): DeleteQueryBuilder<DB, TB, O>;
+    /**
+     * @description This is only supported by some dialects like MySQL or SQLite with `SQLITE_ENABLE_UPDATE_DELETE_LIMIT`.
+     * @deprecated It does ~2.9x more compile-time instantiations compared to a `orderBy(expr, direction)` call.
+     */
+    orderBy<OE extends DirectedOrderByStringReference<DB, TB, {}>>(expr: OE): DeleteQueryBuilder<DB, TB, O>;
+    /**
+     * @description This is only supported by some dialects like MySQL or SQLite with `SQLITE_ENABLE_UPDATE_DELETE_LIMIT`.
+     * @deprecated Use `orderBy(expr, (ob) => ...)` instead.
+     */
+    orderBy<OE extends OrderByExpression<DB, TB, {}>>(expr: OE, modifiers: Expression<any>): DeleteQueryBuilder<DB, TB, O>;
+    /**
      * Clears the `order by` clause from the query.
+     *
+     * See {@link orderBy} for adding an `order by` clause or item to a query.
      *
      * ### Examples
      *
      * ```ts
-     * await db.deleteFrom('pet')
-     *   .returningAll()
-     *   .where('name', '=', 'Max')
-     *   .orderBy('id')
+     * const query = db
+     *   .selectFrom('person')
+     *   .selectAll()
+     *   .orderBy('id', 'desc')
+     *
+     * const results = await query
      *   .clearOrderBy()
      *   .execute()
      * ```
      *
-     * The generated SQL(PostgreSQL):
+     * The generated SQL (PostgreSQL):
      *
      * ```sql
-     * delete from "pet" where "name" = "Max" returning *
+     * select * from "person"
      * ```
      */
     clearOrderBy(): DeleteQueryBuilder<DB, TB, O>;
-    /**
-     * Adds an `order by` clause to the query.
-     *
-     * `orderBy` calls are additive. To order by multiple columns, call `orderBy`
-     * multiple times.
-     *
-     * The first argument is the expression to order by and the second is the
-     * order (`asc` or `desc`).
-     *
-     * An `order by` clause in a delete query is only supported by some dialects
-     * like MySQL.
-     *
-     * See {@link SelectQueryBuilder.orderBy} for more examples.
-     *
-     * ### Examples
-     *
-     * Delete 5 oldest items in a table:
-     *
-     * ```ts
-     * await db
-     *   .deleteFrom('pet')
-     *   .orderBy('created_at')
-     *   .limit(5)
-     *   .execute()
-     * ```
-     *
-     * The generated SQL (MySQL):
-     *
-     * ```sql
-     * delete from `pet`
-     * order by `created_at`
-     * limit ?
-     * ```
-     */
-    orderBy(orderBy: OrderByExpression<DB, TB, O>, direction?: OrderByDirectionExpression): DeleteQueryBuilder<DB, TB, O>;
     /**
      * Adds a limit clause to the query.
      *
@@ -13768,1309 +16037,23 @@ interface DeleteQueryBuilderProps {
     readonly queryNode: DeleteQueryNode;
     readonly executor: QueryExecutor;
 }
-type DeleteQueryBuilderWithInnerJoin<DB, TB extends keyof DB, O, TE extends TableExpression<DB, TB>> = TE extends `${infer T} as ${infer A}` ? T extends keyof DB ? InnerJoinedBuilder$1<DB, TB, O, A, DB[T]> : never : TE extends keyof DB ? DeleteQueryBuilder<DB, TB | TE, O> : TE extends AliasedExpression<infer QO, infer QA> ? InnerJoinedBuilder$1<DB, TB, O, QA, QO> : TE extends (qb: any) => AliasedExpression<infer QO, infer QA> ? InnerJoinedBuilder$1<DB, TB, O, QA, QO> : never;
-type InnerJoinedBuilder$1<DB, TB extends keyof DB, O, A extends string, R> = A extends keyof DB ? DeleteQueryBuilder<InnerJoinedDB$1<DB, A, R>, TB | A, O> : DeleteQueryBuilder<DB & ShallowRecord<A, R>, TB | A, O>;
-type InnerJoinedDB$1<DB, A extends string, R> = DrainOuterGeneric<{
-    [C in keyof DB | A]: C extends A ? R : C extends keyof DB ? DB[C] : never;
-}>;
-type DeleteQueryBuilderWithLeftJoin<DB, TB extends keyof DB, O, TE extends TableExpression<DB, TB>> = TE extends `${infer T} as ${infer A}` ? T extends keyof DB ? LeftJoinedBuilder$1<DB, TB, O, A, DB[T]> : never : TE extends keyof DB ? LeftJoinedBuilder$1<DB, TB, O, TE, DB[TE]> : TE extends AliasedExpression<infer QO, infer QA> ? LeftJoinedBuilder$1<DB, TB, O, QA, QO> : TE extends (qb: any) => AliasedExpression<infer QO, infer QA> ? LeftJoinedBuilder$1<DB, TB, O, QA, QO> : never;
-type LeftJoinedBuilder$1<DB, TB extends keyof DB, O, A extends keyof any, R> = A extends keyof DB ? DeleteQueryBuilder<LeftJoinedDB$1<DB, A, R>, TB | A, O> : DeleteQueryBuilder<DB & ShallowRecord<A, Nullable<R>>, TB | A, O>;
-type LeftJoinedDB$1<DB, A extends keyof any, R> = DrainOuterGeneric<{
-    [C in keyof DB | A]: C extends A ? Nullable<R> : C extends keyof DB ? DB[C] : never;
-}>;
-type DeleteQueryBuilderWithRightJoin<DB, TB extends keyof DB, O, TE extends TableExpression<DB, TB>> = TE extends `${infer T} as ${infer A}` ? T extends keyof DB ? RightJoinedBuilder$1<DB, TB, O, A, DB[T]> : never : TE extends keyof DB ? RightJoinedBuilder$1<DB, TB, O, TE, DB[TE]> : TE extends AliasedExpression<infer QO, infer QA> ? RightJoinedBuilder$1<DB, TB, O, QA, QO> : TE extends (qb: any) => AliasedExpression<infer QO, infer QA> ? RightJoinedBuilder$1<DB, TB, O, QA, QO> : never;
-type RightJoinedBuilder$1<DB, TB extends keyof DB, O, A extends keyof any, R> = DeleteQueryBuilder<RightJoinedDB$1<DB, TB, A, R>, TB | A, O>;
-type RightJoinedDB$1<DB, TB extends keyof DB, A extends keyof any, R> = DrainOuterGeneric<{
-    [C in keyof DB | A]: C extends A ? R : C extends TB ? Nullable<DB[C]> : C extends keyof DB ? DB[C] : never;
-}>;
-type DeleteQueryBuilderWithFullJoin<DB, TB extends keyof DB, O, TE extends TableExpression<DB, TB>> = TE extends `${infer T} as ${infer A}` ? T extends keyof DB ? OuterJoinedBuilder$1<DB, TB, O, A, DB[T]> : never : TE extends keyof DB ? OuterJoinedBuilder$1<DB, TB, O, TE, DB[TE]> : TE extends AliasedExpression<infer QO, infer QA> ? OuterJoinedBuilder$1<DB, TB, O, QA, QO> : TE extends (qb: any) => AliasedExpression<infer QO, infer QA> ? OuterJoinedBuilder$1<DB, TB, O, QA, QO> : never;
-type OuterJoinedBuilder$1<DB, TB extends keyof DB, O, A extends keyof any, R> = DeleteQueryBuilder<OuterJoinedBuilderDB$1<DB, TB, A, R>, TB | A, O>;
-type OuterJoinedBuilderDB$1<DB, TB extends keyof DB, A extends keyof any, R> = DrainOuterGeneric<{
-    [C in keyof DB | A]: C extends A ? Nullable<R> : C extends TB ? Nullable<DB[C]> : C extends keyof DB ? DB[C] : never;
-}>;
-
-declare class UpdateQueryBuilder<DB, UT extends keyof DB, TB extends keyof DB, O> implements WhereInterface<DB, TB>, ReturningInterface<DB, TB, O>, OutputInterface<DB, TB, O>, OperationNodeSource, Compilable<O>, Explainable, Streamable<O> {
-    #private;
-    constructor(props: UpdateQueryBuilderProps);
-    /**
-     * Adds a `where` expression to the query.
-     *
-     * Calling this method multiple times will combine the expressions using `and`.
-     *
-     * Also see {@link whereRef}
-     *
-     * ### Examples
-     *
-     * <!-- siteExample("where", "Simple where clause", 10) -->
-     *
-     * `where` method calls are combined with `AND`:
-     *
-     * ```ts
-     * const person = await db
-     *   .selectFrom('person')
-     *   .selectAll()
-     *   .where('first_name', '=', 'Jennifer')
-     *   .where('age', '>', 40)
-     *   .executeTakeFirst()
-     * ```
-     *
-     * The generated SQL (PostgreSQL):
-     *
-     * ```sql
-     * select * from "person" where "first_name" = $1 and "age" > $2
-     * ```
-     *
-     * Operator can be any supported operator or if the typings don't support it
-     * you can always use:
-     *
-     * ```ts
-     * import { sql } from 'kysely'
-     *
-     * sql`your operator`
-     * ```
-     *
-     * <!-- siteExample("where", "Where in", 20) -->
-     *
-     * Find multiple items using a list of identifiers:
-     *
-     * ```ts
-     * const persons = await db
-     *   .selectFrom('person')
-     *   .selectAll()
-     *   .where('id', 'in', [1, 2, 3])
-     *   .execute()
-     * ```
-     *
-     * The generated SQL (PostgreSQL):
-     *
-     * ```sql
-     * select * from "person" where "id" in ($1, $2, $3)
-     * ```
-     *
-     * <!-- siteExample("where", "Object filter", 30) -->
-     *
-     * You can use the `and` function to create a simple equality
-     * filter using an object
-     *
-     * ```ts
-     * const persons = await db
-     *   .selectFrom('person')
-     *   .selectAll()
-     *   .where((eb) => eb.and({
-     *     first_name: 'Jennifer',
-     *     last_name: eb.ref('first_name')
-     *   }))
-     *   .execute()
-     * ```
-     *
-     * The generated SQL (PostgreSQL):
-     *
-     * ```sql
-     * select *
-     * from "person"
-     * where (
-     *   "first_name" = $1
-     *   and "last_name" = "first_name"
-     * )
-     * ```
-     *
-     * <!-- siteExample("where", "OR where", 40) -->
-     *
-     * To combine conditions using `OR`, you can use the expression builder.
-     * There are two ways to create `OR` expressions. Both are shown in this
-     * example:
-     *
-     * ```ts
-     * const persons = await db
-     *   .selectFrom('person')
-     *   .selectAll()
-     *   // 1. Using the `or` method on the expression builder:
-     *   .where((eb) => eb.or([
-     *     eb('first_name', '=', 'Jennifer'),
-     *     eb('first_name', '=', 'Sylvester')
-     *   ]))
-     *   // 2. Chaining expressions using the `or` method on the
-     *   // created expressions:
-     *   .where((eb) =>
-     *     eb('last_name', '=', 'Aniston').or('last_name', '=', 'Stallone')
-     *   )
-     *   .execute()
-     * ```
-     *
-     * The generated SQL (PostgreSQL):
-     *
-     * ```sql
-     * select *
-     * from "person"
-     * where (
-     *   ("first_name" = $1 or "first_name" = $2)
-     *   and
-     *   ("last_name" = $3 or "last_name" = $4)
-     * )
-     * ```
-     *
-     * <!-- siteExample("where", "Conditional where calls", 50) -->
-     *
-     * You can add expressions conditionally like this:
-     *
-     * ```ts
-     * import { Expression, SqlBool } from 'kysely'
-     *
-     * const firstName: string | undefined = 'Jennifer'
-     * const lastName: string | undefined = 'Aniston'
-     * const under18 = true
-     * const over60 = true
-     *
-     * let query = db
-     *   .selectFrom('person')
-     *   .selectAll()
-     *
-     * if (firstName) {
-     *   // The query builder is immutable. Remember to reassign
-     *   // the result back to the query variable.
-     *   query = query.where('first_name', '=', firstName)
-     * }
-     *
-     * if (lastName) {
-     *   query = query.where('last_name', '=', lastName)
-     * }
-     *
-     * if (under18 || over60) {
-     *   // Conditional OR expressions can be added like this.
-     *   query = query.where((eb) => {
-     *     const ors: Expression<SqlBool>[] = []
-     *
-     *     if (under18) {
-     *       ors.push(eb('age', '<', 18))
-     *     }
-     *
-     *     if (over60) {
-     *       ors.push(eb('age', '>', 60))
-     *     }
-     *
-     *     return eb.or(ors)
-     *   })
-     * }
-     *
-     * const persons = await query.execute()
-     * ```
-     *
-     * Both the first and third argument can also be arbitrary expressions like
-     * subqueries. An expression can defined by passing a function and calling
-     * the methods of the {@link ExpressionBuilder} passed to the callback:
-     *
-     * ```ts
-     * const persons = await db
-     *   .selectFrom('person')
-     *   .selectAll()
-     *   .where(
-     *     (qb) => qb.selectFrom('pet')
-     *       .select('pet.name')
-     *       .whereRef('pet.owner_id', '=', 'person.id')
-     *       .limit(1),
-     *     '=',
-     *     'Fluffy'
-     *   )
-     *   .execute()
-     * ```
-     *
-     * The generated SQL (PostgreSQL):
-     *
-     * ```sql
-     * select *
-     * from "person"
-     * where (
-     *   select "pet"."name"
-     *   from "pet"
-     *   where "pet"."owner_id" = "person"."id"
-     *   limit $1
-     * ) = $2
-     * ```
-     *
-     * A `where in` query can be built by using the `in` operator and an array
-     * of values. The values in the array can also be expressions:
-     *
-     * ```ts
-     * const persons = await db
-     *   .selectFrom('person')
-     *   .selectAll()
-     *   .where('person.id', 'in', [100, 200, 300])
-     *   .execute()
-     * ```
-     *
-     * The generated SQL (PostgreSQL):
-     *
-     * ```sql
-     * select * from "person" where "id" in ($1, $2, $3)
-     * ```
-     *
-     * <!-- siteExample("where", "Complex where clause", 60) -->
-     *
-     * For complex `where` expressions you can pass in a single callback and
-     * use the `ExpressionBuilder` to build your expression:
-     *
-     * ```ts
-     * const firstName = 'Jennifer'
-     * const maxAge = 60
-     *
-     * const persons = await db
-     *   .selectFrom('person')
-     *   .selectAll('person')
-     *   .where(({ eb, or, and, not, exists, selectFrom }) => and([
-     *     or([
-     *       eb('first_name', '=', firstName),
-     *       eb('age', '<', maxAge)
-     *     ]),
-     *     not(exists(
-     *       selectFrom('pet')
-     *         .select('pet.id')
-     *         .whereRef('pet.owner_id', '=', 'person.id')
-     *     ))
-     *   ]))
-     *   .execute()
-     * ```
-     *
-     * The generated SQL (PostgreSQL):
-     *
-     * ```sql
-     * select "person".*
-     * from "person"
-     * where (
-     *   (
-     *     "first_name" = $1
-     *     or "age" < $2
-     *   )
-     *   and not exists (
-     *     select "pet"."id" from "pet" where "pet"."owner_id" = "person"."id"
-     *   )
-     * )
-     * ```
-     *
-     * If everything else fails, you can always use the {@link sql} tag
-     * as any of the arguments, including the operator:
-     *
-     * ```ts
-     * import { sql } from 'kysely'
-     *
-     * const persons = await db
-     *   .selectFrom('person')
-     *   .selectAll()
-     *   .where(
-     *     sql<string>`coalesce(first_name, last_name)`,
-     *     'like',
-     *     '%' + name + '%',
-     *   )
-     *   .execute()
-     * ```
-     *
-     * The generated SQL (PostgreSQL):
-     *
-     * ```sql
-     * select * from "person"
-     * where coalesce(first_name, last_name) like $1
-     * ```
-     *
-     * In all examples above the columns were known at compile time
-     * (except for the raw {@link sql} expressions). By default kysely only
-     * allows you to refer to columns that exist in the database **and**
-     * can be referred to in the current query and context.
-     *
-     * Sometimes you may want to refer to columns that come from the user
-     * input and thus are not available at compile time.
-     *
-     * You have two options, the {@link sql} tag or `db.dynamic`. The example below
-     * uses both:
-     *
-     * ```ts
-     * import { sql } from 'kysely'
-     * const { ref } = db.dynamic
-     *
-     * const columnFromUserInput: string = 'id'
-     *
-     * const persons = await db
-     *   .selectFrom('person')
-     *   .selectAll()
-     *   .where(ref(columnFromUserInput), '=', 1)
-     *   .where(sql.id(columnFromUserInput), '=', 2)
-     *   .execute()
-     * ```
-     */
-    where<RE extends ReferenceExpression<DB, TB>, VE extends OperandValueExpressionOrList<DB, TB, RE>>(lhs: RE, op: ComparisonOperatorExpression, rhs: VE): UpdateQueryBuilder<DB, UT, TB, O>;
-    where<E extends ExpressionOrFactory<DB, TB, SqlBool>>(expression: E): UpdateQueryBuilder<DB, UT, TB, O>;
-    /**
-     * Adds a `where` clause where both sides of the operator are references
-     * to columns.
-     *
-     * The normal `where` method treats the right hand side argument as a
-     * value by default. `whereRef` treats it as a column reference. This method is
-     * expecially useful with joins and correlated subqueries.
-     *
-     * ### Examples
-     *
-     * Usage with a join:
-     *
-     * ```ts
-     * db.selectFrom(['person', 'pet'])
-     *   .selectAll()
-     *   .whereRef('person.first_name', '=', 'pet.name')
-     * ```
-     *
-     * The generated SQL (PostgreSQL):
-     *
-     * ```sql
-     * select * from "person", "pet" where "person"."first_name" = "pet"."name"
-     * ```
-     *
-     * Usage in a subquery:
-     *
-     * ```ts
-     * const persons = await db
-     *   .selectFrom('person')
-     *   .selectAll('person')
-     *   .select((eb) => eb
-     *     .selectFrom('pet')
-     *     .select('name')
-     *     .whereRef('pet.owner_id', '=', 'person.id')
-     *     .limit(1)
-     *     .as('pet_name')
-     *   )
-     *   .execute()
-     * ```
-     *
-     * The generated SQL (PostgreSQL):
-     *
-     * ```sql
-     * select "person".*, (
-     *   select "name"
-     *   from "pet"
-     *   where "pet"."owner_id" = "person"."id"
-     *   limit $1
-     * ) as "pet_name"
-     * from "person"
-     */
-    whereRef<LRE extends ReferenceExpression<DB, TB>, RRE extends ReferenceExpression<DB, TB>>(lhs: LRE, op: ComparisonOperatorExpression, rhs: RRE): UpdateQueryBuilder<DB, UT, TB, O>;
-    /**
-     * Clears all where expressions from the query.
-     *
-     * ### Examples
-     *
-     * ```ts
-     * db.selectFrom('person')
-     *   .selectAll()
-     *   .where('id','=',42)
-     *   .clearWhere()
-     * ```
-     *
-     * The generated SQL(PostgreSQL):
-     *
-     * ```sql
-     * select * from "person"
-     * ```
-     */
-    clearWhere(): UpdateQueryBuilder<DB, UT, TB, O>;
-    /**
-     * Changes an `update` query into a `update top` query.
-     *
-     * `top` clause is only supported by some dialects like MS SQL Server.
-     *
-     * ### Examples
-     *
-     * Update the first row:
-     *
-     * ```ts
-     * await db.updateTable('person')
-     *   .top(1)
-     *   .set({ first_name: 'Foo' })
-     *   .where('age', '>', 18)
-     *   .executeTakeFirstOrThrow()
-     * ```
-     *
-     * The generated SQL (MS SQL Server):
-     *
-     * ```sql
-     * update top(1) "person" set "first_name" = @1 where "age" > @2
-     * ```
-     *
-     * Update the 50% first rows:
-     *
-     * ```ts
-     * await db.updateTable('person')
-     *   .top(50, 'percent')
-     *   .set({ first_name: 'Foo' })
-     *   .where('age', '>', 18)
-     *   .executeTakeFirstOrThrow()
-     * ```
-     *
-     * The generated SQL (MS SQL Server):
-     *
-     * ```sql
-     * update top(50) percent "person" set "first_name" = @1 where "age" > @2
-     * ```
-     */
-    top(expression: number | bigint, modifiers?: 'percent'): UpdateQueryBuilder<DB, UT, TB, O>;
-    /**
-     * Adds a from clause to the update query.
-     *
-     * This is supported only on some databases like PostgreSQL.
-     *
-     * The API is the same as {@link QueryCreator.selectFrom}.
-     *
-     * ### Examples
-     *
-     * ```ts
-     * db.updateTable('person')
-     *   .from('pet')
-     *   .set((eb) => ({
-     *     first_name: eb.ref('pet.name')
-     *   }))
-     *   .whereRef('pet.owner_id', '=', 'person.id')
-     * ```
-     *
-     * The generated SQL (PostgreSQL):
-     *
-     * ```sql
-     * update "person"
-     * set "first_name" = "pet"."name"
-     * from "pet"
-     * where "pet"."owner_id" = "person"."id"
-     * ```
-     */
-    from<TE extends TableExpression<DB, TB>>(table: TE): UpdateQueryBuilder<From<DB, TE>, UT, FromTables<DB, TB, TE>, O>;
-    from<TE extends TableExpression<DB, TB>>(table: TE[]): UpdateQueryBuilder<From<DB, TE>, UT, FromTables<DB, TB, TE>, O>;
-    /**
-     * Joins another table to the query using an inner join.
-     *
-     * ### Examples
-     *
-     * Simple usage by providing a table name and two columns to join:
-     *
-     * ```ts
-     * const result = await db
-     *   .selectFrom('person')
-     *   .innerJoin('pet', 'pet.owner_id', 'person.id')
-     *   // `select` needs to come after the call to `innerJoin` so
-     *   // that you can select from the joined table.
-     *   .select(['person.id', 'pet.name'])
-     *   .execute()
-     *
-     * result[0].id
-     * result[0].name
-     * ```
-     *
-     * The generated SQL (PostgreSQL):
-     *
-     * ```sql
-     * select "person"."id", "pet"."name"
-     * from "person"
-     * inner join "pet"
-     * on "pet"."owner_id" = "person"."id"
-     * ```
-     *
-     * You can give an alias for the joined table like this:
-     *
-     * ```ts
-     * await db.selectFrom('person')
-     *   .innerJoin('pet as p', 'p.owner_id', 'person.id')
-     *   .where('p.name', '=', 'Doggo')
-     *   .selectAll()
-     *   .execute()
-     * ```
-     *
-     * The generated SQL (PostgreSQL):
-     *
-     * ```sql
-     * select *
-     * from "person"
-     * inner join "pet" as "p"
-     * on "p"."owner_id" = "person"."id"
-     * where "p".name" = $1
-     * ```
-     *
-     * You can provide a function as the second argument to get a join
-     * builder for creating more complex joins. The join builder has a
-     * bunch of `on*` methods for building the `on` clause of the join.
-     * There's basically an equivalent for every `where` method
-     * (`on`, `onRef`, `onExists` etc.). You can do all the same things
-     * with the `on` method that you can with the corresponding `where`
-     * method. See the `where` method documentation for more examples.
-     *
-     * ```ts
-     * await db.selectFrom('person')
-     *   .innerJoin(
-     *     'pet',
-     *     (join) => join
-     *       .onRef('pet.owner_id', '=', 'person.id')
-     *       .on('pet.name', '=', 'Doggo')
-     *   )
-     *   .selectAll()
-     *   .execute()
-     * ```
-     *
-     * The generated SQL (PostgreSQL):
-     *
-     * ```sql
-     * select *
-     * from "person"
-     * inner join "pet"
-     * on "pet"."owner_id" = "person"."id"
-     * and "pet"."name" = $1
-     * ```
-     *
-     * You can join a subquery by providing a select query (or a callback)
-     * as the first argument:
-     *
-     * ```ts
-     * await db.selectFrom('person')
-     *   .innerJoin(
-     *     db.selectFrom('pet')
-     *       .select(['owner_id', 'name'])
-     *       .where('name', '=', 'Doggo')
-     *       .as('doggos'),
-     *     'doggos.owner_id',
-     *     'person.id',
-     *   )
-     *   .selectAll()
-     *   .execute()
-     * ```
-     *
-     * The generated SQL (PostgreSQL):
-     *
-     * ```sql
-     * select *
-     * from "person"
-     * inner join (
-     *   select "owner_id", "name"
-     *   from "pet"
-     *   where "name" = $1
-     * ) as "doggos"
-     * on "doggos"."owner_id" = "person"."id"
-     * ```
-     */
-    innerJoin<TE extends TableExpression<DB, TB>, K1 extends JoinReferenceExpression<DB, TB, TE>, K2 extends JoinReferenceExpression<DB, TB, TE>>(table: TE, k1: K1, k2: K2): UpdateQueryBuilderWithInnerJoin<DB, UT, TB, O, TE>;
-    innerJoin<TE extends TableExpression<DB, TB>, FN extends JoinCallbackExpression<DB, TB, TE>>(table: TE, callback: FN): UpdateQueryBuilderWithInnerJoin<DB, UT, TB, O, TE>;
-    /**
-     * Just like {@link innerJoin} but adds a left join instead of an inner join.
-     */
-    leftJoin<TE extends TableExpression<DB, TB>, K1 extends JoinReferenceExpression<DB, TB, TE>, K2 extends JoinReferenceExpression<DB, TB, TE>>(table: TE, k1: K1, k2: K2): UpdateQueryBuilderWithLeftJoin<DB, UT, TB, O, TE>;
-    leftJoin<TE extends TableExpression<DB, TB>, FN extends JoinCallbackExpression<DB, TB, TE>>(table: TE, callback: FN): UpdateQueryBuilderWithLeftJoin<DB, UT, TB, O, TE>;
-    /**
-     * Just like {@link innerJoin} but adds a right join instead of an inner join.
-     */
-    rightJoin<TE extends TableExpression<DB, TB>, K1 extends JoinReferenceExpression<DB, TB, TE>, K2 extends JoinReferenceExpression<DB, TB, TE>>(table: TE, k1: K1, k2: K2): UpdateQueryBuilderWithRightJoin<DB, UT, TB, O, TE>;
-    rightJoin<TE extends TableExpression<DB, TB>, FN extends JoinCallbackExpression<DB, TB, TE>>(table: TE, callback: FN): UpdateQueryBuilderWithRightJoin<DB, UT, TB, O, TE>;
-    /**
-     * Just like {@link innerJoin} but adds a full join instead of an inner join.
-     */
-    fullJoin<TE extends TableExpression<DB, TB>, K1 extends JoinReferenceExpression<DB, TB, TE>, K2 extends JoinReferenceExpression<DB, TB, TE>>(table: TE, k1: K1, k2: K2): UpdateQueryBuilderWithFullJoin<DB, UT, TB, O, TE>;
-    fullJoin<TE extends TableExpression<DB, TB>, FN extends JoinCallbackExpression<DB, TB, TE>>(table: TE, callback: FN): UpdateQueryBuilderWithFullJoin<DB, UT, TB, O, TE>;
-    /**
-     * Adds a limit clause to the update query for supported databases, such as MySQL.
-     *
-     * ### Examples
-     *
-     * Update the first 2 rows in the 'person' table:
-     *
-     * ```ts
-     * await db
-     *   .updateTable('person')
-     *   .set({ first_name: 'Foo' })
-     *   .limit(2)
-     *   .execute()
-     * ```
-     *
-     * The generated SQL (MySQL):
-     *
-     * ```sql
-     * update `person` set `first_name` = ? limit ?
-     * ```
-     */
-    limit(limit: ValueExpression<DB, TB, number>): UpdateQueryBuilder<DB, UT, TB, O>;
-    /**
-     * Sets the values to update for an {@link Kysely.updateTable | update} query.
-     *
-     * This method takes an object whose keys are column names and values are
-     * values to update. In addition to the column's type, the values can be
-     * any expressions such as raw {@link sql} snippets or select queries.
-     *
-     * This method also accepts a callback that returns the update object. The
-     * callback takes an instance of {@link ExpressionBuilder} as its only argument.
-     * The expression builder can be used to create arbitrary update expressions.
-     *
-     * The return value of an update query is an instance of {@link UpdateResult}.
-     * You can use the {@link returning} method on supported databases to get out
-     * the updated rows.
-     *
-     * ### Examples
-     *
-     * <!-- siteExample("update", "Single row", 10) -->
-     *
-     * Update a row in `person` table:
-     *
-     * ```ts
-     * const result = await db
-     *   .updateTable('person')
-     *   .set({
-     *     first_name: 'Jennifer',
-     *     last_name: 'Aniston'
-     *   })
-     *   .where('id', '=', 1)
-     *   .executeTakeFirst()
-     *
-     * console.log(result.numUpdatedRows)
-     * ```
-     *
-     * The generated SQL (PostgreSQL):
-     *
-     * ```sql
-     * update "person" set "first_name" = $1, "last_name" = $2 where "id" = $3
-     * ```
-     *
-     * <!-- siteExample("update", "Complex values", 20) -->
-     *
-     * As always, you can provide a callback to the `set` method to get access
-     * to an expression builder:
-     *
-     * ```ts
-     * const result = await db
-     *   .updateTable('person')
-     *   .set((eb) => ({
-     *     age: eb('age', '+', 1),
-     *     first_name: eb.selectFrom('pet').select('name').limit(1),
-     *     last_name: 'updated',
-     *   }))
-     *   .where('id', '=', 1)
-     *   .executeTakeFirst()
-     *
-     * console.log(result.numUpdatedRows)
-     * ```
-     *
-     * The generated SQL (PostgreSQL):
-     *
-     * ```sql
-     * update "person"
-     * set
-     *   "first_name" = (select "name" from "pet" limit $1),
-     *   "age" = "age" + $2,
-     *   "last_name" = $3
-     * where
-     *   "id" = $4
-     * ```
-     *
-     * If you provide two arguments the first one is interpreted as the column
-     * (or other target) and the second as the value:
-     *
-     * ```ts
-     * import { sql } from 'kysely'
-     *
-     * const result = await db
-     *   .updateTable('person')
-     *   .set('first_name', 'Foo')
-     *   // As always, both arguments can be arbitrary expressions or
-     *   // callbacks that give you access to an expression builder:
-     *   .set(sql<string>`address['postalCode']`, (eb) => eb.val('61710'))
-     *   .where('id', '=', 1)
-     *   .executeTakeFirst()
-     * ```
-     *
-     * On PostgreSQL you can chain `returning` to the query to get
-     * the updated rows' columns (or any other expression) as the
-     * return value:
-     *
-     * ```ts
-     * const row = await db
-     *   .updateTable('person')
-     *   .set({
-     *     first_name: 'Jennifer',
-     *     last_name: 'Aniston'
-     *   })
-     *   .where('id', '=', 1)
-     *   .returning('id')
-     *   .executeTakeFirstOrThrow()
-     *
-     * row.id
-     * ```
-     *
-     * The generated SQL (PostgreSQL):
-     *
-     * ```sql
-     * update "person" set "first_name" = $1, "last_name" = $2 where "id" = $3 returning "id"
-     * ```
-     *
-     * In addition to primitives, the values can arbitrary expressions including
-     * raw `sql` snippets or subqueries:
-     *
-     * ```ts
-     * import { sql } from 'kysely'
-     *
-     * const result = await db
-     *   .updateTable('person')
-     *   .set(({ selectFrom, ref, fn, eb }) => ({
-     *     first_name: selectFrom('person').select('first_name').limit(1),
-     *     middle_name: ref('first_name'),
-     *     age: eb('age', '+', 1),
-     *     last_name: sql<string>`${'Ani'} || ${'ston'}`,
-     *   }))
-     *   .where('id', '=', 1)
-     *   .executeTakeFirst()
-     *
-     * console.log(result.numUpdatedRows)
-     * ```
-     *
-     * The generated SQL (PostgreSQL):
-     *
-     * ```sql
-     * update "person" set
-     * "first_name" = (select "first_name" from "person" limit $1),
-     * "middle_name" = "first_name",
-     * "age" = "age" + $2,
-     * "last_name" = $3 || $4
-     * where "id" = $5
-     * ```
-     */
-    set(update: UpdateObjectExpression<DB, TB, UT>): UpdateQueryBuilder<DB, UT, TB, O>;
-    set<RE extends ReferenceExpression<DB, UT>>(key: RE, value: ValueExpression<DB, TB, ExtractUpdateTypeFromReferenceExpression<DB, UT, RE>>): UpdateQueryBuilder<DB, UT, TB, O>;
-    /**
-     * Allows you to return data from modified rows.
-     *
-     * On supported databases like PostgreSQL, this method can be chained to
-     * `insert`, `update` and `delete` queries to return data.
-     *
-     * Note that on SQLite you need to give aliases for the expressions to avoid
-     * [this bug](https://sqlite.org/forum/forumpost/033daf0b32) in SQLite.
-     * For example `.returning('id as id')`.
-     *
-     * Also see the {@link returningAll} method.
-     *
-     * ### Examples
-     *
-     * Return one column:
-     *
-     * ```ts
-     * const { id } = await db
-     *   .insertInto('person')
-     *   .values({
-     *     first_name: 'Jennifer',
-     *     last_name: 'Aniston'
-     *   })
-     *   .returning('id')
-     *   .executeTakeFirstOrThrow()
-     * ```
-     *
-     * Return multiple columns:
-     *
-     * ```ts
-     * const { id, last_name } = await db
-     *   .insertInto('person')
-     *   .values({
-     *     first_name: 'Jennifer',
-     *     last_name: 'Aniston'
-     *   })
-     *   .returning(['id', 'last_name'])
-     *   .executeTakeFirstOrThrow()
-     * ```
-     *
-     * Return arbitrary expressions:
-     *
-     * ```ts
-     * import { sql } from 'kysely'
-     *
-     * const { id, full_name, first_pet_id } = await db
-     *   .insertInto('person')
-     *   .values({
-     *     first_name: 'Jennifer',
-     *     last_name: 'Aniston'
-     *   })
-     *   .returning((eb) => [
-     *     'id as id',
-     *     sql<string>`concat(first_name, ' ', last_name)`.as('full_name'),
-     *     eb.selectFrom('pet').select('pet.id').limit(1).as('first_pet_id')
-     *   ])
-     *   .executeTakeFirstOrThrow()
-     * ```
-     */
-    returning<SE extends SelectExpression<DB, TB>>(selections: ReadonlyArray<SE>): UpdateQueryBuilder<DB, UT, TB, ReturningRow<DB, TB, O, SE>>;
-    returning<CB extends SelectCallback<DB, TB>>(callback: CB): UpdateQueryBuilder<DB, UT, TB, ReturningCallbackRow<DB, TB, O, CB>>;
-    returning<SE extends SelectExpression<DB, TB>>(selection: SE): UpdateQueryBuilder<DB, UT, TB, ReturningRow<DB, TB, O, SE>>;
-    /**
-     * Adds a `returning *` to an insert/update/delete query on databases
-     * that support `returning` such as PostgreSQL.
-     *
-     * Also see the {@link returning} method.
-     */
-    returningAll<T extends TB>(tables: ReadonlyArray<T>): UpdateQueryBuilder<DB, UT, TB, ReturningAllRow<DB, T, O>>;
-    returningAll<T extends TB>(table: T): UpdateQueryBuilder<DB, UT, TB, ReturningAllRow<DB, T, O>>;
-    returningAll(): UpdateQueryBuilder<DB, UT, TB, ReturningAllRow<DB, TB, O>>;
-    /**
-     * Allows you to return data from modified rows.
-     *
-     * On supported databases like MS SQL Server (MSSQL), this method can be chained
-     * to `insert`, `update`, `delete` and `merge` queries to return data.
-     *
-     * Also see the {@link outputAll} method.
-     *
-     * ### Examples
-     *
-     * Return one column:
-     *
-     * ```ts
-     * const { id } = await db
-     *   .insertInto('person')
-     *   .output('inserted.id')
-     *   .values({
-     *     first_name: 'Jennifer',
-     *     last_name: 'Aniston',
-     *     gender: 'female',
-     *   })
-     *   .executeTakeFirstOrThrow()
-     * ```
-     *
-     * The generated SQL (MSSQL):
-     *
-     * ```sql
-     * insert into "person" ("first_name", "last_name", "gender")
-     * output "inserted"."id"
-     * values (@1, @2, @3)
-     * ```
-     *
-     * Return multiple columns:
-     *
-     * ```ts
-     * const { old_first_name, old_last_name, new_first_name, new_last_name } = await db
-     *   .updateTable('person')
-     *   .set({ first_name: 'John', last_name: 'Doe' })
-     *   .output([
-     *     'deleted.first_name as old_first_name',
-     *     'deleted.last_name as old_last_name',
-     *     'inserted.first_name as new_first_name',
-     *     'inserted.last_name as new_last_name',
-     *   ])
-     *   .where('created_at', '<', new Date())
-     *   .executeTakeFirstOrThrow()
-     * ```
-     *
-     * The generated SQL (MSSQL):
-     *
-     * ```sql
-     * update "person"
-     * set "first_name" = @1, "last_name" = @2
-     * output "deleted"."first_name" as "old_first_name",
-     *   "deleted"."last_name" as "old_last_name",
-     *   "inserted"."first_name" as "new_first_name",
-     *   "inserted"."last_name" as "new_last_name"
-     * where "created_at" < @3
-     * ```
-     *
-     * Return arbitrary expressions:
-     *
-     * ```ts
-     * import { sql } from 'kysely'
-     *
-     * const { full_name } = await db
-     *   .deleteFrom('person')
-     *   .output((eb) => sql<string>`concat(${eb.ref('deleted.first_name')}, ' ', ${eb.ref('deleted.last_name')})`.as('full_name'))
-     *   .where('created_at', '<', new Date())
-     *   .executeTakeFirstOrThrow()
-     * ```
-     *
-     * The generated SQL (MSSQL):
-     *
-     * ```sql
-     * delete from "person"
-     * output concat("deleted"."first_name", ' ', "deleted"."last_name") as "full_name"
-     * where "created_at" < @1
-     * ```
-     *
-     * Return the action performed on the row:
-     *
-     * ```ts
-     * await db
-     *   .mergeInto('person')
-     *   .using('pet', 'pet.owner_id', 'person.id')
-     *   .whenMatched()
-     *   .thenDelete()
-     *   .whenNotMatched()
-     *   .thenInsertValues({
-     *     first_name: 'John',
-     *     last_name: 'Doe',
-     *     gender: 'male'
-     *   })
-     *   .output([
-     *     'inserted.id as inserted_id',
-     *     'deleted.id as deleted_id',
-     *   ])
-     *   .execute()
-     * ```
-     *
-     * The generated SQL (MSSQL):
-     *
-     * ```sql
-     * merge into "person"
-     * using "pet" on "pet"."owner_id" = "person"."id"
-     * when matched then delete
-     * when not matched then
-     * insert ("first_name", "last_name", "gender")
-     * values (@1, @2, @3)
-     * output "inserted"."id" as "inserted_id", "deleted"."id" as "deleted_id"
-     * ```
-     *
-     */
-    output<OE extends OutputExpression<DB, UT>>(selections: readonly OE[]): UpdateQueryBuilder<DB, UT, TB, ReturningRow<DB, TB, O, SelectExpressionFromOutputExpression<OE>>>;
-    output<CB extends OutputCallback<DB, TB>>(callback: CB): UpdateQueryBuilder<DB, UT, TB, ReturningRow<DB, TB, O, SelectExpressionFromOutputCallback<CB>>>;
-    output<OE extends OutputExpression<DB, TB>>(selection: OE): UpdateQueryBuilder<DB, UT, TB, ReturningRow<DB, TB, O, SelectExpressionFromOutputExpression<OE>>>;
-    /**
-     * Adds an `output {prefix}.*` to an `insert`/`update`/`delete`/`merge` query on databases
-     * that support `output` such as MS SQL Server (MSSQL).
-     *
-     * Also see the {@link output} method.
-     */
-    outputAll(table: OutputPrefix): UpdateQueryBuilder<DB, UT, TB, ReturningAllRow<DB, TB, O>>;
-    /**
-     * This can be used to add any additional SQL to the end of the query.
-     *
-     * ### Examples
-     *
-     * ```ts
-     * import { sql } from 'kysely'
-     *
-     * await db.updateTable('person')
-     *   .set({ age: 39 })
-     *   .where('first_name', '=', 'John')
-     *   .modifyEnd(sql.raw('-- This is a comment'))
-     *   .execute()
-     * ```
-     *
-     * The generated SQL (MySQL):
-     *
-     * ```sql
-     * update `person`
-     * set `age` = 39
-     * where `first_name` = "John" -- This is a comment
-     * ```
-     */
-    modifyEnd(modifier: Expression<any>): UpdateQueryBuilder<DB, UT, TB, O>;
-    /**
-     * Clears all `returning` clauses from the query.
-     *
-     * ### Examples
-     *
-     * ```ts
-     * db.updateTable('person')
-     *   .returningAll()
-     *   .set({ age: 39 })
-     *   .where('first_name', '=', 'John')
-     *   .clearReturning()
-     * ```
-     *
-     * The generated SQL(PostgreSQL):
-     *
-     * ```sql
-     * update "person" set "age" = 39 where "first_name" = "John"
-     * ```
-     */
-    clearReturning(): UpdateQueryBuilder<DB, UT, TB, UpdateResult>;
-    /**
-     * Simply calls the provided function passing `this` as the only argument. `$call` returns
-     * what the provided function returns.
-     *
-     * If you want to conditionally call a method on `this`, see
-     * the {@link $if} method.
-     *
-     * ### Examples
-     *
-     * The next example uses a helper function `log` to log a query:
-     *
-     * ```ts
-     * import type { Compilable } from 'kysely'
-     * import type { PersonUpdate } from 'type-editor' // imaginary module
-     *
-     * function log<T extends Compilable>(qb: T): T {
-     *   console.log(qb.compile())
-     *   return qb
-     * }
-     *
-     * const values = {
-     *   first_name: 'John',
-     * } satisfies PersonUpdate
-     *
-     * db.updateTable('person')
-     *   .set(values)
-     *   .$call(log)
-     *   .execute()
-     * ```
-     */
-    $call<T>(func: (qb: this) => T): T;
-    /**
-     * Call `func(this)` if `condition` is true.
-     *
-     * This method is especially handy with optional selects. Any `returning` or `returningAll`
-     * method calls add columns as optional fields to the output type when called inside
-     * the `func` callback. This is because we can't know if those selections were actually
-     * made before running the code.
-     *
-     * You can also call any other methods inside the callback.
-     *
-     * ### Examples
-     *
-     * ```ts
-     * import type { PersonUpdate } from 'type-editor' // imaginary module
-     *
-     * async function updatePerson(id: number, updates: PersonUpdate, returnLastName: boolean) {
-     *   return await db
-     *     .updateTable('person')
-     *     .set(updates)
-     *     .where('id', '=', id)
-     *     .returning(['id', 'first_name'])
-     *     .$if(returnLastName, (qb) => qb.returning('last_name'))
-     *     .executeTakeFirstOrThrow()
-     * }
-     * ```
-     *
-     * Any selections added inside the `if` callback will be added as optional fields to the
-     * output type since we can't know if the selections were actually made before running
-     * the code. In the example above the return type of the `updatePerson` function is:
-     *
-     * ```ts
-     * Promise<{
-     *   id: number
-     *   first_name: string
-     *   last_name?: string
-     * }>
-     * ```
-     */
-    $if<O2>(condition: boolean, func: (qb: this) => UpdateQueryBuilder<any, any, any, O2>): O2 extends UpdateResult ? UpdateQueryBuilder<DB, UT, TB, UpdateResult> : O2 extends O & infer E ? UpdateQueryBuilder<DB, UT, TB, O & Partial<E>> : UpdateQueryBuilder<DB, UT, TB, Partial<O2>>;
-    /**
-     * Change the output type of the query.
-     *
-     * This method call doesn't change the SQL in any way. This methods simply
-     * returns a copy of this `UpdateQueryBuilder` with a new output type.
-     */
-    $castTo<C>(): UpdateQueryBuilder<DB, UT, TB, C>;
-    /**
-     * Narrows (parts of) the output type of the query.
-     *
-     * Kysely tries to be as type-safe as possible, but in some cases we have to make
-     * compromises for better maintainability and compilation performance. At present,
-     * Kysely doesn't narrow the output type of the query based on {@link set} input
-     * when using {@link where} and/or {@link returning} or {@link returningAll}.
-     *
-     * This utility method is very useful for these situations, as it removes unncessary
-     * runtime assertion/guard code. Its input type is limited to the output type
-     * of the query, so you can't add a column that doesn't exist, or change a column's
-     * type to something that doesn't exist in its union type.
-     *
-     * ### Examples
-     *
-     * Turn this code:
-     *
-     * ```ts
-     * import type { Person } from 'type-editor' // imaginary module
-     *
-     * const id = 1
-     * const now = new Date().toISOString()
-     *
-     * const person = await db.updateTable('person')
-     *   .set({ deleted_at: now })
-     *   .where('id', '=', id)
-     *   .where('nullable_column', 'is not', null)
-     *   .returningAll()
-     *   .executeTakeFirstOrThrow()
-     *
-     * if (isWithNoNullValue(person)) {
-     *   functionThatExpectsPersonWithNonNullValue(person)
-     * }
-     *
-     * function isWithNoNullValue(person: Person): person is Person & { nullable_column: string } {
-     *   return person.nullable_column != null
-     * }
-     * ```
-     *
-     * Into this:
-     *
-     * ```ts
-     * import type { NotNull } from 'kysely'
-     *
-     * const id = 1
-     * const now = new Date().toISOString()
-     *
-     * const person = await db.updateTable('person')
-     *   .set({ deleted_at: now })
-     *   .where('id', '=', id)
-     *   .where('nullable_column', 'is not', null)
-     *   .returningAll()
-     *   .$narrowType<{ deleted_at: Date; nullable_column: NotNull }>()
-     *   .executeTakeFirstOrThrow()
-     *
-     * functionThatExpectsPersonWithNonNullValue(person)
-     * ```
-     */
-    $narrowType<T>(): UpdateQueryBuilder<DB, UT, TB, NarrowPartial<O, T>>;
-    /**
-     * Asserts that query's output row type equals the given type `T`.
-     *
-     * This method can be used to simplify excessively complex types to make TypeScript happy
-     * and much faster.
-     *
-     * Kysely uses complex type magic to achieve its type safety. This complexity is sometimes too much
-     * for TypeScript and you get errors like this:
-     *
-     * ```
-     * error TS2589: Type instantiation is excessively deep and possibly infinite.
-     * ```
-     *
-     * In these case you can often use this method to help TypeScript a little bit. When you use this
-     * method to assert the output type of a query, Kysely can drop the complex output type that
-     * consists of multiple nested helper types and replace it with the simple asserted type.
-     *
-     * Using this method doesn't reduce type safety at all. You have to pass in a type that is
-     * structurally equal to the current type.
-     *
-     * ### Examples
-     *
-     * ```ts
-     * import type { PersonUpdate, PetUpdate, Species } from 'type-editor' // imaginary module
-     *
-     * const person = {
-     *   id: 1,
-     *   gender: 'other',
-     * } satisfies PersonUpdate
-     *
-     * const pet = {
-     *   name: 'Fluffy',
-     * } satisfies PetUpdate
-     *
-     * const result = await db
-     *   .with('updated_person', (qb) => qb
-     *     .updateTable('person')
-     *     .set(person)
-     *     .where('id', '=', person.id)
-     *     .returning('first_name')
-     *     .$assertType<{ first_name: string }>()
-     *   )
-     *   .with('updated_pet', (qb) => qb
-     *     .updateTable('pet')
-     *     .set(pet)
-     *     .where('owner_id', '=', person.id)
-     *     .returning(['name as pet_name', 'species'])
-     *     .$assertType<{ pet_name: string, species: Species }>()
-     *   )
-     *   .selectFrom(['updated_person', 'updated_pet'])
-     *   .selectAll()
-     *   .executeTakeFirstOrThrow()
-     * ```
-     */
-    $assertType<T extends O>(): O extends T ? UpdateQueryBuilder<DB, UT, TB, T> : KyselyTypeError<`$assertType() call failed: The type passed in is not equal to the output type of the query.`>;
-    /**
-     * Returns a copy of this UpdateQueryBuilder instance with the given plugin installed.
-     */
-    withPlugin(plugin: KyselyPlugin): UpdateQueryBuilder<DB, UT, TB, O>;
-    toOperationNode(): UpdateQueryNode;
-    compile(): CompiledQuery<SimplifyResult<O>>;
-    /**
-     * Executes the query and returns an array of rows.
-     *
-     * Also see the {@link executeTakeFirst} and {@link executeTakeFirstOrThrow} methods.
-     */
-    execute(): Promise<SimplifyResult<O>[]>;
-    /**
-     * Executes the query and returns the first result or undefined if
-     * the query returned no result.
-     */
-    executeTakeFirst(): Promise<SimplifySingleResult<O>>;
-    /**
-     * Executes the query and returns the first result or throws if
-     * the query returned no result.
-     *
-     * By default an instance of {@link NoResultError} is thrown, but you can
-     * provide a custom error class, or callback as the only argument to throw a different
-     * error.
-     */
-    executeTakeFirstOrThrow(errorConstructor?: NoResultErrorConstructor | ((node: QueryNode) => Error)): Promise<SimplifyResult<O>>;
-    /**
-     * Executes the query and streams the rows.
-     *
-     * The optional argument `chunkSize` defines how many rows to fetch from the database
-     * at a time. It only affects some dialects like PostgreSQL that support it.
-     *
-     * ### Examples
-     *
-     * ```ts
-     * const stream = db
-     *   .selectFrom('person')
-     *   .select(['first_name', 'last_name'])
-     *   .where('gender', '=', 'other')
-     *   .stream()
-     *
-     * for await (const person of stream) {
-     *   console.log(person.first_name)
-     *
-     *   if (person.last_name === 'Something') {
-     *     // Breaking or returning before the stream has ended will release
-     *     // the database connection and invalidate the stream.
-     *     break
-     *   }
-     * }
-     * ```
-     */
-    stream(chunkSize?: number): AsyncIterableIterator<O>;
-    /**
-     * Executes query with `explain` statement before the main query.
-     *
-     * ```ts
-     * const explained = await db
-     *  .selectFrom('person')
-     *  .where('gender', '=', 'female')
-     *  .selectAll()
-     *  .explain('json')
-     * ```
-     *
-     * The generated SQL (MySQL):
-     *
-     * ```sql
-     * explain format=json select * from `person` where `gender` = ?
-     * ```
-     *
-     * You can also execute `explain analyze` statements.
-     *
-     * ```ts
-     * import { sql } from 'kysely'
-     *
-     * const explained = await db
-     *  .selectFrom('person')
-     *  .where('gender', '=', 'female')
-     *  .selectAll()
-     *  .explain('json', sql`analyze`)
-     * ```
-     *
-     * The generated SQL (PostgreSQL):
-     *
-     * ```sql
-     * explain (analyze, format json) select * from "person" where "gender" = $1
-     * ```
-     */
-    explain<ER extends Record<string, any> = Record<string, any>>(format?: ExplainFormat, options?: Expression<any>): Promise<ER[]>;
-}
-interface UpdateQueryBuilderProps {
-    readonly queryId: QueryId;
-    readonly queryNode: UpdateQueryNode;
-    readonly executor: QueryExecutor;
-}
-type UpdateQueryBuilderWithInnerJoin<DB, UT extends keyof DB, TB extends keyof DB, O, TE extends TableExpression<DB, TB>> = TE extends `${infer T} as ${infer A}` ? T extends keyof DB ? InnerJoinedBuilder<DB, UT, TB, O, A, DB[T]> : never : TE extends keyof DB ? UpdateQueryBuilder<DB, UT, TB | TE, O> : TE extends AliasedExpression<infer QO, infer QA> ? InnerJoinedBuilder<DB, UT, TB, O, QA, QO> : TE extends (qb: any) => AliasedExpression<infer QO, infer QA> ? InnerJoinedBuilder<DB, UT, TB, O, QA, QO> : never;
-type InnerJoinedBuilder<DB, UT extends keyof DB, TB extends keyof DB, O, A extends string, R> = A extends keyof DB ? UpdateQueryBuilder<InnerJoinedDB<DB, A, R>, UT, TB | A, O> : UpdateQueryBuilder<DB & ShallowRecord<A, R>, UT, TB | A, O>;
+type DeleteQueryBuilderWithInnerJoin<DB, TB extends keyof DB, O, TE extends TableExpression<DB, TB>> = TE extends `${infer T} as ${infer A}` ? T extends keyof DB ? InnerJoinedBuilder<DB, TB, O, A, DB[T]> : never : TE extends keyof DB ? DeleteQueryBuilder<DB, TB | TE, O> : TE extends AliasedExpression<infer QO, infer QA> ? InnerJoinedBuilder<DB, TB, O, QA, QO> : TE extends (qb: any) => AliasedExpression<infer QO, infer QA> ? InnerJoinedBuilder<DB, TB, O, QA, QO> : never;
+type InnerJoinedBuilder<DB, TB extends keyof DB, O, A extends string, R> = A extends keyof DB ? DeleteQueryBuilder<InnerJoinedDB<DB, A, R>, TB | A, O> : DeleteQueryBuilder<DB & ShallowRecord<A, R>, TB | A, O>;
 type InnerJoinedDB<DB, A extends string, R> = DrainOuterGeneric<{
     [C in keyof DB | A]: C extends A ? R : C extends keyof DB ? DB[C] : never;
 }>;
-type UpdateQueryBuilderWithLeftJoin<DB, UT extends keyof DB, TB extends keyof DB, O, TE extends TableExpression<DB, TB>> = TE extends `${infer T} as ${infer A}` ? T extends keyof DB ? LeftJoinedBuilder<DB, UT, TB, O, A, DB[T]> : never : TE extends keyof DB ? LeftJoinedBuilder<DB, UT, TB, O, TE, DB[TE]> : TE extends AliasedExpression<infer QO, infer QA> ? LeftJoinedBuilder<DB, UT, TB, O, QA, QO> : TE extends (qb: any) => AliasedExpression<infer QO, infer QA> ? LeftJoinedBuilder<DB, UT, TB, O, QA, QO> : never;
-type LeftJoinedBuilder<DB, UT extends keyof DB, TB extends keyof DB, O, A extends keyof any, R> = A extends keyof DB ? UpdateQueryBuilder<LeftJoinedDB<DB, A, R>, UT, TB | A, O> : UpdateQueryBuilder<DB & ShallowRecord<A, Nullable<R>>, UT, TB | A, O>;
+type DeleteQueryBuilderWithLeftJoin<DB, TB extends keyof DB, O, TE extends TableExpression<DB, TB>> = TE extends `${infer T} as ${infer A}` ? T extends keyof DB ? LeftJoinedBuilder<DB, TB, O, A, DB[T]> : never : TE extends keyof DB ? LeftJoinedBuilder<DB, TB, O, TE, DB[TE]> : TE extends AliasedExpression<infer QO, infer QA> ? LeftJoinedBuilder<DB, TB, O, QA, QO> : TE extends (qb: any) => AliasedExpression<infer QO, infer QA> ? LeftJoinedBuilder<DB, TB, O, QA, QO> : never;
+type LeftJoinedBuilder<DB, TB extends keyof DB, O, A extends keyof any, R> = A extends keyof DB ? DeleteQueryBuilder<LeftJoinedDB<DB, A, R>, TB | A, O> : DeleteQueryBuilder<DB & ShallowRecord<A, Nullable<R>>, TB | A, O>;
 type LeftJoinedDB<DB, A extends keyof any, R> = DrainOuterGeneric<{
     [C in keyof DB | A]: C extends A ? Nullable<R> : C extends keyof DB ? DB[C] : never;
 }>;
-type UpdateQueryBuilderWithRightJoin<DB, UT extends keyof DB, TB extends keyof DB, O, TE extends TableExpression<DB, TB>> = TE extends `${infer T} as ${infer A}` ? T extends keyof DB ? RightJoinedBuilder<DB, UT, TB, O, A, DB[T]> : never : TE extends keyof DB ? RightJoinedBuilder<DB, UT, TB, O, TE, DB[TE]> : TE extends AliasedExpression<infer QO, infer QA> ? RightJoinedBuilder<DB, UT, TB, O, QA, QO> : TE extends (qb: any) => AliasedExpression<infer QO, infer QA> ? RightJoinedBuilder<DB, UT, TB, O, QA, QO> : never;
-type RightJoinedBuilder<DB, UT extends keyof DB, TB extends keyof DB, O, A extends keyof any, R> = UpdateQueryBuilder<RightJoinedDB<DB, TB, A, R>, UT, TB | A, O>;
+type DeleteQueryBuilderWithRightJoin<DB, TB extends keyof DB, O, TE extends TableExpression<DB, TB>> = TE extends `${infer T} as ${infer A}` ? T extends keyof DB ? RightJoinedBuilder<DB, TB, O, A, DB[T]> : never : TE extends keyof DB ? RightJoinedBuilder<DB, TB, O, TE, DB[TE]> : TE extends AliasedExpression<infer QO, infer QA> ? RightJoinedBuilder<DB, TB, O, QA, QO> : TE extends (qb: any) => AliasedExpression<infer QO, infer QA> ? RightJoinedBuilder<DB, TB, O, QA, QO> : never;
+type RightJoinedBuilder<DB, TB extends keyof DB, O, A extends keyof any, R> = DeleteQueryBuilder<RightJoinedDB<DB, TB, A, R>, TB | A, O>;
 type RightJoinedDB<DB, TB extends keyof DB, A extends keyof any, R> = DrainOuterGeneric<{
     [C in keyof DB | A]: C extends A ? R : C extends TB ? Nullable<DB[C]> : C extends keyof DB ? DB[C] : never;
 }>;
-type UpdateQueryBuilderWithFullJoin<DB, UT extends keyof DB, TB extends keyof DB, O, TE extends TableExpression<DB, TB>> = TE extends `${infer T} as ${infer A}` ? T extends keyof DB ? OuterJoinedBuilder<DB, UT, TB, O, A, DB[T]> : never : TE extends keyof DB ? OuterJoinedBuilder<DB, UT, TB, O, TE, DB[TE]> : TE extends AliasedExpression<infer QO, infer QA> ? OuterJoinedBuilder<DB, UT, TB, O, QA, QO> : TE extends (qb: any) => AliasedExpression<infer QO, infer QA> ? OuterJoinedBuilder<DB, UT, TB, O, QA, QO> : never;
-type OuterJoinedBuilder<DB, UT extends keyof DB, TB extends keyof DB, O, A extends keyof any, R> = UpdateQueryBuilder<OuterJoinedBuilderDB<DB, TB, A, R>, UT, TB | A, O>;
+type DeleteQueryBuilderWithFullJoin<DB, TB extends keyof DB, O, TE extends TableExpression<DB, TB>> = TE extends `${infer T} as ${infer A}` ? T extends keyof DB ? OuterJoinedBuilder<DB, TB, O, A, DB[T]> : never : TE extends keyof DB ? OuterJoinedBuilder<DB, TB, O, TE, DB[TE]> : TE extends AliasedExpression<infer QO, infer QA> ? OuterJoinedBuilder<DB, TB, O, QA, QO> : TE extends (qb: any) => AliasedExpression<infer QO, infer QA> ? OuterJoinedBuilder<DB, TB, O, QA, QO> : never;
+type OuterJoinedBuilder<DB, TB extends keyof DB, O, A extends keyof any, R> = DeleteQueryBuilder<OuterJoinedBuilderDB<DB, TB, A, R>, TB | A, O>;
 type OuterJoinedBuilderDB<DB, TB extends keyof DB, A extends keyof any, R> = DrainOuterGeneric<{
     [C in keyof DB | A]: C extends A ? Nullable<R> : C extends TB ? Nullable<DB[C]> : C extends keyof DB ? DB[C] : never;
 }>;
@@ -15129,7 +16112,11 @@ type ExtractRowFromCommonTableExpressionName<CN extends string> = CN extends `${
  */
 type ExtractColumnNamesFromColumnList<R extends string> = R extends `${infer C}, ${infer RS}` ? C | ExtractColumnNamesFromColumnList<RS> : R;
 
-declare class MergeQueryBuilder<DB, TT extends keyof DB, O> implements OutputInterface<DB, TT, O> {
+type DeleteFrom<DB, TE extends TableExpressionOrList<DB, never>> = TE extends ReadonlyArray<infer T> ? DeleteQueryBuilder<From<DB, T>, FromTables<DB, never, T>, DeleteResult> : TE extends keyof DB & string ? DeleteQueryBuilder<DB, ExtractTableAlias<DB, TE>, DeleteResult> : TE extends `${infer T} as ${infer A}` ? T extends keyof DB ? DeleteQueryBuilder<DB & ShallowRecord<A, DB[T]>, A, DeleteResult> : never : DeleteQueryBuilder<From<DB, TE>, FromTables<DB, never, TE>, DeleteResult>;
+
+type UpdateTable<DB, TE extends TableExpressionOrList<DB, never>> = TE extends ReadonlyArray<infer T> ? UpdateQueryBuilder<From<DB, T>, FromTables<DB, never, T>, FromTables<DB, never, T>, UpdateResult> : TE extends keyof DB & string ? UpdateQueryBuilder<DB, ExtractTableAlias<DB, TE>, ExtractTableAlias<DB, TE>, UpdateResult> : TE extends `${infer T} as ${infer A}` ? T extends keyof DB ? UpdateQueryBuilder<DB & ShallowRecord<A, DB[T]>, A, A, UpdateResult> : never : UpdateQueryBuilder<From<DB, TE>, FromTables<DB, never, TE>, FromTables<DB, never, TE>, UpdateResult>;
+
+declare class MergeQueryBuilder<DB, TT extends keyof DB, O> implements MultiTableReturningInterface<DB, TT, O>, OutputInterface<DB, TT, O> {
     #private;
     constructor(props: MergeQueryBuilderProps);
     /**
@@ -15231,6 +16218,76 @@ declare class MergeQueryBuilder<DB, TT extends keyof DB, O> implements OutputInt
      */
     using<TE extends TableExpression<DB, TT>, K1 extends JoinReferenceExpression<DB, TT, TE>, K2 extends JoinReferenceExpression<DB, TT, TE>>(sourceTable: TE, k1: K1, k2: K2): ExtractWheneableMergeQueryBuilder<DB, TT, TE, O>;
     using<TE extends TableExpression<DB, TT>, FN extends JoinCallbackExpression<DB, TT, TE>>(sourceTable: TE, callback: FN): ExtractWheneableMergeQueryBuilder<DB, TT, TE, O>;
+    /**
+     * Allows you to return data from modified rows.
+     *
+     * On supported databases like PostgreSQL, this method can be chained to
+     * `insert`, `update`, `delete` and `merge` queries to return data.
+     *
+     * Note that on SQLite you need to give aliases for the expressions to avoid
+     * [this bug](https://sqlite.org/forum/forumpost/033daf0b32) in SQLite.
+     * For example `.returning('id as id')`.
+     *
+     * Also see the {@link returningAll} method.
+     *
+     * ### Examples
+     *
+     * Return one column:
+     *
+     * ```ts
+     * const { id } = await db
+     *   .insertInto('person')
+     *   .values({
+     *     first_name: 'Jennifer',
+     *     last_name: 'Aniston'
+     *   })
+     *   .returning('id')
+     *   .executeTakeFirstOrThrow()
+     * ```
+     *
+     * Return multiple columns:
+     *
+     * ```ts
+     * const { id, last_name } = await db
+     *   .insertInto('person')
+     *   .values({
+     *     first_name: 'Jennifer',
+     *     last_name: 'Aniston'
+     *   })
+     *   .returning(['id', 'last_name'])
+     *   .executeTakeFirstOrThrow()
+     * ```
+     *
+     * Return arbitrary expressions:
+     *
+     * ```ts
+     * import { sql } from 'kysely'
+     *
+     * const { id, full_name, first_pet_id } = await db
+     *   .insertInto('person')
+     *   .values({
+     *     first_name: 'Jennifer',
+     *     last_name: 'Aniston'
+     *   })
+     *   .returning((eb) => [
+     *     'id as id',
+     *     sql<string>`concat(first_name, ' ', last_name)`.as('full_name'),
+     *     eb.selectFrom('pet').select('pet.id').limit(1).as('first_pet_id')
+     *   ])
+     *   .executeTakeFirstOrThrow()
+     * ```
+     */
+    returning<SE extends SelectExpression<DB, TT>>(selections: ReadonlyArray<SE>): MergeQueryBuilder<DB, TT, ReturningRow<DB, TT, O, SE>>;
+    returning<CB extends SelectCallback<DB, TT>>(callback: CB): MergeQueryBuilder<DB, TT, ReturningCallbackRow<DB, TT, O, CB>>;
+    returning<SE extends SelectExpression<DB, TT>>(selection: SE): MergeQueryBuilder<DB, TT, ReturningRow<DB, TT, O, SE>>;
+    /**
+     * Adds a `returning *` or `returning table.*` to an insert/update/delete/merge
+     * query on databases that support `returning` such as PostgreSQL.
+     *
+     * Also see the {@link returning} method.
+     */
+    returningAll<T extends TT>(table: T): MergeQueryBuilder<DB, TT, ReturningAllRow<DB, T, O>>;
+    returningAll(): MergeQueryBuilder<DB, TT, ReturningAllRow<DB, TT, O>>;
     /**
      * Allows you to return data from modified rows.
      *
@@ -15361,7 +16418,7 @@ interface MergeQueryBuilderProps {
     readonly queryNode: MergeQueryNode;
     readonly executor: QueryExecutor;
 }
-declare class WheneableMergeQueryBuilder<DB, TT extends keyof DB, ST extends keyof DB, O> implements Compilable<O>, OutputInterface<DB, TT, O>, OperationNodeSource {
+declare class WheneableMergeQueryBuilder<DB, TT extends keyof DB, ST extends keyof DB, O> implements Compilable<O>, MultiTableReturningInterface<DB, TT | ST, O>, OutputInterface<DB, TT, O>, OperationNodeSource {
     #private;
     constructor(props: MergeQueryBuilderProps);
     /**
@@ -15558,6 +16615,76 @@ declare class WheneableMergeQueryBuilder<DB, TT extends keyof DB, ST extends key
      * the target table, and not from source table and returns a {@link MatchedThenableMergeQueryBuilder}.
      */
     whenNotMatchedBySourceAndRef<LRE extends ReferenceExpression<DB, TT>, RRE extends ReferenceExpression<DB, TT>>(lhs: LRE, op: ComparisonOperatorExpression, rhs: RRE): MatchedThenableMergeQueryBuilder<DB, TT, ST, TT, O>;
+    /**
+     * Allows you to return data from modified rows.
+     *
+     * On supported databases like PostgreSQL, this method can be chained to
+     * `insert`, `update`, `delete` and `merge` queries to return data.
+     *
+     * Note that on SQLite you need to give aliases for the expressions to avoid
+     * [this bug](https://sqlite.org/forum/forumpost/033daf0b32) in SQLite.
+     * For example `.returning('id as id')`.
+     *
+     * Also see the {@link returningAll} method.
+     *
+     * ### Examples
+     *
+     * Return one column:
+     *
+     * ```ts
+     * const { id } = await db
+     *   .insertInto('person')
+     *   .values({
+     *     first_name: 'Jennifer',
+     *     last_name: 'Aniston'
+     *   })
+     *   .returning('id')
+     *   .executeTakeFirstOrThrow()
+     * ```
+     *
+     * Return multiple columns:
+     *
+     * ```ts
+     * const { id, last_name } = await db
+     *   .insertInto('person')
+     *   .values({
+     *     first_name: 'Jennifer',
+     *     last_name: 'Aniston'
+     *   })
+     *   .returning(['id', 'last_name'])
+     *   .executeTakeFirstOrThrow()
+     * ```
+     *
+     * Return arbitrary expressions:
+     *
+     * ```ts
+     * import { sql } from 'kysely'
+     *
+     * const { id, full_name, first_pet_id } = await db
+     *   .insertInto('person')
+     *   .values({
+     *     first_name: 'Jennifer',
+     *     last_name: 'Aniston'
+     *   })
+     *   .returning((eb) => [
+     *     'id as id',
+     *     sql<string>`concat(first_name, ' ', last_name)`.as('full_name'),
+     *     eb.selectFrom('pet').select('pet.id').limit(1).as('first_pet_id')
+     *   ])
+     *   .executeTakeFirstOrThrow()
+     * ```
+     */
+    returning<SE extends SelectExpression<DB, TT | ST>>(selections: ReadonlyArray<SE>): WheneableMergeQueryBuilder<DB, TT, ST, ReturningRow<DB, TT | ST, O, SE>>;
+    returning<CB extends SelectCallback<DB, TT | ST>>(callback: CB): WheneableMergeQueryBuilder<DB, TT, ST, ReturningCallbackRow<DB, TT | ST, O, CB>>;
+    returning<SE extends SelectExpression<DB, TT | ST>>(selection: SE): WheneableMergeQueryBuilder<DB, TT, ST, ReturningRow<DB, TT | ST, O, SE>>;
+    /**
+     * Adds a `returning *` or `returning table.*` to an insert/update/delete/merge
+     * query on databases that support `returning` such as PostgreSQL.
+     *
+     * Also see the {@link returning} method.
+     */
+    returningAll<T extends TT | ST>(table: T): WheneableMergeQueryBuilder<DB, TT, ST, ReturningAllRow<DB, T, O>>;
+    returningAll(): WheneableMergeQueryBuilder<DB, TT, ST, ReturningAllRow<DB, TT | ST, O>>;
     /**
      * Allows you to return data from modified rows.
      *
@@ -15966,6 +17093,8 @@ declare class NotMatchedThenableMergeQueryBuilder<DB, TT extends keyof DB, ST ex
 type ExtractWheneableMergeQueryBuilder<DB, TT extends keyof DB, TE extends TableExpression<DB, TT>, O> = TE extends `${infer T} as ${infer A}` ? T extends keyof DB ? UsingBuilder<DB, TT, A, DB[T], O> : never : TE extends keyof DB ? WheneableMergeQueryBuilder<DB, TT, TE, O> : TE extends AliasedExpression<infer QO, infer QA> ? UsingBuilder<DB, TT, QA, QO, O> : TE extends (qb: any) => AliasedExpression<infer QO, infer QA> ? UsingBuilder<DB, TT, QA, QO, O> : never;
 type UsingBuilder<DB, TT extends keyof DB, A extends string, R, O> = A extends keyof DB ? WheneableMergeQueryBuilder<DB, TT, A, O> : WheneableMergeQueryBuilder<DB & ShallowRecord<A, R>, TT, A, O>;
 
+type MergeInto<DB, TE extends SimpleTableReference<DB>> = TE extends keyof DB & string ? MergeQueryBuilder<DB, ExtractTableAlias<DB, TE>, MergeResult> : TE extends `${infer T} as ${infer A}` ? T extends keyof DB ? MergeQueryBuilder<DB & ShallowRecord<A, DB[T]>, A, MergeResult> : never : never;
+
 declare class QueryCreator<DB> {
     #private;
     constructor(props: QueryCreatorProps);
@@ -16076,11 +17205,7 @@ declare class QueryCreator<DB> {
      *   (select 1 as one) as "q"
      * ```
      */
-    selectFrom<TE extends keyof DB & string>(from: TE[]): SelectQueryBuilder<DB, ExtractTableAlias<DB, TE>, {}>;
-    selectFrom<TE extends TableExpression<DB, never>>(from: TE[]): SelectQueryBuilder<From<DB, TE>, FromTables<DB, never, TE>, {}>;
-    selectFrom<TE extends keyof DB & string>(from: TE): SelectQueryBuilder<DB, ExtractTableAlias<DB, TE>, {}>;
-    selectFrom<TE extends AnyAliasedTable<DB>>(from: TE): SelectQueryBuilder<DB & PickTableWithAlias<DB, TE>, ExtractTableAlias<DB & PickTableWithAlias<DB, TE>, TE>, {}>;
-    selectFrom<TE extends TableExpression<DB, never>>(from: TE): SelectQueryBuilder<From<DB, TE>, FromTables<DB, never, TE>, {}>;
+    selectFrom<TE extends TableExpressionOrList<DB, never>>(from: TE): SelectFrom<DB, never, TE>;
     /**
      * Creates a `select` query builder without a `from` clause.
      *
@@ -16170,10 +17295,14 @@ declare class QueryCreator<DB> {
      */
     insertInto<T extends keyof DB & string>(table: T): InsertQueryBuilder<DB, T, InsertResult>;
     /**
-     * Creates a replace query.
+     * Creates a "replace into" query.
      *
-     * A MySQL-only statement similar to {@link InsertQueryBuilder.onDuplicateKeyUpdate}
-     * that deletes and inserts values on collision instead of updating existing rows.
+     * This is only supported by some dialects like MySQL or SQLite.
+     *
+     * Similar to MySQL's {@link InsertQueryBuilder.onDuplicateKeyUpdate} that deletes
+     * and inserts values on collision instead of updating existing rows.
+     *
+     * An alias of SQLite's {@link InsertQueryBuilder.orReplace}.
      *
      * The return value of this query is an instance of {@link InsertResult}. {@link InsertResult}
      * has the {@link InsertResult.insertId | insertId} field that holds the auto incremented id of
@@ -16190,9 +17319,15 @@ declare class QueryCreator<DB> {
      *     first_name: 'Jennifer',
      *     last_name: 'Aniston'
      *   })
-     *   .executeTakeFirst()
+     *   .executeTakeFirstOrThrow()
      *
      * console.log(result.insertId)
+     * ```
+     *
+     * The generated SQL (MySQL):
+     *
+     * ```sql
+     * replace into `person` (`first_name`, `last_name`) values (?, ?)
      * ```
      */
     replaceInto<T extends keyof DB & string>(table: T): InsertQueryBuilder<DB, T, InsertResult>;
@@ -16245,10 +17380,7 @@ declare class QueryCreator<DB> {
      * where `person`.`id` = ?
      * ```
      */
-    deleteFrom<TR extends keyof DB & string>(from: TR[]): DeleteQueryBuilder<DB, ExtractTableAlias<DB, TR>, DeleteResult>;
-    deleteFrom<TR extends TableReference<DB>>(tables: TR[]): DeleteQueryBuilder<From<DB, TR>, FromTables<DB, never, TR>, DeleteResult>;
-    deleteFrom<TR extends keyof DB & string>(from: TR): DeleteQueryBuilder<DB, ExtractTableAlias<DB, TR>, DeleteResult>;
-    deleteFrom<TR extends TableReference<DB>>(table: TR): DeleteQueryBuilder<From<DB, TR>, FromTables<DB, never, TR>, DeleteResult>;
+    deleteFrom<TE extends TableExpressionOrList<DB, never>>(from: TE): DeleteFrom<DB, TE>;
     /**
      * Creates an update query.
      *
@@ -16272,9 +17404,7 @@ declare class QueryCreator<DB> {
      * console.log(result.numUpdatedRows)
      * ```
      */
-    updateTable<TR extends keyof DB & string>(table: TR): UpdateQueryBuilder<DB, ExtractTableAlias<DB, TR>, ExtractTableAlias<DB, TR>, UpdateResult>;
-    updateTable<TR extends AnyAliasedTable<DB>>(table: TR): UpdateQueryBuilder<DB & PickTableWithAlias<DB, TR>, ExtractTableAlias<DB & PickTableWithAlias<DB, TR>, TR>, ExtractTableAlias<DB & PickTableWithAlias<DB, TR>, TR>, UpdateResult>;
-    updateTable<TR extends TableReference<DB>>(table: TR): UpdateQueryBuilder<From<DB, TR>, FromTables<DB, never, TR>, FromTables<DB, never, TR>, UpdateResult>;
+    updateTable<TE extends TableExpressionOrList<DB, never>>(tables: TE): UpdateTable<DB, TE>;
     /**
      * Creates a merge query.
      *
@@ -16358,8 +17488,7 @@ declare class QueryCreator<DB> {
      * then delete
      * ```
      */
-    mergeInto<TR extends keyof DB & string>(targetTable: TR): MergeQueryBuilder<DB, TR, MergeResult>;
-    mergeInto<TR extends AnyAliasedTable<DB>>(targetTable: TR): MergeQueryBuilder<DB & PickTableWithAlias<DB, TR>, ExtractTableAlias<DB & PickTableWithAlias<DB, TR>, TR>, MergeResult>;
+    mergeInto<TR extends SimpleTableReference<DB>>(targetTable: TR): MergeInto<DB, TR>;
     /**
      * Creates a `with` query (Common Table Expression).
      *
@@ -16570,6 +17699,14 @@ declare class Log {
     error(getEvent: () => ErrorLogEvent): Promise<void>;
 }
 
+type RollbackToSavepoint<S extends string[], SN extends S[number]> = S extends [...infer L, infer R] ? R extends SN ? S : RollbackToSavepoint<L extends string[] ? L : never, SN> : never;
+type ReleaseSavepoint<S extends string[], SN extends S[number]> = S extends [...infer L, infer R] ? R extends SN ? L : ReleaseSavepoint<L extends string[] ? L : never, SN> : never;
+
+interface ControlledConnection {
+    readonly connection: DatabaseConnection;
+    readonly release: () => void;
+}
+
 /**
  * The main Kysely class.
  *
@@ -16603,7 +17740,7 @@ declare class Log {
  *    in the database and values must be interfaces that describe the rows in those
  *    tables. See the examples above.
  */
-declare class Kysely<DB> extends QueryCreator<DB> implements QueryExecutorProvider {
+declare class Kysely<DB> extends QueryCreator<DB> implements QueryExecutorProvider, AsyncDisposable {
     #private;
     constructor(args: KyselyConfig);
     constructor(args: KyselyProps);
@@ -16695,6 +17832,9 @@ declare class Kysely<DB> extends QueryCreator<DB> implements QueryExecutorProvid
      * of type {@link Transaction} which inherits {@link Kysely}. Any query
      * started through the transaction object is executed inside the transaction.
      *
+     * To run a controlled transaction, allowing you to commit and rollback manually,
+     * use {@link startTransaction} instead.
+     *
      * ### Examples
      *
      * <!-- siteExample("transactions", "Simple transaction", 10) -->
@@ -16747,6 +17887,118 @@ declare class Kysely<DB> extends QueryCreator<DB> implements QueryExecutorProvid
      * ```
      */
     transaction(): TransactionBuilder<DB>;
+    /**
+     * Creates a {@link ControlledTransactionBuilder} that can be used to run queries inside a controlled transaction.
+     *
+     * The returned {@link ControlledTransactionBuilder} can be used to configure the transaction.
+     * The {@link ControlledTransactionBuilder.execute} method can then be called
+     * to start the transaction and return a {@link ControlledTransaction}.
+     *
+     * A {@link ControlledTransaction} allows you to commit and rollback manually,
+     * execute savepoint commands. It extends {@link Transaction} which extends {@link Kysely},
+     * so you can run queries inside the transaction. Once the transaction is committed,
+     * or rolled back, it can't be used anymore - all queries will throw an error.
+     * This is to prevent accidentally running queries outside the transaction - where
+     * atomicity is not guaranteed anymore.
+     *
+     * ### Examples
+     *
+     * <!-- siteExample("transactions", "Controlled transaction", 11) -->
+     *
+     * A controlled transaction allows you to commit and rollback manually, execute
+     * savepoint commands, and queries in general.
+     *
+     * In this example we start a transaction, use it to insert two rows and then commit
+     * the transaction. If an error is thrown, we catch it and rollback the transaction.
+     *
+     * ```ts
+     * const trx = await db.startTransaction().execute()
+     *
+     * try {
+     *   const jennifer = await trx.insertInto('person')
+     *     .values({
+     *       first_name: 'Jennifer',
+     *       last_name: 'Aniston',
+     *       age: 40,
+     *     })
+     *     .returning('id')
+     *     .executeTakeFirstOrThrow()
+     *
+     *   const catto = await trx.insertInto('pet')
+     *     .values({
+     *       owner_id: jennifer.id,
+     *       name: 'Catto',
+     *       species: 'cat',
+     *       is_favorite: false,
+     *     })
+     *     .returningAll()
+     *     .executeTakeFirstOrThrow()
+     *
+     *   await trx.commit().execute()
+     *
+     *   // ...
+     * } catch (error) {
+     *   await trx.rollback().execute()
+     * }
+     * ```
+     *
+     * <!-- siteExample("transactions", "Controlled transaction /w savepoints", 12) -->
+     *
+     * A controlled transaction allows you to commit and rollback manually, execute
+     * savepoint commands, and queries in general.
+     *
+     * In this example we start a transaction, insert a person, create a savepoint,
+     * try inserting a toy and a pet, and if an error is thrown, we rollback to the
+     * savepoint. Eventually we release the savepoint, insert an audit record and
+     * commit the transaction. If an error is thrown, we catch it and rollback the
+     * transaction.
+     *
+     * ```ts
+     * const trx = await db.startTransaction().execute()
+     *
+     * try {
+     *   const jennifer = await trx
+     *     .insertInto('person')
+     *     .values({
+     *       first_name: 'Jennifer',
+     *       last_name: 'Aniston',
+     *       age: 40,
+     *     })
+     *     .returning('id')
+     *     .executeTakeFirstOrThrow()
+     *
+     *   const trxAfterJennifer = await trx.savepoint('after_jennifer').execute()
+     *
+     *   try {
+     *     const catto = await trxAfterJennifer
+     *       .insertInto('pet')
+     *       .values({
+     *         owner_id: jennifer.id,
+     *         name: 'Catto',
+     *         species: 'cat',
+     *       })
+     *       .returning('id')
+     *       .executeTakeFirstOrThrow()
+     *
+     *     await trxAfterJennifer
+     *       .insertInto('toy')
+     *       .values({ name: 'Bone', price: 1.99, pet_id: catto.id })
+     *       .execute()
+     *   } catch (error) {
+     *     await trxAfterJennifer.rollbackToSavepoint('after_jennifer').execute()
+     *   }
+     *
+     *   await trxAfterJennifer.releaseSavepoint('after_jennifer').execute()
+     *
+     *   await trx.insertInto('audit').values({ action: 'added Jennifer' }).execute()
+     *
+     *   await trx.commit().execute()
+     * } catch (error) {
+     *   await trx.rollback().execute()
+     * }
+     * ```
+     */
+    startTransaction(): ControlledTransactionBuilder<DB>;
     /**
      * Provides a kysely instance bound to a single database connection.
      *
@@ -16834,6 +18086,7 @@ declare class Kysely<DB> extends QueryCreator<DB> implements QueryExecutorProvid
      * See {@link https://github.com/kysely-org/kysely/blob/master/site/docs/recipes/0004-splitting-query-building-and-execution.md#execute-compiled-queries splitting build, compile and execute code recipe} for more information.
      */
     executeQuery<R>(query: CompiledQuery<R> | Compilable<R>, queryId?: QueryId): Promise<QueryResult<R>>;
+    [Symbol.asyncDispose](): Promise<void>;
 }
 declare class Transaction<DB> extends Kysely<DB> {
     #private;
@@ -16860,6 +18113,9 @@ declare class Transaction<DB> extends Kysely<DB> {
      * method gets the transaction object as its only argument. The transaction is
      * of type {@link Transaction} which inherits {@link Kysely}. Any query
      * started through the transaction object is executed inside the transaction.
+     *
+     * To run a controlled transaction, allowing you to commit and rollback manually,
+     * use {@link startTransaction} instead.
      *
      * ### Examples
      *
@@ -17049,11 +18305,227 @@ interface ConnectionBuilderProps extends KyselyProps {
 declare class TransactionBuilder<DB> {
     #private;
     constructor(props: TransactionBuilderProps);
+    setAccessMode(accessMode: AccessMode): TransactionBuilder<DB>;
     setIsolationLevel(isolationLevel: IsolationLevel): TransactionBuilder<DB>;
     execute<T>(callback: (trx: Transaction<DB>) => Promise<T>): Promise<T>;
 }
 interface TransactionBuilderProps extends KyselyProps {
+    readonly accessMode?: AccessMode;
     readonly isolationLevel?: IsolationLevel;
 }
+declare class ControlledTransactionBuilder<DB> {
+    #private;
+    constructor(props: TransactionBuilderProps);
+    setAccessMode(accessMode: AccessMode): ControlledTransactionBuilder<DB>;
+    setIsolationLevel(isolationLevel: IsolationLevel): ControlledTransactionBuilder<DB>;
+    execute(): Promise<ControlledTransaction<DB>>;
+}
+declare class ControlledTransaction<DB, S extends string[] = []> extends Transaction<DB> {
+    #private;
+    constructor(props: ControlledTransactionProps);
+    get isCommitted(): boolean;
+    get isRolledBack(): boolean;
+    /**
+     * Commits the transaction.
+     *
+     * See {@link rollback}.
+     *
+     * ### Examples
+     *
+     * ```ts
+     * import type { Kysely } from 'kysely'
+     * import type { Database } from 'type-editor' // imaginary module
+     *
+     * const trx = await db.startTransaction().execute()
+     *
+     * try {
+     *   await doSomething(trx)
+     *
+     *   await trx.commit().execute()
+     * } catch (error) {
+     *   await trx.rollback().execute()
+     * }
+     *
+     * async function doSomething(kysely: Kysely<Database>) {}
+     * ```
+     */
+    commit(): Command<void>;
+    /**
+     * Rolls back the transaction.
+     *
+     * See {@link commit} and {@link rollbackToSavepoint}.
+     *
+     * ### Examples
+     *
+     * ```ts
+     * import type { Kysely } from 'kysely'
+     * import type { Database } from 'type-editor' // imaginary module
+     *
+     * const trx = await db.startTransaction().execute()
+     *
+     * try {
+     *   await doSomething(trx)
+     *
+     *   await trx.commit().execute()
+     * } catch (error) {
+     *   await trx.rollback().execute()
+     * }
+     *
+     * async function doSomething(kysely: Kysely<Database>) {}
+     * ```
+     */
+    rollback(): Command<void>;
+    /**
+     * Creates a savepoint with a given name.
+     *
+     * See {@link rollbackToSavepoint} and {@link releaseSavepoint}.
+     *
+     * For a type-safe experience, you should use the returned instance from now on.
+     *
+     * ### Examples
+     *
+     * ```ts
+     * import type { Kysely } from 'kysely'
+     * import type { Database } from 'type-editor' // imaginary module
+     *
+     * const trx = await db.startTransaction().execute()
+     *
+     * await insertJennifer(trx)
+     *
+     * const trxAfterJennifer = await trx.savepoint('after_jennifer').execute()
+     *
+     * try {
+     *   await doSomething(trxAfterJennifer)
+     * } catch (error) {
+     *   await trxAfterJennifer.rollbackToSavepoint('after_jennifer').execute()
+     * }
+     *
+     * async function insertJennifer(kysely: Kysely<Database>) {}
+     * async function doSomething(kysely: Kysely<Database>) {}
+     * ```
+     */
+    savepoint<SN extends string>(savepointName: SN extends S ? never : SN): Command<ControlledTransaction<DB, [...S, SN]>>;
+    /**
+     * Rolls back to a savepoint with a given name.
+     *
+     * See {@link savepoint} and {@link releaseSavepoint}.
+     *
+     * You must use the same instance returned by {@link savepoint}, or
+     * escape the type-check by using `as any`.
+     *
+     * ### Examples
+     *
+     * ```ts
+     * import type { Kysely } from 'kysely'
+     * import type { Database } from 'type-editor' // imaginary module
+     *
+     * const trx = await db.startTransaction().execute()
+     *
+     * await insertJennifer(trx)
+     *
+     * const trxAfterJennifer = await trx.savepoint('after_jennifer').execute()
+     *
+     * try {
+     *   await doSomething(trxAfterJennifer)
+     * } catch (error) {
+     *   await trxAfterJennifer.rollbackToSavepoint('after_jennifer').execute()
+     * }
+     *
+     * async function insertJennifer(kysely: Kysely<Database>) {}
+     * async function doSomething(kysely: Kysely<Database>) {}
+     * ```
+     */
+    rollbackToSavepoint<SN extends S[number]>(savepointName: SN): RollbackToSavepoint<S, SN> extends string[] ? Command<ControlledTransaction<DB, RollbackToSavepoint<S, SN>>> : never;
+    /**
+     * Releases a savepoint with a given name.
+     *
+     * See {@link savepoint} and {@link rollbackToSavepoint}.
+     *
+     * You must use the same instance returned by {@link savepoint}, or
+     * escape the type-check by using `as any`.
+     *
+     * ### Examples
+     *
+     * ```ts
+     * import type { Kysely } from 'kysely'
+     * import type { Database } from 'type-editor' // imaginary module
+     *
+     * const trx = await db.startTransaction().execute()
+     *
+     * await insertJennifer(trx)
+     *
+     * const trxAfterJennifer = await trx.savepoint('after_jennifer').execute()
+     *
+     * try {
+     *   await doSomething(trxAfterJennifer)
+     * } catch (error) {
+     *   await trxAfterJennifer.rollbackToSavepoint('after_jennifer').execute()
+     * }
+     *
+     * await trxAfterJennifer.releaseSavepoint('after_jennifer').execute()
+     *
+     * await doSomethingElse(trx)
+     *
+     * async function insertJennifer(kysely: Kysely<Database>) {}
+     * async function doSomething(kysely: Kysely<Database>) {}
+     * async function doSomethingElse(kysely: Kysely<Database>) {}
+     * ```
+     */
+    releaseSavepoint<SN extends S[number]>(savepointName: SN): ReleaseSavepoint<S, SN> extends string[] ? Command<ControlledTransaction<DB, ReleaseSavepoint<S, SN>>> : never;
+    /**
+     * Returns a copy of this Kysely instance with the given plugin installed.
+     */
+    withPlugin(plugin: KyselyPlugin): ControlledTransaction<DB, S>;
+    /**
+     * Returns a copy of this Kysely instance without any plugins.
+     */
+    withoutPlugins(): ControlledTransaction<DB, S>;
+    /**
+     * @override
+     */
+    withSchema(schema: string): ControlledTransaction<DB, S>;
+    /**
+     * Returns a copy of this Kysely instance with tables added to its
+     * database type.
+     *
+     * This method only modifies the types and doesn't affect any of the
+     * executed queries in any way.
+     *
+     * ### Examples
+     *
+     * The following example adds and uses a temporary table:
+     *
+     * ```ts
+     * await db.schema
+     *   .createTable('temp_table')
+     *   .temporary()
+     *   .addColumn('some_column', 'integer')
+     *   .execute()
+     *
+     * const tempDb = db.withTables<{
+     *   temp_table: {
+     *     some_column: number
+     *   }
+     * }>()
+     *
+     * await tempDb
+     *   .insertInto('temp_table')
+     *   .values({ some_column: 100 })
+     *   .execute()
+     * ```
+     */
+    withTables<T extends Record<string, Record<string, any>>>(): ControlledTransaction<DrainOuterGeneric<DB & T>, S>;
+}
+interface ControlledTransactionProps extends KyselyProps {
+    readonly connection: ControlledConnection;
+}
+declare class Command<T> {
+    #private;
+    constructor(cb: () => Promise<T>);
+    /**
+     * Executes the command.
+     */
+    execute(): Promise<T>;
+}
 
-export { HavingNode as $, AliasNode as A, CreateIndexNode as B, CompiledQuery as C, type DialectAdapter as D, DropIndexNode as E, FromNode as F, GroupByNode as G, type PrimaryKeyConstraintNode as H, InsertQueryNode as I, JoinNode as J, type KyselyPlugin as K, LimitNode as L, UniqueConstraintNode as M, ReferencesNode as N, type OperationNode as O, PrimitiveValueListNode as P, type QueryExecutor as Q, type RawBuilder as R, SelectQueryNode as S, TableNode as T, UpdateQueryNode as U, ValueListNode as V, WhereNode as W, CheckConstraintNode as X, WithNode as Y, CommonTableExpressionNode as Z, CommonTableExpressionNameNode as _, type RootOperationNode as a, type ExpressionBuilder as a$, CreateSchemaNode as a0, DropSchemaNode as a1, AlterTableNode as a2, DropColumnNode as a3, RenameColumnNode as a4, AlterColumnNode as a5, ModifyColumnNode as a6, AddConstraintNode as a7, DropConstraintNode as a8, ForeignKeyConstraintNode as a9, JSONOperatorChainNode as aA, MergeQueryNode as aB, AddIndexNode as aC, FetchNode as aD, TopNode as aE, OutputNode as aF, type AlterTableColumnAlterationNode as aG, type Driver as aH, Kysely as aI, type MigrationLockOptions as aJ, type Dialect as aK, type DatabaseIntrospector as aL, type SchemaMetadata as aM, type DatabaseMetadataOptions as aN, type TableMetadata as aO, type DatabaseMetadata as aP, type TransactionSettings as aQ, type PluginTransformQueryArgs as aR, type PluginTransformResultArgs as aS, type UnknownRow as aT, type Compilable as aU, InsertResult as aV, UpdateResult as aW, DeleteResult as aX, MergeResult as aY, type Simplify as aZ, type ExpressionOrFactory as a_, DataTypeNode as aa, SelectAllNode as ab, IdentifierNode as ac, SchemableIdentifierNode as ad, ValueNode as ae, OperatorNode as af, CreateViewNode as ag, DropViewNode as ah, GeneratedNode as ai, DefaultValueNode as aj, OnNode as ak, SelectModifierNode as al, CreateTypeNode as am, DropTypeNode as an, ExplainNode as ao, AggregateFunctionNode as ap, OverNode as aq, PartitionByNode as ar, PartitionByItemNode as as, SetOperationNode as at, UsingNode as au, CaseNode as av, WhenNode as aw, JSONReferenceNode as ax, JSONPathNode as ay, JSONPathLegNode as az, type QueryId as b, type SelectQueryBuilder as b$, expressionBuilder as b0, type AnyAliasedColumn as b1, type AnyAliasedColumnWithTable as b2, type AnyColumn as b3, type AnyColumnWithTable as b4, type Equals as b5, type SqlBool as b6, type Nullable as b7, type NotNull$1 as b8, type SelectExpression as b9, Transaction as bA, type KyselyProps as bB, isKyselyProps as bC, type KyselyConfig as bD, ConnectionBuilder as bE, TransactionBuilder as bF, QueryCreator as bG, type QueryCreatorProps as bH, type Expression as bI, type AliasableExpression as bJ, type AliasedExpression as bK, isExpression as bL, isAliasedExpression as bM, ExpressionWrapper as bN, AliasedExpressionWrapper as bO, OrWrapper as bP, AndWrapper as bQ, type WhereInterface as bR, type ReturningInterface as bS, type OutputInterface as bT, type OutputPrefix as bU, type OutputDatabase as bV, type OutputExpression as bW, type OutputCallback as bX, type SelectExpressionFromOutputExpression as bY, type SelectExpressionFromOutputCallback as bZ, type HavingInterface as b_, type SelectCallback as ba, type SelectArg as bb, type Selection as bc, type CallbackSelection as bd, type ReferenceExpression as be, type ReferenceExpressionOrList as bf, type SimpleReferenceExpression as bg, type StringReference as bh, type ExtractTypeFromStringReference as bi, type ExtractTypeFromReferenceExpression as bj, type ValueExpression as bk, type ValueExpressionOrList as bl, type SimpleTableReference as bm, type TableExpression as bn, type TableExpressionOrList as bo, type JoinReferenceExpression as bp, type JoinCallbackExpression as bq, type InsertObject as br, type UpdateObject as bs, type OrderByExpression as bt, type OrderByDirectionExpression as bu, type ComparisonOperatorExpression as bv, type OperandValueExpression as bw, type OperandValueExpressionOrList as bx, type FilterObject as by, type OperandExpression as bz, type DatabaseConnection as c, type DropTableBuilderProps as c$, createSelectQueryBuilder as c0, type SelectQueryBuilderProps as c1, type AliasedSelectQueryBuilder as c2, type SelectQueryBuilderWithInnerJoin as c3, type SelectQueryBuilderWithLeftJoin as c4, type SelectQueryBuilderWithRightJoin as c5, type SelectQueryBuilderWithFullJoin as c6, InsertQueryBuilder as c7, type InsertQueryBuilderProps as c8, UpdateQueryBuilder as c9, type AggregateFunctionBuilderProps as cA, type OverBuilderCallback as cB, CaseBuilder as cC, CaseThenBuilder as cD, CaseWhenBuilder as cE, CaseEndBuilder as cF, JSONPathBuilder as cG, TraversedJSONPathBuilder as cH, AliasedJSONPathBuilder as cI, MergeQueryBuilder as cJ, type MergeQueryBuilderProps as cK, WheneableMergeQueryBuilder as cL, MatchedThenableMergeQueryBuilder as cM, NotMatchedThenableMergeQueryBuilder as cN, type ExtractWheneableMergeQueryBuilder as cO, type RawBuilderProps as cP, createRawBuilder as cQ, type AliasedRawBuilder as cR, type QueryExecutorProvider as cS, SchemaModule as cT, CreateTableBuilder as cU, type CreateTableBuilderProps as cV, type ColumnBuilderCallback as cW, type ForeignKeyConstraintBuilderCallback as cX, CreateTypeBuilder as cY, type CreateTypeBuilderProps as cZ, DropTableBuilder as c_, type UpdateQueryBuilderProps as ca, type UpdateQueryBuilderWithInnerJoin as cb, type UpdateQueryBuilderWithLeftJoin as cc, type UpdateQueryBuilderWithRightJoin as cd, type UpdateQueryBuilderWithFullJoin as ce, DeleteQueryBuilder as cf, type DeleteQueryBuilderProps as cg, type DeleteQueryBuilderWithInnerJoin as ch, type DeleteQueryBuilderWithLeftJoin as ci, type DeleteQueryBuilderWithRightJoin as cj, type DeleteQueryBuilderWithFullJoin as ck, type NoResultErrorConstructor as cl, NoResultError as cm, isNoResultErrorConstructor as cn, JoinBuilder as co, type JoinBuilderProps as cp, type FunctionModule as cq, createFunctionModule as cr, OnConflictBuilder as cs, type OnConflictBuilderProps as ct, type OnConflictDatabase as cu, type OnConflictTables as cv, OnConflictDoNothingBuilder as cw, OnConflictUpdateBuilder as cx, AggregateFunctionBuilder as cy, AliasedAggregateFunctionBuilder as cz, type QueryResult as d, type OperationNodeKind as d$, DropTypeBuilder as d0, type DropTypeBuilderProps as d1, CreateIndexBuilder as d2, type CreateIndexBuilderProps as d3, DropIndexBuilder as d4, type DropIndexBuilderProps as d5, CreateSchemaBuilder as d6, type CreateSchemaBuilderProps as d7, DropSchemaBuilder as d8, type DropSchemaBuilderProps as d9, type CreateIndexNodeProps as dA, type IndexType as dB, type CreateSchemaNodeParams as dC, ON_COMMIT_ACTIONS as dD, type OnCommitAction as dE, type CreateTableNodeParams as dF, type CreateTypeNodeParams as dG, type CreateViewNodeParams as dH, type ColumnDataType as dI, type DataTypeParams as dJ, isColumnDataType as dK, type DropConstraintNodeProps as dL, type DropIndexNodeProps as dM, type DropSchemaNodeParams as dN, type DropTablexNodeParams as dO, type DropTypeNodeParams as dP, type DropViewNodeParams as dQ, type FetchModifier as dR, type ForeignKeyConstraintNodeProps as dS, type GeneratedNodeParams as dT, type InsertQueryNodeProps as dU, type JoinType as dV, type JSONPathLegType as dW, type OnConflictNodeProps as dX, type OnDuplicateKeyNodeProps as dY, type OperationNodeSource as dZ, isOperationNodeSource as d_, ColumnDefinitionBuilder as da, type ColumnDefinitionBuilderCallback as db, type ForeignKeyConstraintBuilderInterface as dc, ForeignKeyConstraintBuilder as dd, AlterTableBuilder as de, type AlterTableBuilderProps as df, type ColumnAlteringInterface as dg, AlterTableColumnAlteringBuilder as dh, type AlterTableColumnAlteringBuilderProps as di, CreateViewBuilder as dj, type CreateViewBuilderProps as dk, DropViewBuilder as dl, type DropViewBuilderProps as dm, AlterColumnBuilder as dn, AlteredColumnBuilder as dp, type AlterColumnBuilderCallback as dq, DynamicModule as dr, TRANSACTION_ISOLATION_LEVELS as ds, type IsolationLevel as dt, type ColumnMetadata as du, type AddIndexNodeProps as dv, type AlterColumnNodeProps as dw, type AlterTableNodeTableProps as dx, type ColumnDefinitionNodeProps as dy, type ConstraintNode as dz, type ConnectionProvider as e, COMPARISON_OPERATORS as e0, ARITHMETIC_OPERATORS as e1, JSON_OPERATORS as e2, BINARY_OPERATORS as e3, UNARY_FILTER_OPERATORS as e4, UNARY_OPERATORS as e5, OPERATORS as e6, type ComparisonOperator as e7, type ArithmeticOperator as e8, type JSONOperator as e9, type InsertType as eA, type UpdateType as eB, type NullableInsertKeys as eC, type NonNullableInsertKeys as eD, type UpdateKeys as eE, type Selectable as eF, type Insertable as eG, type Updateable as eH, isCompilable as eI, type ExplainFormat as eJ, type Explainable as eK, type Streamable as eL, LOG_LEVELS as eM, type LogLevel as eN, type QueryLogEvent as eO, type ErrorLogEvent as eP, type LogEvent as eQ, type Logger as eR, type LogConfig as eS, Log as eT, type SelectQueryBuilderExpression as eU, type JSONOperatorWith$ as ea, type BinaryOperator as eb, type UnaryOperator as ec, type UnaryFilterOperator as ed, type Operator as ee, isOperator as ef, isBinaryOperator as eg, isComparisonOperator as eh, isArithmeticOperator as ei, isJSONOperator as ej, PrimaryConstraintNode as ek, QueryNode as el, ON_MODIFY_FOREIGN_ACTIONS as em, type OnModifyForeignAction as en, type SelectModifier as eo, type SetOperator as ep, type SimpleReferenceExpressionNode as eq, type TopModifier as er, type UniqueConstraintNodeProps as es, type UpdateValuesNode as et, type WithNodeParams as eu, type ColumnType as ev, type Generated as ew, type GeneratedAlways as ex, type JSONColumnType as ey, type SelectType as ez, type QueryCompiler as f, SelectionNode as g, ColumnNode as h, ReferenceNode as i, AndNode as j, OrNode as k, ParensNode as l, RawNode as m, DeleteQueryNode as n, ReturningNode as o, CreateTableNode as p, AddColumnNode as q, ColumnDefinitionNode as r, DropTableNode as s, OrderByNode as t, OrderByItemNode as u, GroupByItemNode as v, ColumnUpdateNode as w, OffsetNode as x, OnConflictNode as y, OnDuplicateKeyNode as z };
+export { CreateSchemaNode as $, AliasNode as A, DropIndexNode as B, CompiledQuery as C, type DialectAdapter as D, PrimaryKeyConstraintNode as E, FromNode as F, GroupByNode as G, UniqueConstraintNode as H, InsertQueryNode as I, JoinNode as J, type KyselyPlugin as K, LimitNode as L, ReferencesNode as M, CheckConstraintNode as N, type OperationNode as O, ParensNode as P, type QueryExecutor as Q, type RawBuilder as R, SelectQueryNode as S, TableNode as T, UpdateQueryNode as U, ValueListNode as V, WhereNode as W, WithNode as X, CommonTableExpressionNode as Y, CommonTableExpressionNameNode as Z, HavingNode as _, type RootOperationNode as a, DeleteResult as a$, DropSchemaNode as a0, AlterTableNode as a1, DropColumnNode as a2, RenameColumnNode as a3, AlterColumnNode as a4, ModifyColumnNode as a5, AddConstraintNode as a6, DropConstraintNode as a7, RenameConstraintNode as a8, ForeignKeyConstraintNode as a9, JSONPathLegNode as aA, JSONOperatorChainNode as aB, MergeQueryNode as aC, AddIndexNode as aD, FetchNode as aE, TopNode as aF, OutputNode as aG, OrActionNode as aH, CollateNode as aI, type AlterTableColumnAlterationNode as aJ, type Driver as aK, Kysely as aL, type MigrationLockOptions as aM, type Dialect as aN, type DatabaseIntrospector as aO, type SchemaMetadata as aP, type DatabaseMetadataOptions as aQ, type TableMetadata as aR, type DatabaseMetadata as aS, type TransactionSettings as aT, type KyselyTypeError as aU, type PluginTransformQueryArgs as aV, type PluginTransformResultArgs as aW, type UnknownRow as aX, type Compilable as aY, InsertResult as aZ, UpdateResult as a_, DataTypeNode as aa, SelectAllNode as ab, IdentifierNode as ac, SchemableIdentifierNode as ad, ValueNode as ae, OperatorNode as af, CreateViewNode as ag, RefreshMaterializedViewNode as ah, DropViewNode as ai, GeneratedNode as aj, DefaultValueNode as ak, OnNode as al, SelectModifierNode as am, CreateTypeNode as an, DropTypeNode as ao, ExplainNode as ap, AggregateFunctionNode as aq, OverNode as ar, PartitionByNode as as, PartitionByItemNode as at, SetOperationNode as au, UsingNode as av, CaseNode as aw, WhenNode as ax, JSONReferenceNode as ay, JSONPathNode as az, type QueryId as b, OrWrapper as b$, MergeResult as b0, type Simplify as b1, type ExpressionOrFactory as b2, type ExpressionBuilder as b3, expressionBuilder as b4, type AnyAliasedColumn as b5, type AnyAliasedColumnWithTable as b6, type AnyColumn as b7, type AnyColumnWithTable as b8, type Equals as b9, type OrderByModifiers as bA, type OrderByDirection as bB, type OrderByModifiersCallbackExpression as bC, type ComparisonOperatorExpression as bD, type OperandValueExpression as bE, type OperandValueExpressionOrList as bF, type FilterObject as bG, type OperandExpression as bH, type Collation as bI, Transaction as bJ, type KyselyProps as bK, isKyselyProps as bL, type KyselyConfig as bM, ConnectionBuilder as bN, TransactionBuilder as bO, ControlledTransactionBuilder as bP, ControlledTransaction as bQ, Command as bR, QueryCreator as bS, type QueryCreatorProps as bT, type Expression as bU, type AliasableExpression as bV, type AliasedExpression as bW, isExpression as bX, isAliasedExpression as bY, ExpressionWrapper as bZ, AliasedExpressionWrapper as b_, type SqlBool as ba, type Nullable as bb, type NotNull$1 as bc, createQueryId as bd, type SelectExpression as be, type SelectCallback as bf, type SelectArg as bg, type Selection as bh, type CallbackSelection as bi, type ReferenceExpression as bj, type ReferenceExpressionOrList as bk, type SimpleReferenceExpression as bl, type StringReference as bm, type ExtractTypeFromStringReference as bn, type ExtractTypeFromReferenceExpression as bo, type ValueExpression as bp, type ValueExpressionOrList as bq, type SimpleTableReference as br, type TableExpression as bs, type TableExpressionOrList as bt, type JoinReferenceExpression as bu, type JoinCallbackExpression as bv, type InsertObject as bw, type UpdateObject as bx, type OrderByExpression as by, type OrderByDirectionExpression as bz, type DatabaseConnection as c, NotMatchedThenableMergeQueryBuilder as c$, AndWrapper as c0, type WhereInterface as c1, type ReturningInterface as c2, type MultiTableReturningInterface as c3, type OutputInterface as c4, type OutputPrefix as c5, type OutputDatabase as c6, type OutputExpression as c7, type OutputCallback as c8, type SelectExpressionFromOutputExpression as c9, NoResultError as cA, isNoResultErrorConstructor as cB, JoinBuilder as cC, type JoinBuilderProps as cD, type FunctionModule as cE, createFunctionModule as cF, OnConflictBuilder as cG, type OnConflictBuilderProps as cH, type OnConflictDatabase as cI, type OnConflictTables as cJ, OnConflictDoNothingBuilder as cK, OnConflictUpdateBuilder as cL, AggregateFunctionBuilder as cM, AliasedAggregateFunctionBuilder as cN, type AggregateFunctionBuilderProps as cO, type OverBuilderCallback as cP, CaseBuilder as cQ, CaseThenBuilder as cR, CaseWhenBuilder as cS, CaseEndBuilder as cT, JSONPathBuilder as cU, TraversedJSONPathBuilder as cV, AliasedJSONPathBuilder as cW, MergeQueryBuilder as cX, type MergeQueryBuilderProps as cY, WheneableMergeQueryBuilder as cZ, MatchedThenableMergeQueryBuilder as c_, type SelectExpressionFromOutputCallback as ca, type HavingInterface as cb, type OrderByInterface as cc, type SelectQueryBuilder as cd, createSelectQueryBuilder as ce, type SelectQueryBuilderProps as cf, type AliasedSelectQueryBuilder as cg, type SelectQueryBuilderWithInnerJoin as ch, type SelectQueryBuilderWithLeftJoin as ci, type SelectQueryBuilderWithRightJoin as cj, type SelectQueryBuilderWithFullJoin as ck, InsertQueryBuilder as cl, type InsertQueryBuilderProps as cm, UpdateQueryBuilder as cn, type UpdateQueryBuilderProps as co, type UpdateQueryBuilderWithInnerJoin as cp, type UpdateQueryBuilderWithLeftJoin as cq, type UpdateQueryBuilderWithRightJoin as cr, type UpdateQueryBuilderWithFullJoin as cs, DeleteQueryBuilder as ct, type DeleteQueryBuilderProps as cu, type DeleteQueryBuilderWithInnerJoin as cv, type DeleteQueryBuilderWithLeftJoin as cw, type DeleteQueryBuilderWithRightJoin as cx, type DeleteQueryBuilderWithFullJoin as cy, type NoResultErrorConstructor as cz, type QueryResult as d, type CreateTypeNodeParams as d$, type ExtractWheneableMergeQueryBuilder as d0, OrderByItemBuilder as d1, type OrderByItemBuilderProps as d2, type RawBuilderProps as d3, createRawBuilder as d4, type AliasedRawBuilder as d5, type QueryExecutorProvider as d6, SchemaModule as d7, CreateTableBuilder as d8, type CreateTableBuilderProps as d9, CreateViewBuilder as dA, type CreateViewBuilderProps as dB, RefreshMaterializedViewBuilder as dC, type RefreshMaterializedViewBuilderProps as dD, DropViewBuilder as dE, type DropViewBuilderProps as dF, AlterColumnBuilder as dG, AlteredColumnBuilder as dH, type AlterColumnBuilderCallback as dI, DynamicModule as dJ, TRANSACTION_ACCESS_MODES as dK, type AccessMode as dL, TRANSACTION_ISOLATION_LEVELS as dM, type IsolationLevel as dN, validateTransactionSettings as dO, type ColumnMetadata as dP, type AddIndexNodeProps as dQ, type AlterColumnNodeProps as dR, type AlterTableNodeTableProps as dS, type ColumnDefinitionNodeProps as dT, type ConstraintNode as dU, type CreateIndexNodeProps as dV, type IndexType as dW, type CreateSchemaNodeParams as dX, ON_COMMIT_ACTIONS as dY, type OnCommitAction as dZ, type CreateTableNodeParams as d_, type ColumnBuilderCallback as da, CreateTypeBuilder as db, type CreateTypeBuilderProps as dc, DropTableBuilder as dd, type DropTableBuilderProps as de, DropTypeBuilder as df, type DropTypeBuilderProps as dg, CreateIndexBuilder as dh, type CreateIndexBuilderProps as di, DropIndexBuilder as dj, type DropIndexBuilderProps as dk, CreateSchemaBuilder as dl, type CreateSchemaBuilderProps as dm, DropSchemaBuilder as dn, type DropSchemaBuilderProps as dp, ColumnDefinitionBuilder as dq, type ColumnDefinitionBuilderCallback as dr, type ForeignKeyConstraintBuilderInterface as ds, ForeignKeyConstraintBuilder as dt, type ForeignKeyConstraintBuilderCallback as du, AlterTableBuilder as dv, type AlterTableBuilderProps as dw, type ColumnAlteringInterface as dx, AlterTableColumnAlteringBuilder as dy, type AlterTableColumnAlteringBuilderProps as dz, type ConnectionProvider as e, type UpdateKeys as e$, type CreateViewNodeParams as e0, type RefreshMaterializedViewNodeParams as e1, type ColumnDataType as e2, type DataTypeParams as e3, isColumnDataType as e4, type DropConstraintNodeProps as e5, type DropIndexNodeProps as e6, type DropSchemaNodeParams as e7, type DropTablexNodeParams as e8, type DropTypeNodeParams as e9, type Operator as eA, isOperator as eB, isBinaryOperator as eC, isComparisonOperator as eD, isArithmeticOperator as eE, isJSONOperator as eF, type OrderByItemNodeProps as eG, type PrimaryKeyConstraintNodeProps as eH, PrimaryConstraintNode as eI, QueryNode as eJ, ON_MODIFY_FOREIGN_ACTIONS as eK, type OnModifyForeignAction as eL, type SelectModifier as eM, type SetOperator as eN, type SimpleReferenceExpressionNode as eO, type TopModifier as eP, type UniqueConstraintNodeProps as eQ, type WithNodeParams as eR, type ColumnType as eS, type Generated as eT, type GeneratedAlways as eU, type JSONColumnType as eV, type SelectType as eW, type InsertType as eX, type UpdateType as eY, type NullableInsertKeys as eZ, type NonNullableInsertKeys as e_, type DropViewNodeParams as ea, type FetchModifier as eb, type ForeignKeyConstraintNodeProps as ec, type GeneratedNodeParams as ed, type InsertQueryNodeProps as ee, type JoinType as ef, type JSONPathLegType as eg, type OnConflictNodeProps as eh, type OnDuplicateKeyNodeProps as ei, type OperationNodeSource as ej, isOperationNodeSource as ek, type OperationNodeKind as el, COMPARISON_OPERATORS as em, ARITHMETIC_OPERATORS as en, JSON_OPERATORS as eo, BINARY_OPERATORS as ep, UNARY_FILTER_OPERATORS as eq, UNARY_OPERATORS as er, OPERATORS as es, type ComparisonOperator as et, type ArithmeticOperator as eu, type JSONOperator as ev, type JSONOperatorWith$ as ew, type BinaryOperator as ex, type UnaryOperator as ey, type UnaryFilterOperator as ez, type QueryCompiler as f, type Selectable as f0, type Insertable as f1, type Updateable as f2, isCompilable as f3, type ExplainFormat as f4, type Explainable as f5, type Streamable as f6, LOG_LEVELS as f7, type LogLevel as f8, type QueryLogEvent as f9, type ErrorLogEvent as fa, type LogEvent as fb, type Logger as fc, type LogConfig as fd, Log as fe, type SelectQueryBuilderExpression as ff, SelectionNode as g, ColumnNode as h, ReferenceNode as i, AndNode as j, OrNode as k, RawNode as l, DeleteQueryNode as m, ReturningNode as n, CreateTableNode as o, AddColumnNode as p, ColumnDefinitionNode as q, DropTableNode as r, OrderByNode as s, OrderByItemNode as t, GroupByItemNode as u, ColumnUpdateNode as v, OffsetNode as w, OnConflictNode as x, OnDuplicateKeyNode as y, CreateIndexNode as z };

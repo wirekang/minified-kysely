@@ -1,4 +1,4 @@
-import { bI as Expression, R as RawBuilder, aZ as Simplify } from '../kysely.d-FzWdxUKO.js';
+import { bU as Expression, R as RawBuilder, b1 as Simplify } from '../kysely.d-DVBZd57e.js';
 
 /**
  * A postgres helper for aggregating a subquery (or other expression) into a JSONB array.
@@ -148,5 +148,53 @@ declare function jsonObjectFrom<O>(expr: Expression<O>): RawBuilder<Simplify<O> 
 declare function jsonBuildObject<O extends Record<string, Expression<unknown>>>(obj: O): RawBuilder<Simplify<{
     [K in keyof O]: O[K] extends Expression<infer V> ? V : never;
 }>>;
+type MergeAction = 'INSERT' | 'UPDATE' | 'DELETE';
+/**
+ * The PostgreSQL `merge_action` function.
+ *
+ * This function can be used in a `returning` clause to get the action that was
+ * performed in a `mergeInto` query. The function returns one of the following
+ * strings: `'INSERT'`, `'UPDATE'`, or `'DELETE'`.
+ *
+ * ### Examples
+ *
+ * ```ts
+ * import { mergeAction } from 'kysely/helpers/postgres'
+ *
+ * const result = await db
+ *   .mergeInto('person as p')
+ *   .using('person_backup as pb', 'p.id', 'pb.id')
+ *   .whenMatched()
+ *   .thenUpdateSet(({ ref }) => ({
+ *     first_name: ref('pb.first_name'),
+ *     updated_at: ref('pb.updated_at').$castTo<string | null>(),
+ *   }))
+ *   .whenNotMatched()
+ *   .thenInsertValues(({ ref}) => ({
+ *     id: ref('pb.id'),
+ *     first_name: ref('pb.first_name'),
+ *     created_at: ref('pb.updated_at'),
+ *     updated_at: ref('pb.updated_at').$castTo<string | null>(),
+ *   }))
+ *   .returning([mergeAction().as('action'), 'p.id', 'p.updated_at'])
+ *   .execute()
+ *
+ * result[0].action
+ * ```
+ *
+ * The generated SQL (PostgreSQL):
+ *
+ * ```sql
+ * merge into "person" as "p"
+ * using "person_backup" as "pb" on "p"."id" = "pb"."id"
+ * when matched then update set
+ *   "first_name" = "pb"."first_name",
+ *   "updated_at" = "pb"."updated_at"::text
+ * when not matched then insert values ("id", "first_name", "created_at", "updated_at")
+ * values ("pb"."id", "pb"."first_name", "pb"."updated_at", "pb"."updated_at")
+ * returning merge_action() as "action", "p"."id", "p"."updated_at"
+ * ```
+ */
+declare function mergeAction(): RawBuilder<MergeAction>;
 
-export { jsonArrayFrom, jsonBuildObject, jsonObjectFrom };
+export { type MergeAction, jsonArrayFrom, jsonBuildObject, jsonObjectFrom, mergeAction };

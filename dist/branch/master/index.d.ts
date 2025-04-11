@@ -1,5 +1,5 @@
-import { O as OperationNode, V as ValueListNode, P as PrimitiveValueListNode, R as RawBuilder, Q as QueryExecutor, K as KyselyPlugin, D as DialectAdapter, a as RootOperationNode, b as QueryId, C as CompiledQuery, c as DatabaseConnection, d as QueryResult, e as ConnectionProvider, f as QueryCompiler, S as SelectQueryNode, g as SelectionNode, h as ColumnNode, A as AliasNode, T as TableNode, F as FromNode, i as ReferenceNode, j as AndNode, k as OrNode, l as ParensNode, J as JoinNode, m as RawNode, W as WhereNode, I as InsertQueryNode, n as DeleteQueryNode, o as ReturningNode, p as CreateTableNode, q as AddColumnNode, r as ColumnDefinitionNode, s as DropTableNode, t as OrderByNode, u as OrderByItemNode, G as GroupByNode, v as GroupByItemNode, U as UpdateQueryNode, w as ColumnUpdateNode, L as LimitNode, x as OffsetNode, y as OnConflictNode, z as OnDuplicateKeyNode, B as CreateIndexNode, E as DropIndexNode, H as PrimaryKeyConstraintNode, M as UniqueConstraintNode, N as ReferencesNode, X as CheckConstraintNode, Y as WithNode, Z as CommonTableExpressionNode, _ as CommonTableExpressionNameNode, $ as HavingNode, a0 as CreateSchemaNode, a1 as DropSchemaNode, a2 as AlterTableNode, a3 as DropColumnNode, a4 as RenameColumnNode, a5 as AlterColumnNode, a6 as ModifyColumnNode, a7 as AddConstraintNode, a8 as DropConstraintNode, a9 as ForeignKeyConstraintNode, aa as DataTypeNode, ab as SelectAllNode, ac as IdentifierNode, ad as SchemableIdentifierNode, ae as ValueNode, af as OperatorNode, ag as CreateViewNode, ah as DropViewNode, ai as GeneratedNode, aj as DefaultValueNode, ak as OnNode, al as SelectModifierNode, am as CreateTypeNode, an as DropTypeNode, ao as ExplainNode, ap as AggregateFunctionNode, aq as OverNode, ar as PartitionByNode, as as PartitionByItemNode, at as SetOperationNode, au as UsingNode, av as CaseNode, aw as WhenNode, ax as JSONReferenceNode, ay as JSONPathNode, az as JSONPathLegNode, aA as JSONOperatorChainNode, aB as MergeQueryNode, aC as AddIndexNode, aD as FetchNode, aE as TopNode, aF as OutputNode, aG as AlterTableColumnAlterationNode, aH as Driver, aI as Kysely, aJ as MigrationLockOptions, aK as Dialect, aL as DatabaseIntrospector, aM as SchemaMetadata, aN as DatabaseMetadataOptions, aO as TableMetadata, aP as DatabaseMetadata, aQ as TransactionSettings, aR as PluginTransformQueryArgs, aS as PluginTransformResultArgs, aT as UnknownRow, aU as Compilable, aV as InsertResult, aW as UpdateResult, aX as DeleteResult, aY as MergeResult, aZ as Simplify, a_ as ExpressionOrFactory } from './kysely.d-FzWdxUKO.js';
-export { e1 as ARITHMETIC_OPERATORS, dv as AddIndexNodeProps, cy as AggregateFunctionBuilder, cA as AggregateFunctionBuilderProps, bJ as AliasableExpression, cz as AliasedAggregateFunctionBuilder, bK as AliasedExpression, bO as AliasedExpressionWrapper, cI as AliasedJSONPathBuilder, cR as AliasedRawBuilder, c2 as AliasedSelectQueryBuilder, dn as AlterColumnBuilder, dq as AlterColumnBuilderCallback, dw as AlterColumnNodeProps, de as AlterTableBuilder, df as AlterTableBuilderProps, dh as AlterTableColumnAlteringBuilder, di as AlterTableColumnAlteringBuilderProps, dx as AlterTableNodeTableProps, dp as AlteredColumnBuilder, bQ as AndWrapper, b1 as AnyAliasedColumn, b2 as AnyAliasedColumnWithTable, b3 as AnyColumn, b4 as AnyColumnWithTable, e8 as ArithmeticOperator, e3 as BINARY_OPERATORS, eb as BinaryOperator, e0 as COMPARISON_OPERATORS, bd as CallbackSelection, cC as CaseBuilder, cF as CaseEndBuilder, cD as CaseThenBuilder, cE as CaseWhenBuilder, dg as ColumnAlteringInterface, cW as ColumnBuilderCallback, dI as ColumnDataType, da as ColumnDefinitionBuilder, db as ColumnDefinitionBuilderCallback, dy as ColumnDefinitionNodeProps, du as ColumnMetadata, ev as ColumnType, e7 as ComparisonOperator, bv as ComparisonOperatorExpression, bE as ConnectionBuilder, dz as ConstraintNode, d2 as CreateIndexBuilder, d3 as CreateIndexBuilderProps, dA as CreateIndexNodeProps, d6 as CreateSchemaBuilder, d7 as CreateSchemaBuilderProps, dC as CreateSchemaNodeParams, cU as CreateTableBuilder, cV as CreateTableBuilderProps, dF as CreateTableNodeParams, cY as CreateTypeBuilder, cZ as CreateTypeBuilderProps, dG as CreateTypeNodeParams, dj as CreateViewBuilder, dk as CreateViewBuilderProps, dH as CreateViewNodeParams, dJ as DataTypeParams, cf as DeleteQueryBuilder, cg as DeleteQueryBuilderProps, ck as DeleteQueryBuilderWithFullJoin, ch as DeleteQueryBuilderWithInnerJoin, ci as DeleteQueryBuilderWithLeftJoin, cj as DeleteQueryBuilderWithRightJoin, dL as DropConstraintNodeProps, d4 as DropIndexBuilder, d5 as DropIndexBuilderProps, dM as DropIndexNodeProps, d8 as DropSchemaBuilder, d9 as DropSchemaBuilderProps, dN as DropSchemaNodeParams, c_ as DropTableBuilder, c$ as DropTableBuilderProps, dO as DropTablexNodeParams, d0 as DropTypeBuilder, d1 as DropTypeBuilderProps, dP as DropTypeNodeParams, dl as DropViewBuilder, dm as DropViewBuilderProps, dQ as DropViewNodeParams, dr as DynamicModule, b5 as Equals, eP as ErrorLogEvent, eJ as ExplainFormat, eK as Explainable, bI as Expression, a$ as ExpressionBuilder, bN as ExpressionWrapper, bj as ExtractTypeFromReferenceExpression, bi as ExtractTypeFromStringReference, cO as ExtractWheneableMergeQueryBuilder, dR as FetchModifier, by as FilterObject, dd as ForeignKeyConstraintBuilder, cX as ForeignKeyConstraintBuilderCallback, dc as ForeignKeyConstraintBuilderInterface, dS as ForeignKeyConstraintNodeProps, cq as FunctionModule, ew as Generated, ex as GeneratedAlways, dT as GeneratedNodeParams, b_ as HavingInterface, dB as IndexType, br as InsertObject, c7 as InsertQueryBuilder, c8 as InsertQueryBuilderProps, dU as InsertQueryNodeProps, eA as InsertType, eG as Insertable, dt as IsolationLevel, ey as JSONColumnType, e9 as JSONOperator, ea as JSONOperatorWith$, cG as JSONPathBuilder, dW as JSONPathLegType, e2 as JSON_OPERATORS, co as JoinBuilder, cp as JoinBuilderProps, bq as JoinCallbackExpression, bp as JoinReferenceExpression, dV as JoinType, bD as KyselyConfig, bB as KyselyProps, eM as LOG_LEVELS, eT as Log, eS as LogConfig, eQ as LogEvent, eN as LogLevel, eR as Logger, cM as MatchedThenableMergeQueryBuilder, cJ as MergeQueryBuilder, cK as MergeQueryBuilderProps, cm as NoResultError, cl as NoResultErrorConstructor, eD as NonNullableInsertKeys, cN as NotMatchedThenableMergeQueryBuilder, b8 as NotNull, b7 as Nullable, eC as NullableInsertKeys, dD as ON_COMMIT_ACTIONS, em as ON_MODIFY_FOREIGN_ACTIONS, e6 as OPERATORS, dE as OnCommitAction, cs as OnConflictBuilder, ct as OnConflictBuilderProps, cu as OnConflictDatabase, cw as OnConflictDoNothingBuilder, dX as OnConflictNodeProps, cv as OnConflictTables, cx as OnConflictUpdateBuilder, dY as OnDuplicateKeyNodeProps, en as OnModifyForeignAction, bz as OperandExpression, bw as OperandValueExpression, bx as OperandValueExpressionOrList, d$ as OperationNodeKind, dZ as OperationNodeSource, ee as Operator, bP as OrWrapper, bu as OrderByDirectionExpression, bt as OrderByExpression, bX as OutputCallback, bV as OutputDatabase, bW as OutputExpression, bT as OutputInterface, bU as OutputPrefix, cB as OverBuilderCallback, ek as PrimaryConstraintNode, bG as QueryCreator, bH as QueryCreatorProps, cS as QueryExecutorProvider, eO as QueryLogEvent, el as QueryNode, cP as RawBuilderProps, be as ReferenceExpression, bf as ReferenceExpressionOrList, bS as ReturningInterface, cT as SchemaModule, bb as SelectArg, ba as SelectCallback, b9 as SelectExpression, bZ as SelectExpressionFromOutputCallback, bY as SelectExpressionFromOutputExpression, eo as SelectModifier, b$ as SelectQueryBuilder, c1 as SelectQueryBuilderProps, c6 as SelectQueryBuilderWithFullJoin, c3 as SelectQueryBuilderWithInnerJoin, c4 as SelectQueryBuilderWithLeftJoin, c5 as SelectQueryBuilderWithRightJoin, ez as SelectType, eF as Selectable, bc as Selection, ep as SetOperator, bg as SimpleReferenceExpression, eq as SimpleReferenceExpressionNode, bm as SimpleTableReference, b6 as SqlBool, eL as Streamable, bh as StringReference, ds as TRANSACTION_ISOLATION_LEVELS, bn as TableExpression, bo as TableExpressionOrList, er as TopModifier, bA as Transaction, bF as TransactionBuilder, cH as TraversedJSONPathBuilder, e4 as UNARY_FILTER_OPERATORS, e5 as UNARY_OPERATORS, ed as UnaryFilterOperator, ec as UnaryOperator, es as UniqueConstraintNodeProps, eE as UpdateKeys, bs as UpdateObject, c9 as UpdateQueryBuilder, ca as UpdateQueryBuilderProps, ce as UpdateQueryBuilderWithFullJoin, cb as UpdateQueryBuilderWithInnerJoin, cc as UpdateQueryBuilderWithLeftJoin, cd as UpdateQueryBuilderWithRightJoin, eB as UpdateType, et as UpdateValuesNode, eH as Updateable, bk as ValueExpression, bl as ValueExpressionOrList, cL as WheneableMergeQueryBuilder, bR as WhereInterface, eu as WithNodeParams, cr as createFunctionModule, cQ as createRawBuilder, c0 as createSelectQueryBuilder, b0 as expressionBuilder, bM as isAliasedExpression, ei as isArithmeticOperator, eg as isBinaryOperator, dK as isColumnDataType, eh as isComparisonOperator, eI as isCompilable, bL as isExpression, ej as isJSONOperator, bC as isKyselyProps, cn as isNoResultErrorConstructor, d_ as isOperationNodeSource, ef as isOperator } from './kysely.d-FzWdxUKO.js';
+import { O as OperationNode, V as ValueListNode, R as RawBuilder, Q as QueryExecutor, K as KyselyPlugin, D as DialectAdapter, a as RootOperationNode, b as QueryId, C as CompiledQuery, c as DatabaseConnection, d as QueryResult, e as ConnectionProvider, f as QueryCompiler, S as SelectQueryNode, g as SelectionNode, h as ColumnNode, A as AliasNode, T as TableNode, F as FromNode, i as ReferenceNode, j as AndNode, k as OrNode, P as ParensNode, J as JoinNode, l as RawNode, W as WhereNode, I as InsertQueryNode, m as DeleteQueryNode, n as ReturningNode, o as CreateTableNode, p as AddColumnNode, q as ColumnDefinitionNode, r as DropTableNode, s as OrderByNode, t as OrderByItemNode, G as GroupByNode, u as GroupByItemNode, U as UpdateQueryNode, v as ColumnUpdateNode, L as LimitNode, w as OffsetNode, x as OnConflictNode, y as OnDuplicateKeyNode, z as CreateIndexNode, B as DropIndexNode, E as PrimaryKeyConstraintNode, H as UniqueConstraintNode, M as ReferencesNode, N as CheckConstraintNode, X as WithNode, Y as CommonTableExpressionNode, Z as CommonTableExpressionNameNode, _ as HavingNode, $ as CreateSchemaNode, a0 as DropSchemaNode, a1 as AlterTableNode, a2 as DropColumnNode, a3 as RenameColumnNode, a4 as AlterColumnNode, a5 as ModifyColumnNode, a6 as AddConstraintNode, a7 as DropConstraintNode, a8 as RenameConstraintNode, a9 as ForeignKeyConstraintNode, aa as DataTypeNode, ab as SelectAllNode, ac as IdentifierNode, ad as SchemableIdentifierNode, ae as ValueNode, af as OperatorNode, ag as CreateViewNode, ah as RefreshMaterializedViewNode, ai as DropViewNode, aj as GeneratedNode, ak as DefaultValueNode, al as OnNode, am as SelectModifierNode, an as CreateTypeNode, ao as DropTypeNode, ap as ExplainNode, aq as AggregateFunctionNode, ar as OverNode, as as PartitionByNode, at as PartitionByItemNode, au as SetOperationNode, av as UsingNode, aw as CaseNode, ax as WhenNode, ay as JSONReferenceNode, az as JSONPathNode, aA as JSONPathLegNode, aB as JSONOperatorChainNode, aC as MergeQueryNode, aD as AddIndexNode, aE as FetchNode, aF as TopNode, aG as OutputNode, aH as OrActionNode, aI as CollateNode, aJ as AlterTableColumnAlterationNode, aK as Driver, aL as Kysely, aM as MigrationLockOptions, aN as Dialect, aO as DatabaseIntrospector, aP as SchemaMetadata, aQ as DatabaseMetadataOptions, aR as TableMetadata, aS as DatabaseMetadata, aT as TransactionSettings, aU as KyselyTypeError, aV as PluginTransformQueryArgs, aW as PluginTransformResultArgs, aX as UnknownRow, aY as Compilable, aZ as InsertResult, a_ as UpdateResult, a$ as DeleteResult, b0 as MergeResult, b1 as Simplify, b2 as ExpressionOrFactory } from './kysely.d-DVBZd57e.js';
+export { en as ARITHMETIC_OPERATORS, dL as AccessMode, dQ as AddIndexNodeProps, cM as AggregateFunctionBuilder, cO as AggregateFunctionBuilderProps, bV as AliasableExpression, cN as AliasedAggregateFunctionBuilder, bW as AliasedExpression, b_ as AliasedExpressionWrapper, cW as AliasedJSONPathBuilder, d5 as AliasedRawBuilder, cg as AliasedSelectQueryBuilder, dG as AlterColumnBuilder, dI as AlterColumnBuilderCallback, dR as AlterColumnNodeProps, dv as AlterTableBuilder, dw as AlterTableBuilderProps, dy as AlterTableColumnAlteringBuilder, dz as AlterTableColumnAlteringBuilderProps, dS as AlterTableNodeTableProps, dH as AlteredColumnBuilder, c0 as AndWrapper, b5 as AnyAliasedColumn, b6 as AnyAliasedColumnWithTable, b7 as AnyColumn, b8 as AnyColumnWithTable, eu as ArithmeticOperator, ep as BINARY_OPERATORS, ex as BinaryOperator, em as COMPARISON_OPERATORS, bi as CallbackSelection, cQ as CaseBuilder, cT as CaseEndBuilder, cR as CaseThenBuilder, cS as CaseWhenBuilder, bI as Collation, dx as ColumnAlteringInterface, da as ColumnBuilderCallback, e2 as ColumnDataType, dq as ColumnDefinitionBuilder, dr as ColumnDefinitionBuilderCallback, dT as ColumnDefinitionNodeProps, dP as ColumnMetadata, eS as ColumnType, bR as Command, et as ComparisonOperator, bD as ComparisonOperatorExpression, bN as ConnectionBuilder, dU as ConstraintNode, bQ as ControlledTransaction, bP as ControlledTransactionBuilder, dh as CreateIndexBuilder, di as CreateIndexBuilderProps, dV as CreateIndexNodeProps, dl as CreateSchemaBuilder, dm as CreateSchemaBuilderProps, dX as CreateSchemaNodeParams, d8 as CreateTableBuilder, d9 as CreateTableBuilderProps, d_ as CreateTableNodeParams, db as CreateTypeBuilder, dc as CreateTypeBuilderProps, d$ as CreateTypeNodeParams, dA as CreateViewBuilder, dB as CreateViewBuilderProps, e0 as CreateViewNodeParams, e3 as DataTypeParams, ct as DeleteQueryBuilder, cu as DeleteQueryBuilderProps, cy as DeleteQueryBuilderWithFullJoin, cv as DeleteQueryBuilderWithInnerJoin, cw as DeleteQueryBuilderWithLeftJoin, cx as DeleteQueryBuilderWithRightJoin, e5 as DropConstraintNodeProps, dj as DropIndexBuilder, dk as DropIndexBuilderProps, e6 as DropIndexNodeProps, dn as DropSchemaBuilder, dp as DropSchemaBuilderProps, e7 as DropSchemaNodeParams, dd as DropTableBuilder, de as DropTableBuilderProps, e8 as DropTablexNodeParams, df as DropTypeBuilder, dg as DropTypeBuilderProps, e9 as DropTypeNodeParams, dE as DropViewBuilder, dF as DropViewBuilderProps, ea as DropViewNodeParams, dJ as DynamicModule, b9 as Equals, fa as ErrorLogEvent, f4 as ExplainFormat, f5 as Explainable, bU as Expression, b3 as ExpressionBuilder, bZ as ExpressionWrapper, bo as ExtractTypeFromReferenceExpression, bn as ExtractTypeFromStringReference, d0 as ExtractWheneableMergeQueryBuilder, eb as FetchModifier, bG as FilterObject, dt as ForeignKeyConstraintBuilder, du as ForeignKeyConstraintBuilderCallback, ds as ForeignKeyConstraintBuilderInterface, ec as ForeignKeyConstraintNodeProps, cE as FunctionModule, eT as Generated, eU as GeneratedAlways, ed as GeneratedNodeParams, cb as HavingInterface, dW as IndexType, bw as InsertObject, cl as InsertQueryBuilder, cm as InsertQueryBuilderProps, ee as InsertQueryNodeProps, eX as InsertType, f1 as Insertable, dN as IsolationLevel, eV as JSONColumnType, ev as JSONOperator, ew as JSONOperatorWith$, cU as JSONPathBuilder, eg as JSONPathLegType, eo as JSON_OPERATORS, cC as JoinBuilder, cD as JoinBuilderProps, bv as JoinCallbackExpression, bu as JoinReferenceExpression, ef as JoinType, bM as KyselyConfig, bK as KyselyProps, f7 as LOG_LEVELS, fe as Log, fd as LogConfig, fb as LogEvent, f8 as LogLevel, fc as Logger, c_ as MatchedThenableMergeQueryBuilder, cX as MergeQueryBuilder, cY as MergeQueryBuilderProps, c3 as MultiTableReturningInterface, cA as NoResultError, cz as NoResultErrorConstructor, e_ as NonNullableInsertKeys, c$ as NotMatchedThenableMergeQueryBuilder, bc as NotNull, bb as Nullable, eZ as NullableInsertKeys, dY as ON_COMMIT_ACTIONS, eK as ON_MODIFY_FOREIGN_ACTIONS, es as OPERATORS, dZ as OnCommitAction, cG as OnConflictBuilder, cH as OnConflictBuilderProps, cI as OnConflictDatabase, cK as OnConflictDoNothingBuilder, eh as OnConflictNodeProps, cJ as OnConflictTables, cL as OnConflictUpdateBuilder, ei as OnDuplicateKeyNodeProps, eL as OnModifyForeignAction, bH as OperandExpression, bE as OperandValueExpression, bF as OperandValueExpressionOrList, el as OperationNodeKind, ej as OperationNodeSource, eA as Operator, b$ as OrWrapper, bB as OrderByDirection, bz as OrderByDirectionExpression, by as OrderByExpression, cc as OrderByInterface, d1 as OrderByItemBuilder, d2 as OrderByItemBuilderProps, eG as OrderByItemNodeProps, bA as OrderByModifiers, bC as OrderByModifiersCallbackExpression, c8 as OutputCallback, c6 as OutputDatabase, c7 as OutputExpression, c4 as OutputInterface, c5 as OutputPrefix, cP as OverBuilderCallback, eI as PrimaryConstraintNode, eH as PrimaryKeyConstraintNodeProps, bS as QueryCreator, bT as QueryCreatorProps, d6 as QueryExecutorProvider, f9 as QueryLogEvent, eJ as QueryNode, d3 as RawBuilderProps, bj as ReferenceExpression, bk as ReferenceExpressionOrList, dC as RefreshMaterializedViewBuilder, dD as RefreshMaterializedViewBuilderProps, e1 as RefreshMaterializedViewNodeParams, c2 as ReturningInterface, d7 as SchemaModule, bg as SelectArg, bf as SelectCallback, be as SelectExpression, ca as SelectExpressionFromOutputCallback, c9 as SelectExpressionFromOutputExpression, eM as SelectModifier, cd as SelectQueryBuilder, cf as SelectQueryBuilderProps, ck as SelectQueryBuilderWithFullJoin, ch as SelectQueryBuilderWithInnerJoin, ci as SelectQueryBuilderWithLeftJoin, cj as SelectQueryBuilderWithRightJoin, eW as SelectType, f0 as Selectable, bh as Selection, eN as SetOperator, bl as SimpleReferenceExpression, eO as SimpleReferenceExpressionNode, br as SimpleTableReference, ba as SqlBool, f6 as Streamable, bm as StringReference, dK as TRANSACTION_ACCESS_MODES, dM as TRANSACTION_ISOLATION_LEVELS, bs as TableExpression, bt as TableExpressionOrList, eP as TopModifier, bJ as Transaction, bO as TransactionBuilder, cV as TraversedJSONPathBuilder, eq as UNARY_FILTER_OPERATORS, er as UNARY_OPERATORS, ez as UnaryFilterOperator, ey as UnaryOperator, eQ as UniqueConstraintNodeProps, e$ as UpdateKeys, bx as UpdateObject, cn as UpdateQueryBuilder, co as UpdateQueryBuilderProps, cs as UpdateQueryBuilderWithFullJoin, cp as UpdateQueryBuilderWithInnerJoin, cq as UpdateQueryBuilderWithLeftJoin, cr as UpdateQueryBuilderWithRightJoin, eY as UpdateType, f2 as Updateable, bp as ValueExpression, bq as ValueExpressionOrList, cZ as WheneableMergeQueryBuilder, c1 as WhereInterface, eR as WithNodeParams, cF as createFunctionModule, bd as createQueryId, d4 as createRawBuilder, ce as createSelectQueryBuilder, b4 as expressionBuilder, bY as isAliasedExpression, eE as isArithmeticOperator, eC as isBinaryOperator, e4 as isColumnDataType, eD as isComparisonOperator, f3 as isCompilable, bX as isExpression, eF as isJSONOperator, bL as isKyselyProps, cB as isNoResultErrorConstructor, ek as isOperationNodeSource, eB as isOperator, dO as validateTransactionSettings } from './kysely.d-DVBZd57e.js';
 
 interface BinaryOperationNode extends OperationNode {
     readonly kind: 'BinaryOperationNode';
@@ -13,6 +13,23 @@ interface BinaryOperationNode extends OperationNode {
 declare const BinaryOperationNode: Readonly<{
     is(node: OperationNode): node is BinaryOperationNode;
     create(leftOperand: OperationNode, operator: OperationNode, rightOperand: OperationNode): BinaryOperationNode;
+}>;
+
+/**
+ * This node is basically just a performance optimization over the normal ValueListNode.
+ * The queries often contain large arrays of primitive values (for example in a `where in` list)
+ * and we don't want to create a ValueNode for each item in those lists.
+ */
+interface PrimitiveValueListNode extends OperationNode {
+    readonly kind: 'PrimitiveValueListNode';
+    readonly values: ReadonlyArray<unknown>;
+}
+/**
+ * @internal
+ */
+declare const PrimitiveValueListNode: Readonly<{
+    is(node: OperationNode): node is PrimitiveValueListNode;
+    create(values: ReadonlyArray<unknown>): PrimitiveValueListNode;
 }>;
 
 type ValuesItemNode = ValueListNode | PrimitiveValueListNode;
@@ -242,7 +259,7 @@ interface Sql {
      * select first_name from "public"."person"
      * ```
      */
-    table(tableReference: string): RawBuilder<unknown>;
+    table<T = unknown>(tableReference: string): RawBuilder<T>;
     /**
      * This can be used to add arbitrary identifiers to SQL snippets.
      *
@@ -284,7 +301,7 @@ interface Sql {
      * select "public"."person"."first_name" from "public"."person"
      * ```
      */
-    id(...ids: readonly string[]): RawBuilder<unknown>;
+    id<T = unknown>(...ids: readonly string[]): RawBuilder<T>;
     /**
      * This can be used to add literal values to SQL snippets.
      *
@@ -390,7 +407,7 @@ interface Sql {
      * BEFORE $1::varchar, (1 == 1)::varchar, (select * from "person")::varchar, false::varchar, "first_name" AFTER
      * ```
      */
-    join(array: readonly unknown[], separator?: RawBuilder<any>): RawBuilder<unknown>;
+    join<T = unknown>(array: readonly unknown[], separator?: RawBuilder<any>): RawBuilder<T>;
 }
 declare const sql: Sql;
 
@@ -467,7 +484,7 @@ declare class DefaultQueryExecutor extends QueryExecutorBase {
      * the output of {@link transformQuery} into this method but you can
      * compile any query using this method.
      */
-    compileQuery(node: RootOperationNode): CompiledQuery;
+    compileQuery(node: RootOperationNode, queryId: QueryId): CompiledQuery;
     /**
      * Provides a connection for the callback and takes care of disposing
      * the connection after the callback has been run.
@@ -688,6 +705,7 @@ declare abstract class OperationNodeVisitor {
     protected abstract visitModifyColumn(node: ModifyColumnNode): void;
     protected abstract visitAddConstraint(node: AddConstraintNode): void;
     protected abstract visitDropConstraint(node: DropConstraintNode): void;
+    protected abstract visitRenameConstraint(node: RenameConstraintNode): void;
     protected abstract visitForeignKeyConstraint(node: ForeignKeyConstraintNode): void;
     protected abstract visitDataType(node: DataTypeNode): void;
     protected abstract visitSelectAll(node: SelectAllNode): void;
@@ -697,6 +715,7 @@ declare abstract class OperationNodeVisitor {
     protected abstract visitPrimitiveValueList(node: PrimitiveValueListNode): void;
     protected abstract visitOperator(node: OperatorNode): void;
     protected abstract visitCreateView(node: CreateViewNode): void;
+    protected abstract visitRefreshMaterializedView(node: RefreshMaterializedViewNode): void;
     protected abstract visitDropView(node: DropViewNode): void;
     protected abstract visitGenerated(node: GeneratedNode): void;
     protected abstract visitDefaultValue(node: DefaultValueNode): void;
@@ -730,12 +749,14 @@ declare abstract class OperationNodeVisitor {
     protected abstract visitFetch(node: FetchNode): void;
     protected abstract visitTop(node: TopNode): void;
     protected abstract visitOutput(node: OutputNode): void;
+    protected abstract visitOrAction(node: OrActionNode): void;
+    protected abstract visitCollate(node: CollateNode): void;
 }
 
 declare class DefaultQueryCompiler extends OperationNodeVisitor implements QueryCompiler {
     #private;
     protected get numParameters(): number;
-    compileQuery(node: RootOperationNode): CompiledQuery;
+    compileQuery(node: RootOperationNode, queryId: QueryId): CompiledQuery;
     protected getSql(): string;
     protected visitSelectQuery(node: SelectQueryNode): void;
     protected visitFrom(node: FromNode): void;
@@ -788,6 +809,10 @@ declare class DefaultQueryCompiler extends OperationNodeVisitor implements Query
     protected visitCreateSchema(node: CreateSchemaNode): void;
     protected visitDropSchema(node: DropSchemaNode): void;
     protected visitPrimaryKeyConstraint(node: PrimaryKeyConstraintNode): void;
+    protected buildDeferrable(node: {
+        deferrable?: boolean;
+        initiallyDeferred?: boolean;
+    }): void;
     protected visitUniqueConstraint(node: UniqueConstraintNode): void;
     protected visitCheckConstraint(node: CheckConstraintNode): void;
     protected visitForeignKeyConstraint(node: ForeignKeyConstraintNode): void;
@@ -803,8 +828,10 @@ declare class DefaultQueryCompiler extends OperationNodeVisitor implements Query
     protected visitModifyColumn(node: ModifyColumnNode): void;
     protected visitAddConstraint(node: AddConstraintNode): void;
     protected visitDropConstraint(node: DropConstraintNode): void;
+    protected visitRenameConstraint(node: RenameConstraintNode): void;
     protected visitSetOperation(node: SetOperationNode): void;
     protected visitCreateView(node: CreateViewNode): void;
+    protected visitRefreshMaterializedView(node: RefreshMaterializedViewNode): void;
     protected visitDropView(node: DropViewNode): void;
     protected visitGenerated(node: GeneratedNode): void;
     protected visitDefaultValue(node: DefaultValueNode): void;
@@ -835,6 +862,8 @@ declare class DefaultQueryCompiler extends OperationNodeVisitor implements Query
     protected visitFetch(node: FetchNode): void;
     protected visitOutput(node: OutputNode): void;
     protected visitTop(node: TopNode): void;
+    protected visitOrAction(node: OrActionNode): void;
+    protected visitCollate(node: CollateNode): void;
     protected append(str: string): void;
     protected appendValue(parameter: unknown): void;
     protected getLeftIdentifierWrapper(): string;
@@ -845,8 +874,10 @@ declare class DefaultQueryCompiler extends OperationNodeVisitor implements Query
     protected getExplainOptionsDelimiter(): string;
     protected getRightExplainOptionsWrapper(): string;
     protected sanitizeIdentifier(identifier: string): string;
+    protected sanitizeStringLiteral(value: string): string;
     protected addParameter(parameter: unknown): void;
     protected appendImmediateValue(value: unknown): void;
+    protected appendStringLiteral(value: string): void;
     protected sortSelectModifiers(arr: SelectModifierNode[]): ReadonlyArray<SelectModifierNode>;
     protected compileColumnAlterations(columnAlterations: readonly AlterTableColumnAlterationNode[]): void;
     /**
@@ -945,6 +976,9 @@ declare class DummyDriver implements Driver {
      * Destroys the driver and releases all resources.
      */
     destroy(): Promise<void>;
+    releaseSavepoint(): Promise<void>;
+    rollbackToSavepoint(): Promise<void>;
+    savepoint(): Promise<void>;
 }
 
 /**
@@ -1156,6 +1190,9 @@ declare class SqliteDriver implements Driver {
      * Rolls back a transaction.
      */
     rollbackTransaction(connection: DatabaseConnection): Promise<void>;
+    savepoint(connection: DatabaseConnection, savepointName: string, compileQuery: QueryCompiler['compileQuery']): Promise<void>;
+    rollbackToSavepoint(connection: DatabaseConnection, savepointName: string, compileQuery: QueryCompiler['compileQuery']): Promise<void>;
+    releaseSavepoint(connection: DatabaseConnection, savepointName: string, compileQuery: QueryCompiler['compileQuery']): Promise<void>;
     /**
      * Releases a connection back to the pool.
      */
@@ -1378,7 +1415,7 @@ declare class MysqlDialect implements Dialect {
     createIntrospector(db: Kysely<any>): DatabaseIntrospector;
 }
 
-declare const PRIVATE_RELEASE_METHOD$2: unique symbol;
+declare const PRIVATE_RELEASE_METHOD$1: unique symbol;
 declare class MysqlDriver implements Driver {
     #private;
     constructor(configOrPool: MysqlDialectConfig);
@@ -1405,6 +1442,9 @@ declare class MysqlDriver implements Driver {
      * Rolls back a transaction.
      */
     rollbackTransaction(connection: DatabaseConnection): Promise<void>;
+    savepoint(connection: DatabaseConnection, savepointName: string, compileQuery: QueryCompiler['compileQuery']): Promise<void>;
+    rollbackToSavepoint(connection: DatabaseConnection, savepointName: string, compileQuery: QueryCompiler['compileQuery']): Promise<void>;
+    releaseSavepoint(connection: DatabaseConnection, savepointName: string, compileQuery: QueryCompiler['compileQuery']): Promise<void>;
     /**
      * Releases a connection back to the pool.
      */
@@ -1419,7 +1459,7 @@ declare class MysqlConnection implements DatabaseConnection {
     constructor(rawConnection: MysqlPoolConnection);
     executeQuery<O>(compiledQuery: CompiledQuery): Promise<QueryResult<O>>;
     streamQuery<O>(compiledQuery: CompiledQuery, _chunkSize: number): AsyncIterableIterator<QueryResult<O>>;
-    [PRIVATE_RELEASE_METHOD$2](): void;
+    [PRIVATE_RELEASE_METHOD$1](): void;
 }
 
 declare class MysqlQueryCompiler extends DefaultQueryCompiler {
@@ -1599,7 +1639,7 @@ interface PostgresStream<T> {
     [Symbol.asyncIterator](): AsyncIterableIterator<T>;
 }
 
-declare const PRIVATE_RELEASE_METHOD$1: unique symbol;
+declare const PRIVATE_RELEASE_METHOD: unique symbol;
 declare class PostgresDriver implements Driver {
     #private;
     constructor(config: PostgresDialectConfig);
@@ -1626,6 +1666,9 @@ declare class PostgresDriver implements Driver {
      * Rolls back a transaction.
      */
     rollbackTransaction(connection: DatabaseConnection): Promise<void>;
+    savepoint(connection: DatabaseConnection, savepointName: string, compileQuery: QueryCompiler['compileQuery']): Promise<void>;
+    rollbackToSavepoint(connection: DatabaseConnection, savepointName: string, compileQuery: QueryCompiler['compileQuery']): Promise<void>;
+    releaseSavepoint(connection: DatabaseConnection, savepointName: string, compileQuery: QueryCompiler['compileQuery']): Promise<void>;
     /**
      * Releases a connection back to the pool.
      */
@@ -1643,7 +1686,7 @@ declare class PostgresConnection implements DatabaseConnection {
     constructor(client: PostgresPoolClient, options: PostgresConnectionOptions);
     executeQuery<O>(compiledQuery: CompiledQuery): Promise<QueryResult<O>>;
     streamQuery<O>(compiledQuery: CompiledQuery, chunkSize: number): AsyncIterableIterator<QueryResult<O>>;
-    [PRIVATE_RELEASE_METHOD$1](): void;
+    [PRIVATE_RELEASE_METHOD](): void;
 }
 
 /**
@@ -1702,6 +1745,7 @@ declare class PostgresDialect implements Dialect {
 }
 
 declare class SqliteQueryCompiler extends DefaultQueryCompiler {
+    protected visitOrAction(node: OrActionNode): void;
     protected getCurrentParameterPlaceholder(): string;
     protected getLeftExplainOptionsWrapper(): string;
     protected getRightExplainOptionsWrapper(): string;
@@ -1893,6 +1937,13 @@ declare class MssqlAdapter extends DialectAdapterBase {
 
 interface MssqlDialectConfig {
     /**
+     * When `true`, connections are reset to their initial states when released
+     * back to the pool, resulting in additional requests to the database.
+     *
+     * Defaults to `false`.
+     */
+    resetConnectionsOnRelease?: boolean;
+    /**
      * This dialect uses the `tarn` package to manage the connection pool to your
      * database. To use it as a peer dependency and not bundle it with Kysely's code,
      * you need to pass the `tarn` package itself. You also need to pass some pool options
@@ -1947,26 +1998,30 @@ interface MssqlDialectConfig {
      * ```
      */
     tedious: Tedious;
+    /**
+     * When `true`, connections are validated before being acquired from the pool,
+     * resulting in additional requests to the database.
+     *
+     * Defaults to `true`.
+     */
+    validateConnections?: boolean;
 }
 interface Tedious {
     connectionFactory: () => TediousConnection | Promise<TediousConnection>;
     ISOLATION_LEVEL: TediousIsolationLevel;
     Request: TediousRequestClass;
-    TYPES: TediousTypes;
     /**
-     * Controls whether connections are reset to their initial states when released back to the pool. Resetting a connection performs additional requests to the database.
-     * See {@link https://tediousjs.github.io/tedious/api-connection.html#function_reset | connection.reset}.
-     *
-     * Defaults to `true`.
+     * @deprecated use {@link MssqlDialectConfig.resetConnectionsOnRelease} instead.
      */
-    resetConnectionOnRelease?: boolean;
+    resetConnectionOnRelease?: KyselyTypeError<'deprecated: use `MssqlDialectConfig.resetConnectionsOnRelease` instead'>;
+    TYPES: TediousTypes;
 }
 interface TediousConnection {
-    beginTransaction(callback: (error?: Error | null, transactionDescriptor?: any) => void, name?: string, isolationLevel?: number): void;
+    beginTransaction(callback: (err: Error | null | undefined, transactionDescriptor?: any) => void, name?: string | undefined, isolationLevel?: number | undefined): void;
     cancel(): boolean;
     close(): void;
-    commitTransaction(callback: (error?: Error | null) => void, name?: string): void;
-    connect(callback?: (error?: Error) => void): void;
+    commitTransaction(callback: (err: Error | null | undefined) => void, name?: string | undefined): void;
+    connect(connectListener: (err?: Error) => void): void;
     execSql(request: TediousRequest): void;
     off(event: 'error', listener: (error: unknown) => void): this;
     off(event: string, listener: (...args: any[]) => void): this;
@@ -1974,9 +2029,9 @@ interface TediousConnection {
     on(event: string, listener: (...args: any[]) => void): this;
     once(event: 'end', listener: () => void): this;
     once(event: string, listener: (...args: any[]) => void): this;
-    reset(callback: (error?: Error | null) => void): void;
-    rollbackTransaction(callback: (error?: Error | null) => void, name?: string): void;
-    saveTransaction(callback: (error?: Error | null) => void, name: string): void;
+    reset(callback: (err: Error | null | undefined) => void): void;
+    rollbackTransaction(callback: (err: Error | null | undefined) => void, name?: string | undefined): void;
+    saveTransaction(callback: (err: Error | null | undefined) => void, name: string): void;
 }
 type TediousIsolationLevel = Record<string, number>;
 interface TediousRequestClass {
@@ -2025,11 +2080,9 @@ interface Tarn {
      */
     options: Omit<TarnPoolOptions<any>, 'create' | 'destroy' | 'validate'> & {
         /**
-         * Controls whether connections are validated before being acquired from the pool. Connection validation performs additional requests to the database.
-         *
-         * Defaults to `true`.
+         * @deprecated use {@link MssqlDialectConfig.validateConnections} instead.
          */
-        validateConnections?: boolean;
+        validateConnections?: KyselyTypeError<'deprecated: use `MssqlDialectConfig.validateConnections` instead'>;
     };
     /**
      * Tarn.js' Pool class.
@@ -2127,7 +2180,7 @@ declare class MssqlDialect implements Dialect {
     createIntrospector(db: Kysely<any>): DatabaseIntrospector;
 }
 
-declare const PRIVATE_RELEASE_METHOD: unique symbol;
+declare const PRIVATE_RESET_METHOD: unique symbol;
 declare const PRIVATE_DESTROY_METHOD: unique symbol;
 declare class MssqlDriver implements Driver {
     #private;
@@ -2155,6 +2208,8 @@ declare class MssqlDriver implements Driver {
      * Rolls back a transaction.
      */
     rollbackTransaction(connection: MssqlConnection): Promise<void>;
+    savepoint(connection: MssqlConnection, savepointName: string): Promise<void>;
+    rollbackToSavepoint(connection: MssqlConnection, savepointName: string): Promise<void>;
     /**
      * Releases a connection back to the pool.
      */
@@ -2171,10 +2226,11 @@ declare class MssqlConnection implements DatabaseConnection {
     commitTransaction(): Promise<void>;
     connect(): Promise<this>;
     executeQuery<O>(compiledQuery: CompiledQuery): Promise<QueryResult<O>>;
-    rollbackTransaction(): Promise<void>;
+    rollbackTransaction(savepointName?: string): Promise<void>;
+    savepoint(savepointName: string): Promise<void>;
     streamQuery<O>(compiledQuery: CompiledQuery, chunkSize: number): AsyncIterableIterator<QueryResult<O>>;
     validate(): Promise<boolean>;
-    [PRIVATE_RELEASE_METHOD](): Promise<void>;
+    [PRIVATE_RESET_METHOD](): Promise<void>;
     [PRIVATE_DESTROY_METHOD](): Promise<void>;
 }
 
@@ -2204,6 +2260,7 @@ declare class MssqlQueryCompiler extends DefaultQueryCompiler {
     protected visitAddColumn(node: AddColumnNode): void;
     protected visitDropColumn(node: DropColumnNode): void;
     protected visitMergeQuery(node: MergeQueryNode): void;
+    protected visitCollate(node: CollateNode): void;
     protected announcesNewColumnDataType(): boolean;
 }
 
@@ -2495,6 +2552,14 @@ interface MigratorProps {
      * Default is `name0.localeCompare(name1)`.
      */
     readonly nameComparator?: (name0: string, name1: string) => number;
+    /**
+     * When `true`, don't run migrations in transactions even if the dialect supports transactional DDL.
+     *
+     * Default is `false`.
+     *
+     * This is useful when some migrations include queries that would fail otherwise.
+     */
+    readonly disableTransactions?: boolean;
 }
 /**
  * All migration methods ({@link Migrator.migrateTo | migrateTo},
@@ -3060,6 +3125,254 @@ declare class ParseJSONResultsPlugin implements KyselyPlugin {
     transformResult(args: PluginTransformResultArgs): Promise<QueryResult<UnknownRow>>;
 }
 
+interface HandleEmptyInListsOptions {
+    /**
+     * The strategy to use when handling `in ()` and `not in ()`.
+     *
+     * See {@link HandleEmptyInListsPlugin} for examples.
+     */
+    strategy: EmptyInListsStrategy;
+}
+type EmptyInListNode = BinaryOperationNode & {
+    operator: OperatorNode & {
+        operator: 'in' | 'not in';
+    };
+    rightOperand: (ValueListNode | PrimitiveValueListNode) & {
+        values: Readonly<[]>;
+    };
+};
+type EmptyInListsStrategy = (node: EmptyInListNode) => BinaryOperationNode;
+/**
+ * Replaces the `in`/`not in` expression with a noncontingent expression (always true or always
+ * false) depending on the original operator.
+ *
+ * This is how Knex.js, PrismaORM, Laravel, and SQLAlchemy handle `in ()` and `not in ()`.
+ *
+ * See {@link pushValueIntoList} for an alternative strategy.
+ */
+declare function replaceWithNoncontingentExpression(node: EmptyInListNode): BinaryOperationNode;
+/**
+ * When `in`, pushes a `null` value into the list resulting in `in (null)`. This
+ * is how TypeORM and Sequelize handle `in ()`. `in (null)` is logically the equivalent
+ * of `= null`, which returns `null`, which is a falsy expression in most SQL databases.
+ * We recommend NOT using this strategy if you plan to use `in` in `select`, `returning`,
+ * or `output` clauses, as the return type differs from the `SqlBool` default type.
+ *
+ * When `not in`, casts the left operand as `char` and pushes a literal value into
+ * the list resulting in `cast({{lhs}} as char) not in ({{VALUE}})`. Casting
+ * is required to avoid database errors with non-string columns.
+ *
+ * See {@link replaceWithNoncontingentExpression} for an alternative strategy.
+ */
+declare function pushValueIntoList(uniqueNotInLiteral: '__kysely_no_values_were_provided__' | (string & {})): EmptyInListsStrategy;
+
+/**
+ * A plugin that allows handling `in ()` and `not in ()` expressions.
+ *
+ * These expressions are invalid SQL syntax for many databases, and result in runtime
+ * database errors.
+ *
+ * The workarounds used by other libraries always involve modifying the query under
+ * the hood, which is not aligned with Kysely's philosophy of WYSIWYG. We recommend manually checking
+ * for empty arrays before passing them as arguments to `in` and `not in` expressions
+ * instead, but understand that this can be cumbersome. Hence we're going with an
+ * opt-in approach where you can choose if and how to handle these cases. We do
+ * not want to make this the default behavior, as it can lead to unexpected behavior.
+ * Use it at your own risk. Test it. Make sure it works as expected for you.
+ *
+ * Using this plugin also allows you to throw an error (thus avoiding unnecessary
+ * requests to the database) or print a warning in these cases.
+ *
+ * ### Examples
+ *
+ * The following strategy replaces the `in`/`not in` expression with a noncontingent
+ * expression. A contradiction (falsy) `1 = 0` for `in`, and a tautology (truthy) `1 = 1` for `not in`),
+ * similarily to how {@link https://github.com/knex/knex/blob/176151d8048b2a7feeb89a3d649a5580786d4f4e/docs/src/guide/query-builder.md#L1763 | Knex.js},
+ * {@link https://github.com/prisma/prisma-engines/blob/99168c54187178484dae45d9478aa40cfd1866d2/quaint/src/visitor.rs#L804-L823 | PrismaORM},
+ * {@link https://github.com/laravel/framework/blob/8.x/src/Illuminate/Database/Query/Grammars/Grammar.php#L284-L291 | Laravel},
+ * {@link https://docs.sqlalchemy.org/en/13/core/engines.html#sqlalchemy.create_engine.params.empty_in_strategy | SQLAlchemy}
+ * handle this.
+ *
+ * ```ts
+ * import Sqlite from 'better-sqlite3'
+ * import {
+ *   HandleEmptyInListsPlugin,
+ *   Kysely,
+ *   replaceWithNoncontingentExpression,
+ *   SqliteDialect,
+ * } from 'kysely'
+ * import type { Database } from 'type-editor' // imaginary module
+ *
+ * const db = new Kysely<Database>({
+ *   dialect: new SqliteDialect({
+ *     database: new Sqlite(':memory:'),
+ *   }),
+ *   plugins: [
+ *     new HandleEmptyInListsPlugin({
+ *       strategy: replaceWithNoncontingentExpression
+ *     })
+ *   ],
+ * })
+ *
+ * const results = await db
+ *   .selectFrom('person')
+ *   .where('id', 'in', [])
+ *   .where('first_name', 'not in', [])
+ *   .selectAll()
+ *   .execute()
+ * ```
+ *
+ * The generated SQL (SQLite):
+ *
+ * ```sql
+ * select * from "person" where 1 = 0 and 1 = 1
+ * ```
+ *
+ * The following strategy does the following:
+ *
+ * When `in`, pushes a `null` value into the empty list resulting in `in (null)`,
+ * similiarly to how {@link https://github.com/typeorm/typeorm/blob/0280cdc451c35ef73c830eb1191c95d34f6ce06e/src/query-builder/QueryBuilder.ts#L919-L922 | TypeORM}
+ * and {@link https://github.com/sequelize/sequelize/blob/0f2891c6897e12bf9bf56df344aae5b698f58c7d/packages/core/src/abstract-dialect/where-sql-builder.ts#L368-L379 | Sequelize}
+ * handle `in ()`. `in (null)` is logically the equivalent of `= null`, which returns
+ * `null`, which is a falsy expression in most SQL databases. We recommend NOT
+ * using this strategy if you plan to use `in` in `select`, `returning`, or `output`
+ * clauses, as the return type differs from the `SqlBool` default type for comparisons.
+ *
+ * When `not in`, casts the left operand as `char` and pushes a unique value into
+ * the empty list resulting in `cast({{lhs}} as char) not in ({{VALUE}})`. Casting
+ * is required to avoid database errors with non-string values.
+ *
+ * ```ts
+ * import Sqlite from 'better-sqlite3'
+ * import {
+ *   HandleEmptyInListsPlugin,
+ *   Kysely,
+ *   pushValueIntoList,
+ *   SqliteDialect
+ * } from 'kysely'
+ * import type { Database } from 'type-editor' // imaginary module
+ *
+ * const db = new Kysely<Database>({
+ *   dialect: new SqliteDialect({
+ *     database: new Sqlite(':memory:'),
+ *   }),
+ *   plugins: [
+ *     new HandleEmptyInListsPlugin({
+ *       strategy: pushValueIntoList('__kysely_no_values_were_provided__') // choose a unique value for not in. has to be something with zero chance being in the data.
+ *     })
+ *   ],
+ * })
+ *
+ * const results = await db
+ *   .selectFrom('person')
+ *   .where('id', 'in', [])
+ *   .where('first_name', 'not in', [])
+ *   .selectAll()
+ *   .execute()
+ * ```
+ *
+ * The generated SQL (SQLite):
+ *
+ * ```sql
+ * select * from "person" where "id" in (null) and cast("first_name" as char) not in ('__kysely_no_values_were_provided__')
+ * ```
+ *
+ * The following custom strategy throws an error when an empty list is encountered
+ * to avoid unnecessary requests to the database:
+ *
+ * ```ts
+ * import Sqlite from 'better-sqlite3'
+ * import {
+ *   HandleEmptyInListsPlugin,
+ *   Kysely,
+ *   SqliteDialect
+ * } from 'kysely'
+ * import type { Database } from 'type-editor' // imaginary module
+ *
+ * const db = new Kysely<Database>({
+ *   dialect: new SqliteDialect({
+ *     database: new Sqlite(':memory:'),
+ *   }),
+ *   plugins: [
+ *     new HandleEmptyInListsPlugin({
+ *       strategy: () => {
+ *         throw new Error('Empty in/not-in is not allowed')
+ *       }
+ *     })
+ *   ],
+ * })
+ *
+ * const results = await db
+ *   .selectFrom('person')
+ *   .where('id', 'in', [])
+ *   .selectAll()
+ *   .execute() // throws an error with 'Empty in/not-in is not allowed' message!
+ * ```
+ */
+declare class HandleEmptyInListsPlugin implements KyselyPlugin {
+    #private;
+    readonly opt: HandleEmptyInListsOptions;
+    constructor(opt: HandleEmptyInListsOptions);
+    /**
+     * This is called for each query before it is executed. You can modify the query by
+     * transforming its {@link OperationNode} tree provided in {@link PluginTransformQueryArgs.node | args.node}
+     * and returning the transformed tree. You'd usually want to use an {@link OperationNodeTransformer}
+     * for this.
+     *
+     * If you need to pass some query-related data between this method and `transformResult` you
+     * can use a `WeakMap` with {@link PluginTransformQueryArgs.queryId | args.queryId} as the key:
+     *
+     * ```ts
+     * import type {
+     *   KyselyPlugin,
+     *   QueryResult,
+     *   RootOperationNode,
+     *   UnknownRow
+     * } from 'kysely'
+     *
+     * interface MyData {
+     *   // ...
+     * }
+     * const data = new WeakMap<any, MyData>()
+     *
+     * const plugin = {
+     *   transformQuery(args: PluginTransformQueryArgs): RootOperationNode {
+     *     const something: MyData = {}
+     *
+     *     // ...
+     *
+     *     data.set(args.queryId, something)
+     *
+     *     // ...
+     *
+     *     return args.node
+     *   },
+     *
+     *   async transformResult(args: PluginTransformResultArgs): Promise<QueryResult<UnknownRow>> {
+     *     // ...
+     *
+     *     const something = data.get(args.queryId)
+     *
+     *     // ...
+     *
+     *     return args.result
+     *   }
+     * } satisfies KyselyPlugin
+     * ```
+     *
+     * You should use a `WeakMap` instead of a `Map` or some other strong references because `transformQuery`
+     * is not always matched by a call to `transformResult` which would leave orphaned items in the map
+     * and cause a memory leak.
+     */
+    transformQuery(args: PluginTransformQueryArgs): RootOperationNode;
+    /**
+     * This method is called for each query after it has been executed. The result
+     * of the query can be accessed through {@link PluginTransformResultArgs.result | args.result}.
+     * You can modify the result and return the modifier result.
+     */
+    transformResult(args: PluginTransformResultArgs): Promise<QueryResult<UnknownRow>>;
+}
+
 /**
  * Transforms an operation node tree into another one.
  *
@@ -3098,102 +3411,106 @@ declare class ParseJSONResultsPlugin implements KyselyPlugin {
 declare class OperationNodeTransformer {
     #private;
     protected readonly nodeStack: OperationNode[];
-    transformNode<T extends OperationNode | undefined>(node: T): T;
-    protected transformNodeImpl<T extends OperationNode>(node: T): T;
-    protected transformNodeList<T extends ReadonlyArray<OperationNode> | undefined>(list: T): T;
-    protected transformSelectQuery(node: SelectQueryNode): SelectQueryNode;
-    protected transformSelection(node: SelectionNode): SelectionNode;
-    protected transformColumn(node: ColumnNode): ColumnNode;
-    protected transformAlias(node: AliasNode): AliasNode;
-    protected transformTable(node: TableNode): TableNode;
-    protected transformFrom(node: FromNode): FromNode;
-    protected transformReference(node: ReferenceNode): ReferenceNode;
-    protected transformAnd(node: AndNode): AndNode;
-    protected transformOr(node: OrNode): OrNode;
-    protected transformValueList(node: ValueListNode): ValueListNode;
-    protected transformParens(node: ParensNode): ParensNode;
-    protected transformJoin(node: JoinNode): JoinNode;
-    protected transformRaw(node: RawNode): RawNode;
-    protected transformWhere(node: WhereNode): WhereNode;
-    protected transformInsertQuery(node: InsertQueryNode): InsertQueryNode;
-    protected transformValues(node: ValuesNode): ValuesNode;
-    protected transformDeleteQuery(node: DeleteQueryNode): DeleteQueryNode;
-    protected transformReturning(node: ReturningNode): ReturningNode;
-    protected transformCreateTable(node: CreateTableNode): CreateTableNode;
-    protected transformColumnDefinition(node: ColumnDefinitionNode): ColumnDefinitionNode;
-    protected transformAddColumn(node: AddColumnNode): AddColumnNode;
-    protected transformDropTable(node: DropTableNode): DropTableNode;
-    protected transformOrderBy(node: OrderByNode): OrderByNode;
-    protected transformOrderByItem(node: OrderByItemNode): OrderByItemNode;
-    protected transformGroupBy(node: GroupByNode): GroupByNode;
-    protected transformGroupByItem(node: GroupByItemNode): GroupByItemNode;
-    protected transformUpdateQuery(node: UpdateQueryNode): UpdateQueryNode;
-    protected transformColumnUpdate(node: ColumnUpdateNode): ColumnUpdateNode;
-    protected transformLimit(node: LimitNode): LimitNode;
-    protected transformOffset(node: OffsetNode): OffsetNode;
-    protected transformOnConflict(node: OnConflictNode): OnConflictNode;
-    protected transformOnDuplicateKey(node: OnDuplicateKeyNode): OnDuplicateKeyNode;
-    protected transformCreateIndex(node: CreateIndexNode): CreateIndexNode;
-    protected transformList(node: ListNode): ListNode;
-    protected transformDropIndex(node: DropIndexNode): DropIndexNode;
-    protected transformPrimaryKeyConstraint(node: PrimaryKeyConstraintNode): PrimaryKeyConstraintNode;
-    protected transformUniqueConstraint(node: UniqueConstraintNode): UniqueConstraintNode;
-    protected transformForeignKeyConstraint(node: ForeignKeyConstraintNode): ForeignKeyConstraintNode;
-    protected transformSetOperation(node: SetOperationNode): SetOperationNode;
-    protected transformReferences(node: ReferencesNode): ReferencesNode;
-    protected transformCheckConstraint(node: CheckConstraintNode): CheckConstraintNode;
-    protected transformWith(node: WithNode): WithNode;
-    protected transformCommonTableExpression(node: CommonTableExpressionNode): CommonTableExpressionNode;
-    protected transformCommonTableExpressionName(node: CommonTableExpressionNameNode): CommonTableExpressionNameNode;
-    protected transformHaving(node: HavingNode): HavingNode;
-    protected transformCreateSchema(node: CreateSchemaNode): CreateSchemaNode;
-    protected transformDropSchema(node: DropSchemaNode): DropSchemaNode;
-    protected transformAlterTable(node: AlterTableNode): AlterTableNode;
-    protected transformDropColumn(node: DropColumnNode): DropColumnNode;
-    protected transformRenameColumn(node: RenameColumnNode): RenameColumnNode;
-    protected transformAlterColumn(node: AlterColumnNode): AlterColumnNode;
-    protected transformModifyColumn(node: ModifyColumnNode): ModifyColumnNode;
-    protected transformAddConstraint(node: AddConstraintNode): AddConstraintNode;
-    protected transformDropConstraint(node: DropConstraintNode): DropConstraintNode;
-    protected transformCreateView(node: CreateViewNode): CreateViewNode;
-    protected transformDropView(node: DropViewNode): DropViewNode;
-    protected transformGenerated(node: GeneratedNode): GeneratedNode;
-    protected transformDefaultValue(node: DefaultValueNode): DefaultValueNode;
-    protected transformOn(node: OnNode): OnNode;
-    protected transformSelectModifier(node: SelectModifierNode): SelectModifierNode;
-    protected transformCreateType(node: CreateTypeNode): CreateTypeNode;
-    protected transformDropType(node: DropTypeNode): DropTypeNode;
-    protected transformExplain(node: ExplainNode): ExplainNode;
-    protected transformSchemableIdentifier(node: SchemableIdentifierNode): SchemableIdentifierNode;
-    protected transformAggregateFunction(node: AggregateFunctionNode): AggregateFunctionNode;
-    protected transformOver(node: OverNode): OverNode;
-    protected transformPartitionBy(node: PartitionByNode): PartitionByNode;
-    protected transformPartitionByItem(node: PartitionByItemNode): PartitionByItemNode;
-    protected transformBinaryOperation(node: BinaryOperationNode): BinaryOperationNode;
-    protected transformUnaryOperation(node: UnaryOperationNode): UnaryOperationNode;
-    protected transformUsing(node: UsingNode): UsingNode;
-    protected transformFunction(node: FunctionNode): FunctionNode;
-    protected transformCase(node: CaseNode): CaseNode;
-    protected transformWhen(node: WhenNode): WhenNode;
-    protected transformJSONReference(node: JSONReferenceNode): JSONReferenceNode;
-    protected transformJSONPath(node: JSONPathNode): JSONPathNode;
-    protected transformJSONPathLeg(node: JSONPathLegNode): JSONPathLegNode;
-    protected transformJSONOperatorChain(node: JSONOperatorChainNode): JSONOperatorChainNode;
-    protected transformTuple(node: TupleNode): TupleNode;
-    protected transformMergeQuery(node: MergeQueryNode): MergeQueryNode;
-    protected transformMatched(node: MatchedNode): MatchedNode;
-    protected transformAddIndex(node: AddIndexNode): AddIndexNode;
-    protected transformCast(node: CastNode): CastNode;
-    protected transformFetch(node: FetchNode): FetchNode;
-    protected transformTop(node: TopNode): TopNode;
-    protected transformOutput(node: OutputNode): OutputNode;
-    protected transformDataType(node: DataTypeNode): DataTypeNode;
-    protected transformSelectAll(node: SelectAllNode): SelectAllNode;
-    protected transformIdentifier(node: IdentifierNode): IdentifierNode;
-    protected transformValue(node: ValueNode): ValueNode;
-    protected transformPrimitiveValueList(node: PrimitiveValueListNode): PrimitiveValueListNode;
-    protected transformOperator(node: OperatorNode): OperatorNode;
-    protected transformDefaultInsertValue(node: DefaultInsertValueNode): DefaultInsertValueNode;
+    transformNode<T extends OperationNode | undefined>(node: T, queryId?: QueryId): T;
+    protected transformNodeImpl<T extends OperationNode>(node: T, queryId?: QueryId): T;
+    protected transformNodeList<T extends ReadonlyArray<OperationNode> | undefined>(list: T, queryId?: QueryId): T;
+    protected transformSelectQuery(node: SelectQueryNode, queryId?: QueryId): SelectQueryNode;
+    protected transformSelection(node: SelectionNode, queryId?: QueryId): SelectionNode;
+    protected transformColumn(node: ColumnNode, queryId?: QueryId): ColumnNode;
+    protected transformAlias(node: AliasNode, queryId?: QueryId): AliasNode;
+    protected transformTable(node: TableNode, queryId?: QueryId): TableNode;
+    protected transformFrom(node: FromNode, queryId?: QueryId): FromNode;
+    protected transformReference(node: ReferenceNode, queryId?: QueryId): ReferenceNode;
+    protected transformAnd(node: AndNode, queryId?: QueryId): AndNode;
+    protected transformOr(node: OrNode, queryId?: QueryId): OrNode;
+    protected transformValueList(node: ValueListNode, queryId?: QueryId): ValueListNode;
+    protected transformParens(node: ParensNode, queryId?: QueryId): ParensNode;
+    protected transformJoin(node: JoinNode, queryId?: QueryId): JoinNode;
+    protected transformRaw(node: RawNode, queryId?: QueryId): RawNode;
+    protected transformWhere(node: WhereNode, queryId?: QueryId): WhereNode;
+    protected transformInsertQuery(node: InsertQueryNode, queryId?: QueryId): InsertQueryNode;
+    protected transformValues(node: ValuesNode, queryId?: QueryId): ValuesNode;
+    protected transformDeleteQuery(node: DeleteQueryNode, queryId?: QueryId): DeleteQueryNode;
+    protected transformReturning(node: ReturningNode, queryId?: QueryId): ReturningNode;
+    protected transformCreateTable(node: CreateTableNode, queryId?: QueryId): CreateTableNode;
+    protected transformColumnDefinition(node: ColumnDefinitionNode, queryId?: QueryId): ColumnDefinitionNode;
+    protected transformAddColumn(node: AddColumnNode, queryId?: QueryId): AddColumnNode;
+    protected transformDropTable(node: DropTableNode, queryId?: QueryId): DropTableNode;
+    protected transformOrderBy(node: OrderByNode, queryId?: QueryId): OrderByNode;
+    protected transformOrderByItem(node: OrderByItemNode, queryId?: QueryId): OrderByItemNode;
+    protected transformGroupBy(node: GroupByNode, queryId?: QueryId): GroupByNode;
+    protected transformGroupByItem(node: GroupByItemNode, queryId?: QueryId): GroupByItemNode;
+    protected transformUpdateQuery(node: UpdateQueryNode, queryId?: QueryId): UpdateQueryNode;
+    protected transformColumnUpdate(node: ColumnUpdateNode, queryId?: QueryId): ColumnUpdateNode;
+    protected transformLimit(node: LimitNode, queryId?: QueryId): LimitNode;
+    protected transformOffset(node: OffsetNode, queryId?: QueryId): OffsetNode;
+    protected transformOnConflict(node: OnConflictNode, queryId?: QueryId): OnConflictNode;
+    protected transformOnDuplicateKey(node: OnDuplicateKeyNode, queryId?: QueryId): OnDuplicateKeyNode;
+    protected transformCreateIndex(node: CreateIndexNode, queryId?: QueryId): CreateIndexNode;
+    protected transformList(node: ListNode, queryId?: QueryId): ListNode;
+    protected transformDropIndex(node: DropIndexNode, queryId?: QueryId): DropIndexNode;
+    protected transformPrimaryKeyConstraint(node: PrimaryKeyConstraintNode, queryId?: QueryId): PrimaryKeyConstraintNode;
+    protected transformUniqueConstraint(node: UniqueConstraintNode, queryId?: QueryId): UniqueConstraintNode;
+    protected transformForeignKeyConstraint(node: ForeignKeyConstraintNode, queryId?: QueryId): ForeignKeyConstraintNode;
+    protected transformSetOperation(node: SetOperationNode, queryId?: QueryId): SetOperationNode;
+    protected transformReferences(node: ReferencesNode, queryId?: QueryId): ReferencesNode;
+    protected transformCheckConstraint(node: CheckConstraintNode, queryId?: QueryId): CheckConstraintNode;
+    protected transformWith(node: WithNode, queryId?: QueryId): WithNode;
+    protected transformCommonTableExpression(node: CommonTableExpressionNode, queryId?: QueryId): CommonTableExpressionNode;
+    protected transformCommonTableExpressionName(node: CommonTableExpressionNameNode, queryId?: QueryId): CommonTableExpressionNameNode;
+    protected transformHaving(node: HavingNode, queryId?: QueryId): HavingNode;
+    protected transformCreateSchema(node: CreateSchemaNode, queryId?: QueryId): CreateSchemaNode;
+    protected transformDropSchema(node: DropSchemaNode, queryId?: QueryId): DropSchemaNode;
+    protected transformAlterTable(node: AlterTableNode, queryId?: QueryId): AlterTableNode;
+    protected transformDropColumn(node: DropColumnNode, queryId?: QueryId): DropColumnNode;
+    protected transformRenameColumn(node: RenameColumnNode, queryId?: QueryId): RenameColumnNode;
+    protected transformAlterColumn(node: AlterColumnNode, queryId?: QueryId): AlterColumnNode;
+    protected transformModifyColumn(node: ModifyColumnNode, queryId?: QueryId): ModifyColumnNode;
+    protected transformAddConstraint(node: AddConstraintNode, queryId?: QueryId): AddConstraintNode;
+    protected transformDropConstraint(node: DropConstraintNode, queryId?: QueryId): DropConstraintNode;
+    protected transformRenameConstraint(node: RenameConstraintNode, queryId?: QueryId): RenameConstraintNode;
+    protected transformCreateView(node: CreateViewNode, queryId?: QueryId): CreateViewNode;
+    protected transformRefreshMaterializedView(node: RefreshMaterializedViewNode, queryId?: QueryId): RefreshMaterializedViewNode;
+    protected transformDropView(node: DropViewNode, queryId?: QueryId): DropViewNode;
+    protected transformGenerated(node: GeneratedNode, queryId?: QueryId): GeneratedNode;
+    protected transformDefaultValue(node: DefaultValueNode, queryId?: QueryId): DefaultValueNode;
+    protected transformOn(node: OnNode, queryId?: QueryId): OnNode;
+    protected transformSelectModifier(node: SelectModifierNode, queryId?: QueryId): SelectModifierNode;
+    protected transformCreateType(node: CreateTypeNode, queryId?: QueryId): CreateTypeNode;
+    protected transformDropType(node: DropTypeNode, queryId?: QueryId): DropTypeNode;
+    protected transformExplain(node: ExplainNode, queryId?: QueryId): ExplainNode;
+    protected transformSchemableIdentifier(node: SchemableIdentifierNode, queryId?: QueryId): SchemableIdentifierNode;
+    protected transformAggregateFunction(node: AggregateFunctionNode, queryId?: QueryId): AggregateFunctionNode;
+    protected transformOver(node: OverNode, queryId?: QueryId): OverNode;
+    protected transformPartitionBy(node: PartitionByNode, queryId?: QueryId): PartitionByNode;
+    protected transformPartitionByItem(node: PartitionByItemNode, queryId?: QueryId): PartitionByItemNode;
+    protected transformBinaryOperation(node: BinaryOperationNode, queryId?: QueryId): BinaryOperationNode;
+    protected transformUnaryOperation(node: UnaryOperationNode, queryId?: QueryId): UnaryOperationNode;
+    protected transformUsing(node: UsingNode, queryId?: QueryId): UsingNode;
+    protected transformFunction(node: FunctionNode, queryId?: QueryId): FunctionNode;
+    protected transformCase(node: CaseNode, queryId?: QueryId): CaseNode;
+    protected transformWhen(node: WhenNode, queryId?: QueryId): WhenNode;
+    protected transformJSONReference(node: JSONReferenceNode, queryId?: QueryId): JSONReferenceNode;
+    protected transformJSONPath(node: JSONPathNode, queryId?: QueryId): JSONPathNode;
+    protected transformJSONPathLeg(node: JSONPathLegNode, _queryId?: QueryId): JSONPathLegNode;
+    protected transformJSONOperatorChain(node: JSONOperatorChainNode, queryId?: QueryId): JSONOperatorChainNode;
+    protected transformTuple(node: TupleNode, queryId?: QueryId): TupleNode;
+    protected transformMergeQuery(node: MergeQueryNode, queryId?: QueryId): MergeQueryNode;
+    protected transformMatched(node: MatchedNode, _queryId?: QueryId): MatchedNode;
+    protected transformAddIndex(node: AddIndexNode, queryId?: QueryId): AddIndexNode;
+    protected transformCast(node: CastNode, queryId?: QueryId): CastNode;
+    protected transformFetch(node: FetchNode, queryId?: QueryId): FetchNode;
+    protected transformTop(node: TopNode, _queryId?: QueryId): TopNode;
+    protected transformOutput(node: OutputNode, queryId?: QueryId): OutputNode;
+    protected transformDataType(node: DataTypeNode, _queryId?: QueryId): DataTypeNode;
+    protected transformSelectAll(node: SelectAllNode, _queryId?: QueryId): SelectAllNode;
+    protected transformIdentifier(node: IdentifierNode, _queryId?: QueryId): IdentifierNode;
+    protected transformValue(node: ValueNode, _queryId?: QueryId): ValueNode;
+    protected transformPrimitiveValueList(node: PrimitiveValueListNode, _queryId?: QueryId): PrimitiveValueListNode;
+    protected transformOperator(node: OperatorNode, _queryId?: QueryId): OperatorNode;
+    protected transformDefaultInsertValue(node: DefaultInsertValueNode, _queryId?: QueryId): DefaultInsertValueNode;
+    protected transformOrAction(node: OrActionNode, _queryId?: QueryId): OrActionNode;
+    protected transformCollate(node: CollateNode, _queryId?: QueryId): CollateNode;
 }
 
 /**
@@ -3235,7 +3552,7 @@ declare class OperationNodeTransformer {
  * ```
  */
 type InferResult<C extends Compilable<any> | CompiledQuery<any>> = C extends Compilable<infer O> ? ResolveResult<O> : C extends CompiledQuery<infer O> ? ResolveResult<O> : never;
-type ResolveResult<O> = O extends InsertResult | UpdateResult | DeleteResult | MergeResult ? O : Simplify<O>[];
+type ResolveResult<O> = O extends InsertResult | UpdateResult | DeleteResult | MergeResult ? O[] : Simplify<O>[];
 
 /**
  * Use for system-level logging, such as deprecation messages.
@@ -3245,4 +3562,4 @@ declare function logOnce(message: string): void;
 
 type ExistsExpression<DB, TB extends keyof DB> = ExpressionOrFactory<DB, TB, any>;
 
-export { AddColumnNode, AddConstraintNode, AddIndexNode, AggregateFunctionNode, AliasNode, AlterColumnNode, AlterTableColumnAlterationNode, AlterTableNode, AndNode, BinaryOperationNode, CamelCasePlugin, type CamelCasePluginOptions, CaseNode, CastNode, CheckConstraintNode, ColumnDefinitionNode, ColumnNode, ColumnUpdateNode, CommonTableExpressionNameNode, CommonTableExpressionNode, Compilable, CompiledQuery, ConnectionProvider, CreateIndexNode, CreateSchemaNode, CreateTableNode, CreateTypeNode, CreateViewNode, DEFAULT_ALLOW_UNORDERED_MIGRATIONS, DEFAULT_MIGRATION_LOCK_TABLE, DEFAULT_MIGRATION_TABLE, DataTypeNode, DatabaseConnection, DatabaseIntrospector, DatabaseMetadata, DatabaseMetadataOptions, DeduplicateJoinsPlugin, DefaultConnectionProvider, DefaultInsertValueNode, DefaultQueryCompiler, DefaultQueryExecutor, DefaultValueNode, DeleteQueryNode, DeleteResult, Dialect, DialectAdapter, DialectAdapterBase, Driver, DropColumnNode, DropConstraintNode, DropIndexNode, DropSchemaNode, DropTableNode, DropTypeNode, DropViewNode, DummyDriver, type ExistsExpression, ExplainNode, ExpressionOrFactory, FetchNode, FileMigrationProvider, type FileMigrationProviderFS, type FileMigrationProviderPath, type FileMigrationProviderProps, ForeignKeyConstraintNode, FromNode, FunctionNode, GeneratedNode, GroupByItemNode, GroupByNode, HavingNode, IdentifierNode, type InferResult, InsertQueryNode, InsertResult, JSONOperatorChainNode, JSONPathLegNode, JSONPathNode, JSONReferenceNode, JoinNode, Kysely, KyselyPlugin, LimitNode, ListNode, MIGRATION_LOCK_ID, MatchedNode, MergeQueryNode, MergeResult, type Migration, type MigrationInfo, MigrationLockOptions, type MigrationProvider, type MigrationResult, type MigrationResultSet, Migrator, type MigratorProps, ModifyColumnNode, MssqlAdapter, MssqlDialect, type MssqlDialectConfig, MssqlDriver, MssqlIntrospector, MssqlQueryCompiler, MysqlAdapter, MysqlDialect, type MysqlDialectConfig, MysqlDriver, MysqlIntrospector, type MysqlOkPacket, type MysqlPool, type MysqlPoolConnection, MysqlQueryCompiler, type MysqlQueryResult, type MysqlStream, type MysqlStreamOptions, NOOP_QUERY_EXECUTOR, NO_MIGRATIONS, type NoMigrations, NoopQueryExecutor, OffsetNode, OnConflictNode, OnDuplicateKeyNode, OnNode, OperationNode, OperationNodeTransformer, OperationNodeVisitor, OperatorNode, OrNode, OrderByItemNode, OrderByNode, OutputNode, OverNode, ParensNode, ParseJSONResultsPlugin, type ParseJSONResultsPluginOptions, PartitionByItemNode, PartitionByNode, PluginTransformQueryArgs, PluginTransformResultArgs, PostgresAdapter, type PostgresCursor, type PostgresCursorConstructor, PostgresDialect, type PostgresDialectConfig, PostgresDriver, PostgresIntrospector, type PostgresPool, type PostgresPoolClient, PostgresQueryCompiler, type PostgresQueryResult, type PostgresStream, PrimaryKeyConstraintNode, PrimitiveValueListNode, QueryCompiler, QueryExecutor, QueryResult, RawBuilder, RawNode, ReferenceNode, ReferencesNode, RenameColumnNode, ReturningNode, RootOperationNode, SchemaMetadata, SchemableIdentifierNode, SelectAllNode, SelectModifierNode, SelectQueryNode, SelectionNode, SetOperationNode, Simplify, SingleConnectionProvider, type Sql, SqliteAdapter, type SqliteDatabase, SqliteDialect, type SqliteDialectConfig, SqliteDriver, SqliteIntrospector, SqliteQueryCompiler, type SqliteStatement, TableMetadata, TableNode, type Tarn, type TarnPendingRequest, TarnPool, type TarnPoolOptions, type Tedious, type TediousColumnValue, type TediousConnection, type TediousDataType, type TediousIsolationLevel, TediousRequest, type TediousRequestClass, type TediousTypes, TopNode, TransactionSettings, TupleNode, UnaryOperationNode, UniqueConstraintNode, UnknownRow, UpdateQueryNode, UpdateResult, UsingNode, ValueListNode, ValueNode, type ValuesItemNode, ValuesNode, WhenNode, WhereNode, WithNode, WithSchemaPlugin, logOnce, sql };
+export { AddColumnNode, AddConstraintNode, AddIndexNode, AggregateFunctionNode, AliasNode, AlterColumnNode, AlterTableColumnAlterationNode, AlterTableNode, AndNode, BinaryOperationNode, CamelCasePlugin, type CamelCasePluginOptions, CaseNode, CastNode, CheckConstraintNode, CollateNode, ColumnDefinitionNode, ColumnNode, ColumnUpdateNode, CommonTableExpressionNameNode, CommonTableExpressionNode, Compilable, CompiledQuery, ConnectionProvider, CreateIndexNode, CreateSchemaNode, CreateTableNode, CreateTypeNode, CreateViewNode, DEFAULT_ALLOW_UNORDERED_MIGRATIONS, DEFAULT_MIGRATION_LOCK_TABLE, DEFAULT_MIGRATION_TABLE, DataTypeNode, DatabaseConnection, DatabaseIntrospector, DatabaseMetadata, DatabaseMetadataOptions, DeduplicateJoinsPlugin, DefaultConnectionProvider, DefaultInsertValueNode, DefaultQueryCompiler, DefaultQueryExecutor, DefaultValueNode, DeleteQueryNode, DeleteResult, Dialect, DialectAdapter, DialectAdapterBase, Driver, DropColumnNode, DropConstraintNode, DropIndexNode, DropSchemaNode, DropTableNode, DropTypeNode, DropViewNode, DummyDriver, type EmptyInListNode, type EmptyInListsStrategy, type ExistsExpression, ExplainNode, ExpressionOrFactory, FetchNode, FileMigrationProvider, type FileMigrationProviderFS, type FileMigrationProviderPath, type FileMigrationProviderProps, ForeignKeyConstraintNode, FromNode, FunctionNode, GeneratedNode, GroupByItemNode, GroupByNode, type HandleEmptyInListsOptions, HandleEmptyInListsPlugin, HavingNode, IdentifierNode, type InferResult, InsertQueryNode, InsertResult, JSONOperatorChainNode, JSONPathLegNode, JSONPathNode, JSONReferenceNode, JoinNode, Kysely, KyselyPlugin, LimitNode, ListNode, MIGRATION_LOCK_ID, MatchedNode, MergeQueryNode, MergeResult, type Migration, type MigrationInfo, MigrationLockOptions, type MigrationProvider, type MigrationResult, type MigrationResultSet, Migrator, type MigratorProps, ModifyColumnNode, MssqlAdapter, MssqlDialect, type MssqlDialectConfig, MssqlDriver, MssqlIntrospector, MssqlQueryCompiler, MysqlAdapter, MysqlDialect, type MysqlDialectConfig, MysqlDriver, MysqlIntrospector, type MysqlOkPacket, type MysqlPool, type MysqlPoolConnection, MysqlQueryCompiler, type MysqlQueryResult, type MysqlStream, type MysqlStreamOptions, NOOP_QUERY_EXECUTOR, NO_MIGRATIONS, type NoMigrations, NoopQueryExecutor, OffsetNode, OnConflictNode, OnDuplicateKeyNode, OnNode, OperationNode, OperationNodeTransformer, OperationNodeVisitor, OperatorNode, OrActionNode, OrNode, OrderByItemNode, OrderByNode, OutputNode, OverNode, ParensNode, ParseJSONResultsPlugin, type ParseJSONResultsPluginOptions, PartitionByItemNode, PartitionByNode, PluginTransformQueryArgs, PluginTransformResultArgs, PostgresAdapter, type PostgresCursor, type PostgresCursorConstructor, PostgresDialect, type PostgresDialectConfig, PostgresDriver, PostgresIntrospector, type PostgresPool, type PostgresPoolClient, PostgresQueryCompiler, type PostgresQueryResult, type PostgresStream, PrimaryKeyConstraintNode, PrimitiveValueListNode, QueryCompiler, QueryExecutor, QueryId, QueryResult, RawBuilder, RawNode, ReferenceNode, ReferencesNode, RefreshMaterializedViewNode, RenameColumnNode, RenameConstraintNode, ReturningNode, RootOperationNode, SchemaMetadata, SchemableIdentifierNode, SelectAllNode, SelectModifierNode, SelectQueryNode, SelectionNode, SetOperationNode, Simplify, SingleConnectionProvider, type Sql, SqliteAdapter, type SqliteDatabase, SqliteDialect, type SqliteDialectConfig, SqliteDriver, SqliteIntrospector, SqliteQueryCompiler, type SqliteStatement, TableMetadata, TableNode, type Tarn, type TarnPendingRequest, TarnPool, type TarnPoolOptions, type Tedious, type TediousColumnValue, type TediousConnection, type TediousDataType, type TediousIsolationLevel, TediousRequest, type TediousRequestClass, type TediousTypes, TopNode, TransactionSettings, TupleNode, UnaryOperationNode, UniqueConstraintNode, UnknownRow, UpdateQueryNode, UpdateResult, UsingNode, ValueListNode, ValueNode, type ValuesItemNode, ValuesNode, WhenNode, WhereNode, WithNode, WithSchemaPlugin, logOnce, pushValueIntoList, replaceWithNoncontingentExpression, sql };
