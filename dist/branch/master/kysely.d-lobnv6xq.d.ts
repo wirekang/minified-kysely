@@ -4423,24 +4423,6 @@ interface OrderByInterface<DB, TB extends keyof DB, O> {
      * order by "id", "fn" desc
      * ```
      *
-     * Multiple columns/expressions per call:
-     *
-     * ```ts
-     * await db
-     *   .selectFrom('person')
-     *   .select('person.first_name as fn')
-     *   .orderBy(['id', 'fn'])
-     *   .execute()
-     * ```
-     *
-     * The generated SQL (PostgreSQL):
-     *
-     * ```sql
-     * select "person"."first_name" as "fn"
-     * from "person"
-     * order by "id", "fn"
-     * ```
-     *
      * Building advanced modifiers:
      *
      * ```ts
@@ -5773,24 +5755,6 @@ interface SelectQueryBuilder<DB, TB extends keyof DB, O> extends WhereInterface<
      * select "person"."first_name" as "fn"
      * from "person"
      * order by "id", "fn" desc
-     * ```
-     *
-     * Multiple columns/expressions per call:
-     *
-     * ```ts
-     * await db
-     *   .selectFrom('person')
-     *   .select('person.first_name as fn')
-     *   .orderBy(['id', 'fn'])
-     *   .execute()
-     * ```
-     *
-     * The generated SQL (PostgreSQL):
-     *
-     * ```sql
-     * select "person"."first_name" as "fn"
-     * from "person"
-     * order by "id", "fn"
      * ```
      *
      * Building advanced modifiers:
