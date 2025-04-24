@@ -3170,7 +3170,21 @@ interface JoinBuilderProps {
     readonly joinNode: JoinNode;
 }
 
-type TableExpression<DB, TB extends keyof DB> = AnyAliasedTable<DB> | AnyTable<DB> | AliasedExpressionOrFactory<DB, TB>;
+declare class DynamicTableBuilder<T extends string> {
+    #private;
+    get table(): T;
+    constructor(table: T);
+    as<A extends string>(alias: A): AliasedDynamicTableBuilder<T, A>;
+}
+declare class AliasedDynamicTableBuilder<T extends string, A extends string> implements OperationNodeSource {
+    #private;
+    get table(): T;
+    get alias(): A;
+    constructor(table: T, alias: A);
+    toOperationNode(): AliasNode;
+}
+
+type TableExpression<DB, TB extends keyof DB> = AnyAliasedTable<DB> | AnyTable<DB> | AliasedExpressionOrFactory<DB, TB> | AliasedDynamicTableBuilder<any, any>;
 type TableExpressionOrList<DB, TB extends keyof DB> = TableExpression<DB, TB> | ReadonlyArray<TableExpression<DB, TB>>;
 type SimpleTableReference<DB> = AnyAliasedTable<DB> | AnyTable<DB>;
 type AnyAliasedTable<DB> = `${AnyTable<DB>} as ${string}`;
@@ -3180,8 +3194,8 @@ type From<DB, TE> = DrainOuterGeneric<{
 }>;
 type FromTables<DB, TB extends keyof DB, TE> = DrainOuterGeneric<TB | ExtractAliasFromTableExpression<DB, TE>>;
 type ExtractTableAlias<DB, TE> = TE extends `${string} as ${infer TA}` ? TA extends keyof DB ? TA : never : TE extends keyof DB ? TE : never;
-type ExtractAliasFromTableExpression<DB, TE> = TE extends string ? TE extends `${string} as ${infer TA}` ? TA : TE extends keyof DB ? TE : never : TE extends AliasedExpression<any, infer QA> ? QA : TE extends (qb: any) => AliasedExpression<any, infer QA> ? QA : never;
-type ExtractRowTypeFromTableExpression<DB, TE, A extends keyof any> = TE extends `${infer T} as ${infer TA}` ? TA extends A ? T extends keyof DB ? DB[T] : never : never : TE extends A ? TE extends keyof DB ? DB[TE] : never : TE extends AliasedExpression<infer O, infer QA> ? QA extends A ? O : never : TE extends (qb: any) => AliasedExpression<infer O, infer QA> ? QA extends A ? O : never : never;
+type ExtractAliasFromTableExpression<DB, TE> = TE extends string ? TE extends `${string} as ${infer TA}` ? TA : TE extends keyof DB ? TE : never : TE extends AliasedExpression<any, infer QA> ? QA : TE extends (qb: any) => AliasedExpression<any, infer QA> ? QA : TE extends AliasedDynamicTableBuilder<any, infer DA> ? DA : never;
+type ExtractRowTypeFromTableExpression<DB, TE, A extends keyof any> = TE extends `${infer T} as ${infer TA}` ? TA extends A ? T extends keyof DB ? DB[T] : never : never : TE extends A ? TE extends keyof DB ? DB[TE] : never : TE extends AliasedExpression<infer O, infer QA> ? QA extends A ? O : never : TE extends (qb: any) => AliasedExpression<infer O, infer QA> ? QA extends A ? O : never : TE extends AliasedDynamicTableBuilder<infer T, infer DA> ? DA extends A ? T extends keyof DB ? DB[T] : never : never : never;
 
 type JoinReferenceExpression<DB, TB extends keyof DB, TE> = DrainOuterGeneric<AnyJoinColumn<DB, TB, TE> | AnyJoinColumnWithTable<DB, TB, TE>>;
 type JoinCallbackExpression<DB, TB extends keyof DB, TE> = (join: JoinBuilder<From<DB, TE>, FromTables<DB, TB, TE>>) => JoinBuilder<any, any>;
@@ -10929,7 +10943,7 @@ declare class SchemaModule {
     withSchema(schema: string): SchemaModule;
 }
 
-declare class DynamicModule {
+declare class DynamicModule<DB> {
     /**
      * Creates a dynamic reference to a column that is not know at compile time.
      *
@@ -11016,6 +11030,40 @@ declare class DynamicModule {
      * ```
      */
     ref<R extends string = never>(reference: string): DynamicReferenceBuilder<R>;
+    /**
+     * Creates a table reference to a table that's not fully known at compile time.
+     *
+     * The type `T` is allowed to be a union of multiple tables.
+     *
+     * <!-- siteExample("select", "Generic find query", 130) -->
+     *
+     * A generic type-safe helper function for finding a row by a column value:
+     *
+     * ```ts
+     * import { SelectType } from 'kysely'
+     * import { Database } from 'type-editor'
+     *
+     * async function getRowByColumn<
+     *   T extends keyof Database,
+     *   C extends keyof Database[T] & string,
+     *   V extends SelectType<Database[T][C]>,
+     * >(t: T, c: C, v: V) {
+     *   // We need to use the dynamic module since the table name
+     *   // is not known at compile time.
+     *   const { table, ref } = db.dynamic
+     *
+     *   return await db
+     *     .selectFrom(table(t).as('t'))
+     *     .selectAll()
+     *     .where(ref(c), '=', v)
+     *     .orderBy('t.id')
+     *     .executeTakeFirstOrThrow()
+     * }
+     *
+     * const person = await getRowByColumn('person', 'first_name', 'Arnold')
+     * ```
+     */
+    table<T extends keyof DB & string>(table: T): DynamicTableBuilder<T>;
 }
 
 type InsertObject<DB, TB extends keyof DB> = {
@@ -17718,7 +17766,7 @@ declare class Kysely<DB> extends QueryCreator<DB> implements QueryExecutorProvid
      * The {@link DynamicModule} module can be used to bypass strict typing and
      * passing in dynamic values for the queries.
      */
-    get dynamic(): DynamicModule;
+    get dynamic(): DynamicModule<DB>;
     /**
      * Returns a {@link DatabaseIntrospector | database introspector}.
      */
