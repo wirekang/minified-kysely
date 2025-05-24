@@ -2182,6 +2182,7 @@ declare class MssqlDialect implements Dialect {
 
 declare const PRIVATE_RESET_METHOD: unique symbol;
 declare const PRIVATE_DESTROY_METHOD: unique symbol;
+declare const PRIVATE_VALIDATE_METHOD: unique symbol;
 declare class MssqlDriver implements Driver {
     #private;
     constructor(config: MssqlDialectConfig);
@@ -2229,9 +2230,9 @@ declare class MssqlConnection implements DatabaseConnection {
     rollbackTransaction(savepointName?: string): Promise<void>;
     savepoint(savepointName: string): Promise<void>;
     streamQuery<O>(compiledQuery: CompiledQuery, chunkSize: number): AsyncIterableIterator<QueryResult<O>>;
-    validate(): Promise<boolean>;
-    [PRIVATE_RESET_METHOD](): Promise<void>;
     [PRIVATE_DESTROY_METHOD](): Promise<void>;
+    [PRIVATE_RESET_METHOD](): Promise<void>;
+    [PRIVATE_VALIDATE_METHOD](): Promise<boolean>;
 }
 
 declare class MssqlIntrospector implements DatabaseIntrospector {
