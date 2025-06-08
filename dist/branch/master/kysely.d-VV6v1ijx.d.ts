@@ -2184,7 +2184,7 @@ interface QueryExecutor extends ConnectionProvider {
      * Executes a compiled query and runs the result through all plugins'
      * `transformResult` method.
      */
-    executeQuery<R>(compiledQuery: CompiledQuery<R>, queryId: QueryId): Promise<QueryResult<R>>;
+    executeQuery<R>(compiledQuery: CompiledQuery<R>): Promise<QueryResult<R>>;
     /**
      * Executes a compiled query and runs the result through all plugins'
      * `transformResult` method. Results are streamead instead of loaded
@@ -2195,7 +2195,7 @@ interface QueryExecutor extends ConnectionProvider {
      * How many rows should be pulled from the database at once. Supported
      * only by the postgres driver.
      */
-    chunkSize: number, queryId: QueryId): AsyncIterableIterator<QueryResult<R>>;
+    chunkSize: number): AsyncIterableIterator<QueryResult<R>>;
     /**
      * Returns a copy of this executor with a new connection provider.
      */
