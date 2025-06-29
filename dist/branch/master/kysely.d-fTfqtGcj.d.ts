@@ -8554,7 +8554,9 @@ type ValTuple5<V1, V2, V3, V4, V5> = DrainOuterGeneric<[
     ExtractTypeFromValueExpression<V5>
 ]>;
 
-type SelectFrom<DB, TB extends keyof DB, TE extends TableExpressionOrList<DB, TB>> = TE extends keyof DB & string ? SelectQueryBuilder<DB, TB | ExtractTableAlias<DB, TE>, {}> : TE extends `${infer T} as ${infer A}` ? T extends keyof DB ? SelectQueryBuilder<DB & ShallowRecord<A, DB[T]>, TB | A, {}> : never : TE extends ReadonlyArray<infer T> ? SelectQueryBuilder<From<DB, T>, FromTables<DB, TB, T>, {}> : SelectQueryBuilder<From<DB, TE>, FromTables<DB, TB, TE>, {}>;
+type SelectFrom<DB, TB extends keyof DB, TE extends TableExpressionOrList<DB, TB>> = [TE] extends [keyof DB] ? SelectQueryBuilder<DB, TB | ExtractTableAlias<DB, TE>, {}> : [
+    TE
+] extends [`${infer T} as ${infer A}`] ? T extends keyof DB ? SelectQueryBuilder<DB & ShallowRecord<A, DB[T]>, TB | A, {}> : never : TE extends ReadonlyArray<infer T> ? SelectQueryBuilder<From<DB, T>, FromTables<DB, TB, T>, {}> : SelectQueryBuilder<From<DB, TE>, FromTables<DB, TB, TE>, {}>;
 
 interface ExpressionBuilder<DB, TB extends keyof DB> {
     /**
@@ -16124,9 +16126,17 @@ type ExtractRowFromCommonTableExpressionName<CN extends string> = CN extends `${
  */
 type ExtractColumnNamesFromColumnList<R extends string> = R extends `${infer C}, ${infer RS}` ? C | ExtractColumnNamesFromColumnList<RS> : R;
 
-type DeleteFrom<DB, TE extends TableExpressionOrList<DB, never>> = TE extends ReadonlyArray<infer T> ? DeleteQueryBuilder<From<DB, T>, FromTables<DB, never, T>, DeleteResult> : TE extends keyof DB & string ? DeleteQueryBuilder<DB, ExtractTableAlias<DB, TE>, DeleteResult> : TE extends `${infer T} as ${infer A}` ? T extends keyof DB ? DeleteQueryBuilder<DB & ShallowRecord<A, DB[T]>, A, DeleteResult> : never : DeleteQueryBuilder<From<DB, TE>, FromTables<DB, never, TE>, DeleteResult>;
+type DeleteFrom<DB, TE extends TableExpressionOrList<DB, never>> = [
+    TE
+] extends [keyof DB] ? DeleteQueryBuilder<DB, ExtractTableAlias<DB, TE>, DeleteResult> : [
+    TE
+] extends [`${infer T} as ${infer A}`] ? T extends keyof DB ? DeleteQueryBuilder<DB & ShallowRecord<A, DB[T]>, A, DeleteResult> : never : TE extends ReadonlyArray<infer T> ? DeleteQueryBuilder<From<DB, T>, FromTables<DB, never, T>, DeleteResult> : DeleteQueryBuilder<From<DB, TE>, FromTables<DB, never, TE>, DeleteResult>;
 
-type UpdateTable<DB, TE extends TableExpressionOrList<DB, never>> = TE extends ReadonlyArray<infer T> ? UpdateQueryBuilder<From<DB, T>, FromTables<DB, never, T>, FromTables<DB, never, T>, UpdateResult> : TE extends keyof DB & string ? UpdateQueryBuilder<DB, ExtractTableAlias<DB, TE>, ExtractTableAlias<DB, TE>, UpdateResult> : TE extends `${infer T} as ${infer A}` ? T extends keyof DB ? UpdateQueryBuilder<DB & ShallowRecord<A, DB[T]>, A, A, UpdateResult> : never : UpdateQueryBuilder<From<DB, TE>, FromTables<DB, never, TE>, FromTables<DB, never, TE>, UpdateResult>;
+type UpdateTable<DB, TE extends TableExpressionOrList<DB, never>> = [
+    TE
+] extends [keyof DB] ? UpdateQueryBuilder<DB, ExtractTableAlias<DB, TE>, ExtractTableAlias<DB, TE>, UpdateResult> : [
+    TE
+] extends [`${infer T} as ${infer A}`] ? T extends keyof DB ? UpdateQueryBuilder<DB & ShallowRecord<A, DB[T]>, A, A, UpdateResult> : never : TE extends ReadonlyArray<infer T> ? UpdateQueryBuilder<From<DB, T>, FromTables<DB, never, T>, FromTables<DB, never, T>, UpdateResult> : UpdateQueryBuilder<From<DB, TE>, FromTables<DB, never, TE>, FromTables<DB, never, TE>, UpdateResult>;
 
 declare class MergeQueryBuilder<DB, TT extends keyof DB, O> implements MultiTableReturningInterface<DB, TT, O>, OutputInterface<DB, TT, O> {
     #private;
@@ -17105,7 +17115,9 @@ declare class NotMatchedThenableMergeQueryBuilder<DB, TT extends keyof DB, ST ex
 type ExtractWheneableMergeQueryBuilder<DB, TT extends keyof DB, TE extends TableExpression<DB, TT>, O> = TE extends `${infer T} as ${infer A}` ? T extends keyof DB ? UsingBuilder<DB, TT, A, DB[T], O> : never : TE extends keyof DB ? WheneableMergeQueryBuilder<DB, TT, TE, O> : TE extends AliasedExpression<infer QO, infer QA> ? UsingBuilder<DB, TT, QA, QO, O> : TE extends (qb: any) => AliasedExpression<infer QO, infer QA> ? UsingBuilder<DB, TT, QA, QO, O> : never;
 type UsingBuilder<DB, TT extends keyof DB, A extends string, R, O> = A extends keyof DB ? WheneableMergeQueryBuilder<DB, TT, A, O> : WheneableMergeQueryBuilder<DB & ShallowRecord<A, R>, TT, A, O>;
 
-type MergeInto<DB, TE extends SimpleTableReference<DB>> = TE extends keyof DB & string ? MergeQueryBuilder<DB, ExtractTableAlias<DB, TE>, MergeResult> : TE extends `${infer T} as ${infer A}` ? T extends keyof DB ? MergeQueryBuilder<DB & ShallowRecord<A, DB[T]>, A, MergeResult> : never : never;
+type MergeInto<DB, TE extends SimpleTableReference<DB>> = [TE] extends [
+    keyof DB
+] ? MergeQueryBuilder<DB, ExtractTableAlias<DB, TE>, MergeResult> : [TE] extends [`${infer T} as ${infer A}`] ? T extends keyof DB ? MergeQueryBuilder<DB & ShallowRecord<A, DB[T]>, A, MergeResult> : never : never;
 
 declare class QueryCreator<DB> {
     #private;
