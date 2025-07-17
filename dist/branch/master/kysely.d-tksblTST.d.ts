@@ -17731,6 +17731,10 @@ interface ControlledConnection {
     readonly release: () => void;
 }
 
+declare global {
+    interface AsyncDisposable {
+    }
+}
 /**
  * The main Kysely class.
  *
