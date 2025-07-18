@@ -1,4 +1,4 @@
-import { ff as SelectQueryBuilderExpression, R as RawBuilder, b1 as Simplify, bU as Expression } from '../kysely.d-tksblTST.js';
+import { fi as SelectQueryBuilderExpression, R as RawBuilder, b1 as Simplify, bd as ShallowDehydrateObject, bX as Expression, be as ShallowDehydrateValue } from '../kysely.d-c2tdKPMS.js';
 
 /**
  * A SQLite helper for aggregating a subquery into a JSON array.
@@ -61,7 +61,7 @@ import { ff as SelectQueryBuilderExpression, R as RawBuilder, b1 as Simplify, bU
  * from "person"
  * ```
  */
-declare function jsonArrayFrom<O>(expr: SelectQueryBuilderExpression<O>): RawBuilder<Simplify<O>[]>;
+declare function jsonArrayFrom<O>(expr: SelectQueryBuilderExpression<O>): RawBuilder<Simplify<ShallowDehydrateObject<O>>[]>;
 /**
  * A SQLite helper for turning a subquery into a JSON object.
  *
@@ -125,7 +125,7 @@ declare function jsonArrayFrom<O>(expr: SelectQueryBuilderExpression<O>): RawBui
  * from "person";
  * ```
  */
-declare function jsonObjectFrom<O>(expr: SelectQueryBuilderExpression<O>): RawBuilder<Simplify<O> | null>;
+declare function jsonObjectFrom<O>(expr: SelectQueryBuilderExpression<O>): RawBuilder<Simplify<ShallowDehydrateObject<O>> | null>;
 /**
  * The SQLite `json_object` function.
  *
@@ -183,7 +183,7 @@ declare function jsonObjectFrom<O>(expr: SelectQueryBuilderExpression<O>): RawBu
  * ```
  */
 declare function jsonBuildObject<O extends Record<string, Expression<unknown>>>(obj: O): RawBuilder<Simplify<{
-    [K in keyof O]: O[K] extends Expression<infer V> ? V : never;
+    [K in keyof O]: O[K] extends Expression<infer V> ? ShallowDehydrateValue<V> : never;
 }>>;
 
 export { jsonArrayFrom, jsonBuildObject, jsonObjectFrom };

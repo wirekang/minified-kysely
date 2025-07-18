@@ -1,4 +1,4 @@
-import { bU as Expression, R as RawBuilder, b1 as Simplify } from '../kysely.d-tksblTST.js';
+import { bX as Expression, R as RawBuilder, b1 as Simplify, bd as ShallowDehydrateObject, be as ShallowDehydrateValue } from '../kysely.d-c2tdKPMS.js';
 
 /**
  * An MS SQL Server helper for aggregating a subquery into a JSON array.
@@ -72,7 +72,7 @@ import { bU as Expression, R as RawBuilder, b1 as Simplify } from '../kysely.d-t
  * from "person"
  * ```
  */
-declare function jsonArrayFrom<O>(expr: Expression<O>): RawBuilder<Simplify<O>[]>;
+declare function jsonArrayFrom<O>(expr: Expression<O>): RawBuilder<Simplify<ShallowDehydrateObject<O>>[]>;
 /**
  * An MS SQL Server helper for turning a subquery into a JSON object.
  *
@@ -145,7 +145,7 @@ declare function jsonArrayFrom<O>(expr: Expression<O>): RawBuilder<Simplify<O>[]
  * from "person"
  * ```
  */
-declare function jsonObjectFrom<O>(expr: Expression<O>): RawBuilder<Simplify<O> | null>;
+declare function jsonObjectFrom<O>(expr: Expression<O>): RawBuilder<Simplify<ShallowDehydrateObject<O>> | null>;
 /**
  * The MS SQL Server `json_query` function, single argument variant.
  *
@@ -207,7 +207,7 @@ declare function jsonObjectFrom<O>(expr: Expression<O>): RawBuilder<Simplify<O> 
  * ```
  */
 declare function jsonBuildObject<O extends Record<string, Expression<unknown>>>(obj: O): RawBuilder<Simplify<{
-    [K in keyof O]: O[K] extends Expression<infer V> ? V : never;
+    [K in keyof O]: O[K] extends Expression<infer V> ? ShallowDehydrateValue<V> : never;
 }>>;
 
 export { jsonArrayFrom, jsonBuildObject, jsonObjectFrom };
