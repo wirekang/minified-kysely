@@ -7980,7 +7980,7 @@ interface FunctionModule<DB, TB extends keyof DB> {
      *  $1 = any("person"."nicknames")
      * ```
      */
-    any<RE extends StringReference<DB, TB>>(expr: RE): Exclude<ExtractTypeFromStringReference<DB, TB, RE>, null> extends ReadonlyArray<infer I> ? ExpressionWrapper<DB, TB, I> : KyselyTypeError<'any(expr) call failed: expr must be an array'>;
+    any<RE extends StringReference<DB, TB>>(expr: RE): Exclude<ExtractTypeFromReferenceExpression<DB, TB, RE>, null> extends ReadonlyArray<infer I> ? ExpressionWrapper<DB, TB, I> : KyselyTypeError<'any(expr) call failed: expr must be an array'>;
     any<T>(subquery: SelectQueryBuilderExpression<Record<string, T>>): ExpressionWrapper<DB, TB, T>;
     any<T>(expr: Expression<ReadonlyArray<T>>): ExpressionWrapper<DB, TB, T>;
     /**
