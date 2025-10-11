@@ -3,6 +3,10 @@ interface OperationNode {
     readonly kind: OperationNodeKind;
 }
 
+type IdentifierNodeFactory = Readonly<{
+    is(node: OperationNode): node is IdentifierNode;
+    create(name: string): Readonly<IdentifierNode>;
+}>;
 interface IdentifierNode extends OperationNode {
     readonly kind: 'IdentifierNode';
     readonly name: string;
@@ -10,11 +14,12 @@ interface IdentifierNode extends OperationNode {
 /**
  * @internal
  */
-declare const IdentifierNode: Readonly<{
-    is(node: OperationNode): node is IdentifierNode;
-    create(name: string): IdentifierNode;
-}>;
+declare const IdentifierNode: IdentifierNodeFactory;
 
+type CheckConstraintNodeFactory = Readonly<{
+    is(node: OperationNode): node is CheckConstraintNode;
+    create(expression: OperationNode, constraintName?: string): Readonly<CheckConstraintNode>;
+}>;
 interface CheckConstraintNode extends OperationNode {
     readonly kind: 'CheckConstraintNode';
     readonly expression: OperationNode;
@@ -23,11 +28,12 @@ interface CheckConstraintNode extends OperationNode {
 /**
  * @internal
  */
-declare const CheckConstraintNode: Readonly<{
-    is(node: OperationNode): node is CheckConstraintNode;
-    create(expression: OperationNode, constraintName?: string): CheckConstraintNode;
-}>;
+declare const CheckConstraintNode: CheckConstraintNodeFactory;
 
+type ColumnNodeFactory = Readonly<{
+    is(node: OperationNode): node is ColumnNode;
+    create(column: string): Readonly<ColumnNode>;
+}>;
 interface ColumnNode extends OperationNode {
     readonly kind: 'ColumnNode';
     readonly column: IdentifierNode;
@@ -35,11 +41,12 @@ interface ColumnNode extends OperationNode {
 /**
  * @internal
  */
-declare const ColumnNode: Readonly<{
-    is(node: OperationNode): node is ColumnNode;
-    create(column: string): ColumnNode;
-}>;
+declare const ColumnNode: ColumnNodeFactory;
 
+type DefaultValueNodeFactory = Readonly<{
+    is(node: OperationNode): node is DefaultValueNode;
+    create(defaultValue: OperationNode): Readonly<DefaultValueNode>;
+}>;
 interface DefaultValueNode extends OperationNode {
     readonly kind: 'DefaultValueNode';
     readonly defaultValue: OperationNode;
@@ -47,12 +54,15 @@ interface DefaultValueNode extends OperationNode {
 /**
  * @internal
  */
-declare const DefaultValueNode: Readonly<{
-    is(node: OperationNode): node is DefaultValueNode;
-    create(defaultValue: OperationNode): DefaultValueNode;
-}>;
+declare const DefaultValueNode: DefaultValueNodeFactory;
 
 type GeneratedNodeParams = Omit<GeneratedNode, 'kind' | 'expression'>;
+type GeneratedNodeFactory = Readonly<{
+    is(node: OperationNode): node is GeneratedNode;
+    create(params: GeneratedNodeParams): Readonly<GeneratedNode>;
+    createWithExpression(expression: OperationNode): Readonly<GeneratedNode>;
+    cloneWith(node: GeneratedNode, params: GeneratedNodeParams): Readonly<GeneratedNode>;
+}>;
 interface GeneratedNode extends OperationNode {
     readonly kind: 'GeneratedNode';
     readonly byDefault?: boolean;
@@ -64,13 +74,13 @@ interface GeneratedNode extends OperationNode {
 /**
  * @internal
  */
-declare const GeneratedNode: Readonly<{
-    is(node: OperationNode): node is GeneratedNode;
-    create(params: GeneratedNodeParams): GeneratedNode;
-    createWithExpression(expression: OperationNode): GeneratedNode;
-    cloneWith(node: GeneratedNode, params: GeneratedNodeParams): GeneratedNode;
-}>;
+declare const GeneratedNode: GeneratedNodeFactory;
 
+type SchemableIdentifierNodeFactory = Readonly<{
+    is(node: OperationNode): node is SchemableIdentifierNode;
+    create(identifier: string): Readonly<SchemableIdentifierNode>;
+    createWithSchema(schema: string, identifier: string): Readonly<SchemableIdentifierNode>;
+}>;
 interface SchemableIdentifierNode extends OperationNode {
     readonly kind: 'SchemableIdentifierNode';
     readonly schema?: IdentifierNode;
@@ -79,12 +89,13 @@ interface SchemableIdentifierNode extends OperationNode {
 /**
  * @internal
  */
-declare const SchemableIdentifierNode: Readonly<{
-    is(node: OperationNode): node is SchemableIdentifierNode;
-    create(identifier: string): SchemableIdentifierNode;
-    createWithSchema(schema: string, identifier: string): SchemableIdentifierNode;
-}>;
+declare const SchemableIdentifierNode: SchemableIdentifierNodeFactory;
 
+type TableNodeFactory = Readonly<{
+    is(node: OperationNode): node is TableNode;
+    create(table: string): Readonly<TableNode>;
+    createWithSchema(schema: string, table: string): Readonly<TableNode>;
+}>;
 interface TableNode extends OperationNode {
     readonly kind: 'TableNode';
     readonly table: SchemableIdentifierNode;
@@ -92,11 +103,7 @@ interface TableNode extends OperationNode {
 /**
  * @internal
  */
-declare const TableNode: Readonly<{
-    is(node: OperationNode): node is TableNode;
-    create(table: string): TableNode;
-    createWithSchema(schema: string, table: string): TableNode;
-}>;
+declare const TableNode: TableNodeFactory;
 
 /**
  * The result of an insert query.
@@ -357,6 +364,12 @@ type NumericString = `${number}`;
 
 declare const ON_MODIFY_FOREIGN_ACTIONS: readonly ["no action", "restrict", "cascade", "set null", "set default"];
 type OnModifyForeignAction = ArrayItemType<typeof ON_MODIFY_FOREIGN_ACTIONS>;
+type ReferencesNodeFactory = Readonly<{
+    is(node: OperationNode): node is ReferencesNode;
+    create(table: TableNode, columns: ReadonlyArray<ColumnNode>): Readonly<ReferencesNode>;
+    cloneWithOnDelete(references: ReferencesNode, onDelete: OnModifyForeignAction): Readonly<ReferencesNode>;
+    cloneWithOnUpdate(references: ReferencesNode, onUpdate: OnModifyForeignAction): Readonly<ReferencesNode>;
+}>;
 interface ReferencesNode extends OperationNode {
     readonly kind: 'ReferencesNode';
     readonly table: TableNode;
@@ -367,14 +380,16 @@ interface ReferencesNode extends OperationNode {
 /**
  * @internal
  */
-declare const ReferencesNode: Readonly<{
-    is(node: OperationNode): node is ReferencesNode;
-    create(table: TableNode, columns: ReadonlyArray<ColumnNode>): ReferencesNode;
-    cloneWithOnDelete(references: ReferencesNode, onDelete: OnModifyForeignAction): ReferencesNode;
-    cloneWithOnUpdate(references: ReferencesNode, onUpdate: OnModifyForeignAction): ReferencesNode;
-}>;
+declare const ReferencesNode: ReferencesNodeFactory;
 
 type ColumnDefinitionNodeProps = Omit<Partial<ColumnDefinitionNode>, 'kind' | 'dataType'>;
+type ColumnDefinitionNodeFactory = Readonly<{
+    is(node: OperationNode): node is ColumnDefinitionNode;
+    create(column: string, dataType: OperationNode): Readonly<ColumnDefinitionNode>;
+    cloneWithFrontModifier(node: ColumnDefinitionNode, modifier: OperationNode): Readonly<ColumnDefinitionNode>;
+    cloneWithEndModifier(node: ColumnDefinitionNode, modifier: OperationNode): Readonly<ColumnDefinitionNode>;
+    cloneWith(node: ColumnDefinitionNode, props: ColumnDefinitionNodeProps): Readonly<ColumnDefinitionNode>;
+}>;
 interface ColumnDefinitionNode extends OperationNode {
     readonly kind: 'ColumnDefinitionNode';
     readonly column: ColumnNode;
@@ -397,14 +412,12 @@ interface ColumnDefinitionNode extends OperationNode {
 /**
  * @internal
  */
-declare const ColumnDefinitionNode: Readonly<{
-    is(node: OperationNode): node is ColumnDefinitionNode;
-    create(column: string, dataType: OperationNode): ColumnDefinitionNode;
-    cloneWithFrontModifier(node: ColumnDefinitionNode, modifier: OperationNode): ColumnDefinitionNode;
-    cloneWithEndModifier(node: ColumnDefinitionNode, modifier: OperationNode): ColumnDefinitionNode;
-    cloneWith(node: ColumnDefinitionNode, props: ColumnDefinitionNodeProps): ColumnDefinitionNode;
-}>;
+declare const ColumnDefinitionNode: ColumnDefinitionNodeFactory;
 
+type AddColumnNodeFactory = Readonly<{
+    is(node: OperationNode): node is AddColumnNode;
+    create(column: ColumnDefinitionNode): Readonly<AddColumnNode>;
+}>;
 interface AddColumnNode extends OperationNode {
     readonly kind: 'AddColumnNode';
     readonly column: ColumnDefinitionNode;
@@ -412,11 +425,12 @@ interface AddColumnNode extends OperationNode {
 /**
  * @internal
  */
-declare const AddColumnNode: Readonly<{
-    is(node: OperationNode): node is AddColumnNode;
-    create(column: ColumnDefinitionNode): AddColumnNode;
-}>;
+declare const AddColumnNode: AddColumnNodeFactory;
 
+type DropColumnNodeFactory = Readonly<{
+    is(node: OperationNode): node is DropColumnNode;
+    create(column: string): Readonly<DropColumnNode>;
+}>;
 interface DropColumnNode extends OperationNode {
     readonly kind: 'DropColumnNode';
     readonly column: ColumnNode;
@@ -424,11 +438,12 @@ interface DropColumnNode extends OperationNode {
 /**
  * @internal
  */
-declare const DropColumnNode: Readonly<{
-    is(node: OperationNode): node is DropColumnNode;
-    create(column: string): DropColumnNode;
-}>;
+declare const DropColumnNode: DropColumnNodeFactory;
 
+type RenameColumnNodeFactory = Readonly<{
+    is(node: OperationNode): node is RenameColumnNode;
+    create(column: string, newColumn: string): Readonly<RenameColumnNode>;
+}>;
 interface RenameColumnNode extends OperationNode {
     readonly kind: 'RenameColumnNode';
     readonly column: ColumnNode;
@@ -437,11 +452,15 @@ interface RenameColumnNode extends OperationNode {
 /**
  * @internal
  */
-declare const RenameColumnNode: Readonly<{
-    is(node: OperationNode): node is RenameColumnNode;
-    create(column: string, newColumn: string): RenameColumnNode;
-}>;
+declare const RenameColumnNode: RenameColumnNodeFactory;
 
+type RawNodeFactory = Readonly<{
+    is(node: OperationNode): node is RawNode;
+    create(sqlFragments: ReadonlyArray<string>, parameters: ReadonlyArray<OperationNode>): Readonly<RawNode>;
+    createWithSql(sql: string): Readonly<RawNode>;
+    createWithChild(child: OperationNode): Readonly<RawNode>;
+    createWithChildren(children: ReadonlyArray<OperationNode>): Readonly<RawNode>;
+}>;
 interface RawNode extends OperationNode {
     readonly kind: 'RawNode';
     readonly sqlFragments: ReadonlyArray<string>;
@@ -450,15 +469,13 @@ interface RawNode extends OperationNode {
 /**
  * @internal
  */
-declare const RawNode: Readonly<{
-    is(node: OperationNode): node is RawNode;
-    create(sqlFragments: ReadonlyArray<string>, parameters: ReadonlyArray<OperationNode>): RawNode;
-    createWithSql(sql: string): RawNode;
-    createWithChild(child: OperationNode): RawNode;
-    createWithChildren(children: ReadonlyArray<OperationNode>): RawNode;
-}>;
+declare const RawNode: RawNodeFactory;
 
 type AlterColumnNodeProps = Omit<AlterColumnNode, 'kind' | 'column'>;
+type AlterColumnNodeFactory = Readonly<{
+    is(node: OperationNode): node is AlterColumnNode;
+    create<T extends keyof AlterColumnNodeProps>(column: string, prop: T, value: Required<AlterColumnNodeProps>[T]): Readonly<AlterColumnNode>;
+}>;
 interface AlterColumnNode extends OperationNode {
     readonly kind: 'AlterColumnNode';
     readonly column: ColumnNode;
@@ -472,12 +489,14 @@ interface AlterColumnNode extends OperationNode {
 /**
  * @internal
  */
-declare const AlterColumnNode: Readonly<{
-    is(node: OperationNode): node is AlterColumnNode;
-    create<T extends keyof AlterColumnNodeProps>(column: string, prop: T, value: Required<AlterColumnNodeProps>[T]): AlterColumnNode;
-}>;
+declare const AlterColumnNode: AlterColumnNodeFactory;
 
 type ForeignKeyConstraintNodeProps = Omit<ForeignKeyConstraintNode, 'kind' | 'columns' | 'references'>;
+type ForeignKeyConstraintNodeFactory = Readonly<{
+    is(node: OperationNode): node is ForeignKeyConstraintNode;
+    create(sourceColumns: ReadonlyArray<ColumnNode>, targetTable: TableNode, targetColumns: ReadonlyArray<ColumnNode>, constraintName?: string): Readonly<ForeignKeyConstraintNode>;
+    cloneWith(node: ForeignKeyConstraintNode, props: ForeignKeyConstraintNodeProps): Readonly<ForeignKeyConstraintNode>;
+}>;
 interface ForeignKeyConstraintNode extends OperationNode {
     readonly kind: 'ForeignKeyConstraintNode';
     readonly columns: ReadonlyArray<ColumnNode>;
@@ -491,22 +510,14 @@ interface ForeignKeyConstraintNode extends OperationNode {
 /**
  * @internal
  */
-declare const ForeignKeyConstraintNode: Readonly<{
-    is(node: OperationNode): node is ForeignKeyConstraintNode;
-    create(sourceColumns: ReadonlyArray<ColumnNode>, targetTable: TableNode, targetColumns: ReadonlyArray<ColumnNode>, constraintName?: string): ForeignKeyConstraintNode;
-    cloneWith(node: ForeignKeyConstraintNode, props: ForeignKeyConstraintNodeProps): Readonly<{
-        name?: IdentifierNode;
-        onDelete?: OnModifyForeignAction;
-        onUpdate?: OnModifyForeignAction;
-        deferrable?: boolean;
-        initiallyDeferred?: boolean;
-        kind: "ForeignKeyConstraintNode";
-        columns: ReadonlyArray<ColumnNode>;
-        references: ReferencesNode;
-    }>;
-}>;
+declare const ForeignKeyConstraintNode: ForeignKeyConstraintNodeFactory;
 
 type PrimaryKeyConstraintNodeProps = Omit<Partial<PrimaryKeyConstraintNode>, 'kind'>;
+type PrimaryKeyConstraintNodeFactory = Readonly<{
+    is(node: OperationNode): node is PrimaryKeyConstraintNode;
+    create(columns: string[], constraintName?: string): Readonly<PrimaryKeyConstraintNode>;
+    cloneWith(node: PrimaryKeyConstraintNode, props: PrimaryKeyConstraintNodeProps): Readonly<PrimaryKeyConstraintNode>;
+}>;
 interface PrimaryKeyConstraintNode extends OperationNode {
     readonly kind: 'PrimaryKeyConstraintNode';
     readonly columns: ReadonlyArray<ColumnNode>;
@@ -517,11 +528,7 @@ interface PrimaryKeyConstraintNode extends OperationNode {
 /**
  * @internal
  */
-declare const PrimaryKeyConstraintNode: Readonly<{
-    is(node: OperationNode): node is PrimaryKeyConstraintNode;
-    create(columns: string[], constraintName?: string): PrimaryKeyConstraintNode;
-    cloneWith(node: PrimaryKeyConstraintNode, props: PrimaryKeyConstraintNodeProps): PrimaryKeyConstraintNode;
-}>;
+declare const PrimaryKeyConstraintNode: PrimaryKeyConstraintNodeFactory;
 /**
  * Backwards compatibility for a typo in the codebase.
  *
@@ -529,11 +536,16 @@ declare const PrimaryKeyConstraintNode: Readonly<{
  */
 declare const PrimaryConstraintNode: Readonly<{
     is(node: OperationNode): node is PrimaryKeyConstraintNode;
-    create(columns: string[], constraintName?: string): PrimaryKeyConstraintNode;
-    cloneWith(node: PrimaryKeyConstraintNode, props: PrimaryKeyConstraintNodeProps): PrimaryKeyConstraintNode;
+    create(columns: string[], constraintName?: string): Readonly<PrimaryKeyConstraintNode>;
+    cloneWith(node: PrimaryKeyConstraintNode, props: PrimaryKeyConstraintNodeProps): Readonly<PrimaryKeyConstraintNode>;
 }>;
 
 type UniqueConstraintNodeProps = Omit<Partial<UniqueConstraintNode>, 'kind'>;
+type UniqueConstraintNodeFactory = Readonly<{
+    is(node: OperationNode): node is UniqueConstraintNode;
+    create(columns: string[], constraintName?: string, nullsNotDistinct?: boolean): Readonly<UniqueConstraintNode>;
+    cloneWith(node: UniqueConstraintNode, props: UniqueConstraintNodeProps): Readonly<UniqueConstraintNode>;
+}>;
 interface UniqueConstraintNode extends OperationNode {
     readonly kind: 'UniqueConstraintNode';
     readonly columns: ReadonlyArray<ColumnNode>;
@@ -545,14 +557,14 @@ interface UniqueConstraintNode extends OperationNode {
 /**
  * @internal
  */
-declare const UniqueConstraintNode: Readonly<{
-    is(node: OperationNode): node is UniqueConstraintNode;
-    create(columns: string[], constraintName?: string, nullsNotDistinct?: boolean): UniqueConstraintNode;
-    cloneWith(node: UniqueConstraintNode, props: UniqueConstraintNodeProps): UniqueConstraintNode;
-}>;
+declare const UniqueConstraintNode: UniqueConstraintNodeFactory;
 
 type ConstraintNode = PrimaryKeyConstraintNode | UniqueConstraintNode | CheckConstraintNode | ForeignKeyConstraintNode;
 
+type AddConstraintNodeFactory = Readonly<{
+    is(node: OperationNode): node is AddConstraintNode;
+    create(constraint: ConstraintNode): Readonly<AddConstraintNode>;
+}>;
 interface AddConstraintNode extends OperationNode {
     readonly kind: 'AddConstraintNode';
     readonly constraint: ConstraintNode;
@@ -560,12 +572,14 @@ interface AddConstraintNode extends OperationNode {
 /**
  * @internal
  */
-declare const AddConstraintNode: Readonly<{
-    is(node: OperationNode): node is AddConstraintNode;
-    create(constraint: ConstraintNode): AddConstraintNode;
-}>;
+declare const AddConstraintNode: AddConstraintNodeFactory;
 
 type DropConstraintNodeProps = Omit<DropConstraintNode, 'kind' | 'constraintName'>;
+type DropConstraintNodeFactory = Readonly<{
+    is(node: OperationNode): node is DropConstraintNode;
+    create(constraintName: string, params?: DropConstraintNodeProps): Readonly<DropConstraintNode>;
+    cloneWith(dropConstraint: DropConstraintNode, props: DropConstraintNodeProps): Readonly<DropConstraintNode>;
+}>;
 interface DropConstraintNode extends OperationNode {
     readonly kind: 'DropConstraintNode';
     readonly constraintName: IdentifierNode;
@@ -575,12 +589,12 @@ interface DropConstraintNode extends OperationNode {
 /**
  * @internal
  */
-declare const DropConstraintNode: Readonly<{
-    is(node: OperationNode): node is DropConstraintNode;
-    create(constraintName: string): DropConstraintNode;
-    cloneWith(dropConstraint: DropConstraintNode, props: DropConstraintNodeProps): DropConstraintNode;
-}>;
+declare const DropConstraintNode: DropConstraintNodeFactory;
 
+type ModifyColumnNodeFactory = Readonly<{
+    is(node: OperationNode): node is ModifyColumnNode;
+    create(column: ColumnDefinitionNode): Readonly<ModifyColumnNode>;
+}>;
 interface ModifyColumnNode extends OperationNode {
     readonly kind: 'ModifyColumnNode';
     readonly column: ColumnDefinitionNode;
@@ -588,12 +602,14 @@ interface ModifyColumnNode extends OperationNode {
 /**
  * @internal
  */
-declare const ModifyColumnNode: Readonly<{
-    is(node: OperationNode): node is ModifyColumnNode;
-    create(column: ColumnDefinitionNode): ModifyColumnNode;
-}>;
+declare const ModifyColumnNode: ModifyColumnNodeFactory;
 
 type DropIndexNodeProps = Omit<DropIndexNode, 'kind' | 'name'>;
+type DropIndexNodeFactory = Readonly<{
+    is(node: OperationNode): node is DropIndexNode;
+    create(name: string, params?: DropIndexNodeProps): Readonly<DropIndexNode>;
+    cloneWith(dropIndex: DropIndexNode, props: DropIndexNodeProps): Readonly<DropIndexNode>;
+}>;
 interface DropIndexNode extends OperationNode {
     readonly kind: 'DropIndexNode';
     readonly name: SchemableIdentifierNode;
@@ -604,13 +620,15 @@ interface DropIndexNode extends OperationNode {
 /**
  * @internal
  */
-declare const DropIndexNode: Readonly<{
-    is(node: OperationNode): node is DropIndexNode;
-    create(name: string, params?: DropIndexNodeProps): DropIndexNode;
-    cloneWith(dropIndex: DropIndexNode, props: DropIndexNodeProps): DropIndexNode;
-}>;
+declare const DropIndexNode: DropIndexNodeFactory;
 
 type AddIndexNodeProps = Omit<AddIndexNode, 'kind' | 'name'>;
+type AddIndexNodeFactory = Readonly<{
+    is(node: OperationNode): node is AddIndexNode;
+    create(name: string): Readonly<AddIndexNode>;
+    cloneWith(node: AddIndexNode, props: Omit<AddIndexNode, 'kind' | 'name'>): Readonly<AddIndexNode>;
+    cloneWithColumns(node: AddIndexNode, columns: OperationNode[]): Readonly<AddIndexNode>;
+}>;
 interface AddIndexNode extends OperationNode {
     readonly kind: 'AddIndexNode';
     readonly name: IdentifierNode;
@@ -622,13 +640,12 @@ interface AddIndexNode extends OperationNode {
 /**
  * @internal
  */
-declare const AddIndexNode: Readonly<{
-    is(node: OperationNode): node is AddIndexNode;
-    create(name: string): AddIndexNode;
-    cloneWith(node: AddIndexNode, props: AddIndexNodeProps): AddIndexNode;
-    cloneWithColumns(node: AddIndexNode, columns: OperationNode[]): AddIndexNode;
-}>;
+declare const AddIndexNode: AddIndexNodeFactory;
 
+type RenameConstraintNodeFactory = Readonly<{
+    is(node: OperationNode): node is RenameConstraintNode;
+    create(oldName: string, newName: string): Readonly<RenameConstraintNode>;
+}>;
 interface RenameConstraintNode extends OperationNode {
     readonly kind: 'RenameConstraintNode';
     readonly oldName: IdentifierNode;
@@ -637,13 +654,16 @@ interface RenameConstraintNode extends OperationNode {
 /**
  * @internal
  */
-declare const RenameConstraintNode: Readonly<{
-    is(node: OperationNode): node is RenameConstraintNode;
-    create(oldName: string, newName: string): RenameConstraintNode;
-}>;
+declare const RenameConstraintNode: RenameConstraintNodeFactory;
 
 type AlterTableNodeTableProps = Pick<AlterTableNode, 'renameTo' | 'setSchema' | 'addConstraint' | 'dropConstraint' | 'addIndex' | 'dropIndex' | 'renameConstraint'>;
 type AlterTableColumnAlterationNode = RenameColumnNode | AddColumnNode | DropColumnNode | AlterColumnNode | ModifyColumnNode;
+type AlterTableNodeFactory = Readonly<{
+    is(node: OperationNode): node is AlterTableNode;
+    create(table: TableNode): Readonly<AlterTableNode>;
+    cloneWithTableProps(node: AlterTableNode, props: AlterTableNodeTableProps): Readonly<AlterTableNode>;
+    cloneWithColumnAlteration(node: AlterTableNode, columnAlteration: AlterTableColumnAlterationNode): Readonly<AlterTableNode>;
+}>;
 interface AlterTableNode extends OperationNode {
     readonly kind: 'AlterTableNode';
     readonly table: TableNode;
@@ -659,13 +679,13 @@ interface AlterTableNode extends OperationNode {
 /**
  * @internal
  */
-declare const AlterTableNode: Readonly<{
-    is(node: OperationNode): node is AlterTableNode;
-    create(table: TableNode): AlterTableNode;
-    cloneWithTableProps(node: AlterTableNode, props: AlterTableNodeTableProps): AlterTableNode;
-    cloneWithColumnAlteration(node: AlterTableNode, columnAlteration: AlterTableColumnAlterationNode): AlterTableNode;
-}>;
+declare const AlterTableNode: AlterTableNodeFactory;
 
+type WhereNodeFactory = Readonly<{
+    is(node: OperationNode): node is WhereNode;
+    create(filter: OperationNode): Readonly<WhereNode>;
+    cloneWithOperation(whereNode: WhereNode, operator: 'And' | 'Or', operation: OperationNode): Readonly<WhereNode>;
+}>;
 interface WhereNode extends OperationNode {
     readonly kind: 'WhereNode';
     readonly where: OperationNode;
@@ -673,14 +693,16 @@ interface WhereNode extends OperationNode {
 /**
  * @internal
  */
-declare const WhereNode: Readonly<{
-    is(node: OperationNode): node is WhereNode;
-    create(filter: OperationNode): WhereNode;
-    cloneWithOperation(whereNode: WhereNode, operator: "And" | "Or", operation: OperationNode): WhereNode;
-}>;
+declare const WhereNode: WhereNodeFactory;
 
 type CreateIndexNodeProps = Omit<CreateIndexNode, 'kind' | 'name'>;
 type IndexType = 'btree' | 'hash' | 'gist' | 'gin';
+type CreateIndexNodeFactory = Readonly<{
+    is(node: OperationNode): node is CreateIndexNode;
+    create(name: string): Readonly<CreateIndexNode>;
+    cloneWith(node: CreateIndexNode, props: CreateIndexNodeProps): Readonly<CreateIndexNode>;
+    cloneWithColumns(node: CreateIndexNode, columns: OperationNode[]): Readonly<CreateIndexNode>;
+}>;
 interface CreateIndexNode extends OperationNode {
     readonly kind: 'CreateIndexNode';
     readonly name: IdentifierNode;
@@ -695,14 +717,14 @@ interface CreateIndexNode extends OperationNode {
 /**
  * @internal
  */
-declare const CreateIndexNode: Readonly<{
-    is(node: OperationNode): node is CreateIndexNode;
-    create(name: string): CreateIndexNode;
-    cloneWith(node: CreateIndexNode, props: CreateIndexNodeProps): CreateIndexNode;
-    cloneWithColumns(node: CreateIndexNode, columns: OperationNode[]): CreateIndexNode;
-}>;
+declare const CreateIndexNode: CreateIndexNodeFactory;
 
 type CreateSchemaNodeParams = Omit<Partial<CreateSchemaNode>, 'kind' | 'schema'>;
+type CreateSchemaNodeFactory = Readonly<{
+    is(node: OperationNode): node is CreateSchemaNode;
+    create(schema: string, params?: CreateSchemaNodeParams): Readonly<CreateSchemaNode>;
+    cloneWith(createSchema: CreateSchemaNode, params: CreateSchemaNodeParams): Readonly<CreateSchemaNode>;
+}>;
 interface CreateSchemaNode extends OperationNode {
     readonly kind: 'CreateSchemaNode';
     readonly schema: IdentifierNode;
@@ -711,15 +733,20 @@ interface CreateSchemaNode extends OperationNode {
 /**
  * @internal
  */
-declare const CreateSchemaNode: Readonly<{
-    is(node: OperationNode): node is CreateSchemaNode;
-    create(schema: string, params?: CreateSchemaNodeParams): CreateSchemaNode;
-    cloneWith(createSchema: CreateSchemaNode, params: CreateSchemaNodeParams): CreateSchemaNode;
-}>;
+declare const CreateSchemaNode: CreateSchemaNodeFactory;
 
 declare const ON_COMMIT_ACTIONS: string[];
 type OnCommitAction = ArrayItemType<typeof ON_COMMIT_ACTIONS>;
 type CreateTableNodeParams = Omit<CreateTableNode, 'kind' | 'table' | 'columns' | 'constraints' | 'frontModifiers' | 'endModifiers'>;
+type CreateTableNodeFactory = Readonly<{
+    is(node: OperationNode): node is CreateTableNode;
+    create(table: TableNode): Readonly<CreateTableNode>;
+    cloneWithColumn(createTable: CreateTableNode, column: ColumnDefinitionNode): Readonly<CreateTableNode>;
+    cloneWithConstraint(createTable: CreateTableNode, constraint: ConstraintNode): Readonly<CreateTableNode>;
+    cloneWithFrontModifier(createTable: CreateTableNode, modifier: OperationNode): Readonly<CreateTableNode>;
+    cloneWithEndModifier(createTable: CreateTableNode, modifier: OperationNode): Readonly<CreateTableNode>;
+    cloneWith(createTable: CreateTableNode, params: CreateTableNodeParams): Readonly<CreateTableNode>;
+}>;
 interface CreateTableNode extends OperationNode {
     readonly kind: 'CreateTableNode';
     readonly table: TableNode;
@@ -735,16 +762,12 @@ interface CreateTableNode extends OperationNode {
 /**
  * @internal
  */
-declare const CreateTableNode: Readonly<{
-    is(node: OperationNode): node is CreateTableNode;
-    create(table: TableNode): CreateTableNode;
-    cloneWithColumn(createTable: CreateTableNode, column: ColumnDefinitionNode): CreateTableNode;
-    cloneWithConstraint(createTable: CreateTableNode, constraint: ConstraintNode): CreateTableNode;
-    cloneWithFrontModifier(createTable: CreateTableNode, modifier: OperationNode): CreateTableNode;
-    cloneWithEndModifier(createTable: CreateTableNode, modifier: OperationNode): CreateTableNode;
-    cloneWith(createTable: CreateTableNode, params: CreateTableNodeParams): CreateTableNode;
-}>;
+declare const CreateTableNode: CreateTableNodeFactory;
 
+type ValueListNodeFactory = Readonly<{
+    is(node: OperationNode): node is ValueListNode;
+    create(values: ReadonlyArray<OperationNode>): Readonly<ValueListNode>;
+}>;
 interface ValueListNode extends OperationNode {
     readonly kind: 'ValueListNode';
     readonly values: ReadonlyArray<OperationNode>;
@@ -752,12 +775,14 @@ interface ValueListNode extends OperationNode {
 /**
  * @internal
  */
-declare const ValueListNode: Readonly<{
-    is(node: OperationNode): node is ValueListNode;
-    create(values: ReadonlyArray<OperationNode>): ValueListNode;
-}>;
+declare const ValueListNode: ValueListNodeFactory;
 
 type CreateTypeNodeParams = Omit<Partial<CreateTypeNode>, 'kind'>;
+type CreateTypeNodeFactory = Readonly<{
+    is(node: OperationNode): node is CreateTypeNode;
+    create(name: SchemableIdentifierNode): Readonly<CreateTypeNode>;
+    cloneWithEnum(createType: CreateTypeNode, values: readonly string[]): Readonly<CreateTypeNode>;
+}>;
 interface CreateTypeNode extends OperationNode {
     readonly kind: 'CreateTypeNode';
     readonly name: SchemableIdentifierNode;
@@ -766,12 +791,13 @@ interface CreateTypeNode extends OperationNode {
 /**
  * @internal
  */
-declare const CreateTypeNode: Readonly<{
-    is(node: OperationNode): node is CreateTypeNode;
-    create(name: SchemableIdentifierNode): CreateTypeNode;
-    cloneWithEnum(createType: CreateTypeNode, values: readonly string[]): CreateTypeNode;
-}>;
+declare const CreateTypeNode: CreateTypeNodeFactory;
 
+type FromNodeFactory = Readonly<{
+    is(node: OperationNode): node is FromNode;
+    create(froms: ReadonlyArray<OperationNode>): Readonly<FromNode>;
+    cloneWithFroms(from: FromNode, froms: ReadonlyArray<OperationNode>): Readonly<FromNode>;
+}>;
 interface FromNode extends OperationNode {
     readonly kind: 'FromNode';
     readonly froms: ReadonlyArray<OperationNode>;
@@ -779,12 +805,12 @@ interface FromNode extends OperationNode {
 /**
  * @internal
  */
-declare const FromNode: Readonly<{
-    is(node: OperationNode): node is FromNode;
-    create(froms: ReadonlyArray<OperationNode>): FromNode;
-    cloneWithFroms(from: FromNode, froms: ReadonlyArray<OperationNode>): FromNode;
-}>;
+declare const FromNode: FromNodeFactory;
 
+type GroupByItemNodeFactory = Readonly<{
+    is(node: OperationNode): node is GroupByItemNode;
+    create(groupBy: OperationNode): Readonly<GroupByItemNode>;
+}>;
 interface GroupByItemNode extends OperationNode {
     readonly kind: 'GroupByItemNode';
     readonly groupBy: OperationNode;
@@ -792,11 +818,13 @@ interface GroupByItemNode extends OperationNode {
 /**
  * @internal
  */
-declare const GroupByItemNode: Readonly<{
-    is(node: OperationNode): node is GroupByItemNode;
-    create(groupBy: OperationNode): GroupByItemNode;
-}>;
+declare const GroupByItemNode: GroupByItemNodeFactory;
 
+type GroupByNodeFactory = Readonly<{
+    is(node: OperationNode): node is GroupByNode;
+    create(items: ReadonlyArray<GroupByItemNode>): Readonly<GroupByNode>;
+    cloneWithItems(groupBy: GroupByNode, items: ReadonlyArray<GroupByItemNode>): Readonly<GroupByNode>;
+}>;
 interface GroupByNode extends OperationNode {
     readonly kind: 'GroupByNode';
     readonly items: ReadonlyArray<GroupByItemNode>;
@@ -804,12 +832,13 @@ interface GroupByNode extends OperationNode {
 /**
  * @internal
  */
-declare const GroupByNode: Readonly<{
-    is(node: OperationNode): node is GroupByNode;
-    create(items: ReadonlyArray<GroupByItemNode>): GroupByNode;
-    cloneWithItems(groupBy: GroupByNode, items: ReadonlyArray<GroupByItemNode>): GroupByNode;
-}>;
+declare const GroupByNode: GroupByNodeFactory;
 
+type HavingNodeFactory = Readonly<{
+    is(node: OperationNode): node is HavingNode;
+    create(filter: OperationNode): Readonly<HavingNode>;
+    cloneWithOperation(havingNode: HavingNode, operator: 'And' | 'Or', operation: OperationNode): Readonly<HavingNode>;
+}>;
 interface HavingNode extends OperationNode {
     readonly kind: 'HavingNode';
     readonly having: OperationNode;
@@ -817,12 +846,13 @@ interface HavingNode extends OperationNode {
 /**
  * @internal
  */
-declare const HavingNode: Readonly<{
-    is(node: OperationNode): node is HavingNode;
-    create(filter: OperationNode): HavingNode;
-    cloneWithOperation(havingNode: HavingNode, operator: "And" | "Or", operation: OperationNode): HavingNode;
-}>;
+declare const HavingNode: HavingNodeFactory;
 
+type OnNodeFactory = Readonly<{
+    is(node: OperationNode): node is OnNode;
+    create(filter: OperationNode): Readonly<OnNode>;
+    cloneWithOperation(onNode: OnNode, operator: 'And' | 'Or', operation: OperationNode): Readonly<OnNode>;
+}>;
 interface OnNode extends OperationNode {
     readonly kind: 'OnNode';
     readonly on: OperationNode;
@@ -830,13 +860,15 @@ interface OnNode extends OperationNode {
 /**
  * @internal
  */
-declare const OnNode: Readonly<{
-    is(node: OperationNode): node is OnNode;
-    create(filter: OperationNode): OnNode;
-    cloneWithOperation(onNode: OnNode, operator: "And" | "Or", operation: OperationNode): OnNode;
-}>;
+declare const OnNode: OnNodeFactory;
 
 type JoinType = 'InnerJoin' | 'LeftJoin' | 'RightJoin' | 'FullJoin' | 'CrossJoin' | 'LateralInnerJoin' | 'LateralLeftJoin' | 'LateralCrossJoin' | 'Using' | 'OuterApply' | 'CrossApply';
+type JoinNodeFactory = Readonly<{
+    is(node: OperationNode): node is JoinNode;
+    create(joinType: JoinType, table: OperationNode): Readonly<JoinNode>;
+    createWithOn(joinType: JoinType, table: OperationNode, on: OperationNode): Readonly<JoinNode>;
+    cloneWithOn(joinNode: JoinNode, operation: OperationNode): Readonly<JoinNode>;
+}>;
 interface JoinNode extends OperationNode {
     readonly kind: 'JoinNode';
     readonly joinType: JoinType;
@@ -846,13 +878,12 @@ interface JoinNode extends OperationNode {
 /**
  * @internal
  */
-declare const JoinNode: Readonly<{
-    is(node: OperationNode): node is JoinNode;
-    create(joinType: JoinType, table: OperationNode): JoinNode;
-    createWithOn(joinType: JoinType, table: OperationNode, on: OperationNode): JoinNode;
-    cloneWithOn(joinNode: JoinNode, operation: OperationNode): JoinNode;
-}>;
+declare const JoinNode: JoinNodeFactory;
 
+type LimitNodeFactory = Readonly<{
+    is(node: OperationNode): node is LimitNode;
+    create(limit: OperationNode): Readonly<LimitNode>;
+}>;
 interface LimitNode extends OperationNode {
     readonly kind: 'LimitNode';
     readonly limit: OperationNode;
@@ -860,11 +891,12 @@ interface LimitNode extends OperationNode {
 /**
  * @internal
  */
-declare const LimitNode: Readonly<{
-    is(node: OperationNode): node is LimitNode;
-    create(limit: OperationNode): LimitNode;
-}>;
+declare const LimitNode: LimitNodeFactory;
 
+type OffsetNodeFactory = Readonly<{
+    is(node: OperationNode): node is OffsetNode;
+    create(offset: OperationNode): Readonly<OffsetNode>;
+}>;
 interface OffsetNode extends OperationNode {
     readonly kind: 'OffsetNode';
     readonly offset: OperationNode;
@@ -872,11 +904,12 @@ interface OffsetNode extends OperationNode {
 /**
  * @internal
  */
-declare const OffsetNode: Readonly<{
-    is(node: OperationNode): node is OffsetNode;
-    create(offset: OperationNode): OffsetNode;
-}>;
+declare const OffsetNode: OffsetNodeFactory;
 
+type CollateNodeFactory = Readonly<{
+    is(node: OperationNode): node is CollateNode;
+    create(collation: string): Readonly<CollateNode>;
+}>;
 interface CollateNode extends OperationNode {
     readonly kind: 'CollateNode';
     readonly collation: IdentifierNode;
@@ -884,12 +917,14 @@ interface CollateNode extends OperationNode {
 /**
  * @internal
  */
-declare const CollateNode: {
-    is(node: OperationNode): node is CollateNode;
-    create(collation: string): CollateNode;
-};
+declare const CollateNode: CollateNodeFactory;
 
 type OrderByItemNodeProps = Omit<OrderByItemNode, 'kind' | 'orderBy'>;
+type OrderByItemNodeFactory = Readonly<{
+    is(node: OperationNode): node is OrderByItemNode;
+    create(orderBy: OperationNode, direction?: OperationNode): Readonly<OrderByItemNode>;
+    cloneWith(node: OrderByItemNode, props: OrderByItemNodeProps): Readonly<OrderByItemNode>;
+}>;
 interface OrderByItemNode extends OperationNode {
     readonly kind: 'OrderByItemNode';
     readonly orderBy: OperationNode;
@@ -900,12 +935,13 @@ interface OrderByItemNode extends OperationNode {
 /**
  * @internal
  */
-declare const OrderByItemNode: Readonly<{
-    is(node: OperationNode): node is OrderByItemNode;
-    create(orderBy: OperationNode, direction?: OperationNode): OrderByItemNode;
-    cloneWith(node: OrderByItemNode, props: OrderByItemNodeProps): OrderByItemNode;
-}>;
+declare const OrderByItemNode: OrderByItemNodeFactory;
 
+type OrderByNodeFactory = Readonly<{
+    is(node: OperationNode): node is OrderByNode;
+    create(items: ReadonlyArray<OrderByItemNode>): Readonly<OrderByNode>;
+    cloneWithItems(orderBy: OrderByNode, items: ReadonlyArray<OrderByItemNode>): Readonly<OrderByNode>;
+}>;
 interface OrderByNode extends OperationNode {
     readonly kind: 'OrderByNode';
     readonly items: ReadonlyArray<OrderByItemNode>;
@@ -913,12 +949,12 @@ interface OrderByNode extends OperationNode {
 /**
  * @internal
  */
-declare const OrderByNode: Readonly<{
-    is(node: OperationNode): node is OrderByNode;
-    create(items: ReadonlyArray<OrderByItemNode>): OrderByNode;
-    cloneWithItems(orderBy: OrderByNode, items: ReadonlyArray<OrderByItemNode>): OrderByNode;
-}>;
+declare const OrderByNode: OrderByNodeFactory;
 
+type AliasNodeFactory = Readonly<{
+    is(node: OperationNode): node is AliasNode;
+    create(node: OperationNode, alias: OperationNode): Readonly<AliasNode>;
+}>;
 interface AliasNode extends OperationNode {
     readonly kind: 'AliasNode';
     readonly node: OperationNode;
@@ -927,22 +963,25 @@ interface AliasNode extends OperationNode {
 /**
  * @internal
  */
-declare const AliasNode: Readonly<{
-    is(node: OperationNode): node is AliasNode;
-    create(node: OperationNode, alias: OperationNode): AliasNode;
-}>;
+declare const AliasNode: AliasNodeFactory;
 
+type SelectAllNodeFactory = Readonly<{
+    is(node: OperationNode): node is SelectAllNode;
+    create(): Readonly<SelectAllNode>;
+}>;
 interface SelectAllNode extends OperationNode {
     readonly kind: 'SelectAllNode';
 }
 /**
  * @internal
  */
-declare const SelectAllNode: Readonly<{
-    is(node: OperationNode): node is SelectAllNode;
-    create(): SelectAllNode;
-}>;
+declare const SelectAllNode: SelectAllNodeFactory;
 
+type ReferenceNodeFactory = Readonly<{
+    is(node: OperationNode): node is ReferenceNode;
+    create(column: ColumnNode, table?: TableNode): Readonly<ReferenceNode>;
+    createSelectAll(table: TableNode): Readonly<ReferenceNode>;
+}>;
 interface ReferenceNode extends OperationNode {
     readonly kind: 'ReferenceNode';
     readonly column: ColumnNode | SelectAllNode;
@@ -951,15 +990,17 @@ interface ReferenceNode extends OperationNode {
 /**
  * @internal
  */
-declare const ReferenceNode: Readonly<{
-    is(node: OperationNode): node is ReferenceNode;
-    create(column: ColumnNode, table?: TableNode): ReferenceNode;
-    createSelectAll(table: TableNode): ReferenceNode;
-}>;
+declare const ReferenceNode: ReferenceNodeFactory;
 
 type SimpleReferenceExpressionNode = ColumnNode | ReferenceNode;
 
 type SelectionNodeChild = SimpleReferenceExpressionNode | AliasNode | SelectAllNode;
+type SelectionNodeFactory = Readonly<{
+    is(node: OperationNode): node is SelectionNode;
+    create(selection: SelectionNodeChild): Readonly<SelectionNode>;
+    createSelectAll(): Readonly<SelectionNode>;
+    createSelectAllFromTable(table: TableNode): Readonly<SelectionNode>;
+}>;
 interface SelectionNode extends OperationNode {
     readonly kind: 'SelectionNode';
     readonly selection: SelectionNodeChild;
@@ -967,13 +1008,12 @@ interface SelectionNode extends OperationNode {
 /**
  * @internal
  */
-declare const SelectionNode: Readonly<{
-    is(node: OperationNode): node is SelectionNode;
-    create(selection: SelectionNodeChild): SelectionNode;
-    createSelectAll(): SelectionNode;
-    createSelectAllFromTable(table: TableNode): SelectionNode;
-}>;
+declare const SelectionNode: SelectionNodeFactory;
 
+type CommonTableExpressionNameNodeFactory = Readonly<{
+    is(node: OperationNode): node is CommonTableExpressionNameNode;
+    create(tableName: string, columnNames?: ReadonlyArray<string>): Readonly<CommonTableExpressionNameNode>;
+}>;
 interface CommonTableExpressionNameNode extends OperationNode {
     readonly kind: 'CommonTableExpressionNameNode';
     readonly table: TableNode;
@@ -982,12 +1022,14 @@ interface CommonTableExpressionNameNode extends OperationNode {
 /**
  * @internal
  */
-declare const CommonTableExpressionNameNode: Readonly<{
-    is(node: OperationNode): node is CommonTableExpressionNameNode;
-    create(tableName: string, columnNames?: ReadonlyArray<string>): CommonTableExpressionNameNode;
-}>;
+declare const CommonTableExpressionNameNode: CommonTableExpressionNameNodeFactory;
 
 type CommonTableExpressionNodeProps = Pick<CommonTableExpressionNode, 'materialized'>;
+type CommonTableExpressionNodeFactory = Readonly<{
+    is(node: OperationNode): node is CommonTableExpressionNode;
+    create(name: CommonTableExpressionNameNode, expression: OperationNode): Readonly<CommonTableExpressionNode>;
+    cloneWith(node: CommonTableExpressionNode, props: CommonTableExpressionNodeProps): Readonly<CommonTableExpressionNode>;
+}>;
 interface CommonTableExpressionNode extends OperationNode {
     readonly kind: 'CommonTableExpressionNode';
     readonly name: CommonTableExpressionNameNode;
@@ -997,13 +1039,14 @@ interface CommonTableExpressionNode extends OperationNode {
 /**
  * @internal
  */
-declare const CommonTableExpressionNode: Readonly<{
-    is(node: OperationNode): node is CommonTableExpressionNode;
-    create(name: CommonTableExpressionNameNode, expression: OperationNode): CommonTableExpressionNode;
-    cloneWith(node: CommonTableExpressionNode, props: CommonTableExpressionNodeProps): CommonTableExpressionNode;
-}>;
+declare const CommonTableExpressionNode: CommonTableExpressionNodeFactory;
 
 type WithNodeParams = Omit<WithNode, 'kind' | 'expressions'>;
+type WithNodeFactory = Readonly<{
+    is(node: OperationNode): node is WithNode;
+    create(expression: CommonTableExpressionNode, params?: WithNodeParams): Readonly<WithNode>;
+    cloneWithExpression(withNode: WithNode, expression: CommonTableExpressionNode): Readonly<WithNode>;
+}>;
 interface WithNode extends OperationNode {
     readonly kind: 'WithNode';
     readonly expressions: ReadonlyArray<CommonTableExpressionNode>;
@@ -1012,13 +1055,14 @@ interface WithNode extends OperationNode {
 /**
  * @internal
  */
-declare const WithNode: Readonly<{
-    is(node: OperationNode): node is WithNode;
-    create(expression: CommonTableExpressionNode, params?: WithNodeParams): WithNode;
-    cloneWithExpression(withNode: WithNode, expression: CommonTableExpressionNode): WithNode;
-}>;
+declare const WithNode: WithNodeFactory;
 
 type SelectModifier = 'ForUpdate' | 'ForNoKeyUpdate' | 'ForShare' | 'ForKeyShare' | 'NoWait' | 'SkipLocked' | 'Distinct';
+type SelectModifierNodeFactory = Readonly<{
+    is(node: OperationNode): node is SelectModifierNode;
+    create(modifier: SelectModifier, of?: ReadonlyArray<OperationNode>): Readonly<SelectModifierNode>;
+    createWithExpression(modifier: OperationNode): Readonly<SelectModifierNode>;
+}>;
 interface SelectModifierNode extends OperationNode {
     readonly kind: 'SelectModifierNode';
     readonly modifier?: SelectModifier;
@@ -1028,11 +1072,7 @@ interface SelectModifierNode extends OperationNode {
 /**
  * @internal
  */
-declare const SelectModifierNode: Readonly<{
-    is(node: OperationNode): node is SelectModifierNode;
-    create(modifier: SelectModifier, of?: ReadonlyArray<OperationNode>): SelectModifierNode;
-    createWithExpression(modifier: OperationNode): SelectModifierNode;
-}>;
+declare const SelectModifierNode: SelectModifierNodeFactory;
 
 interface OperationNodeSource {
     toOperationNode(): OperationNode;
@@ -1275,6 +1315,10 @@ interface Explainable {
     explain<O extends Record<string, any> = Record<string, any>>(format?: ExplainFormat, options?: Expression<any>): Promise<O[]>;
 }
 
+type ExplainNodeFactory = Readonly<{
+    is(node: OperationNode): node is ExplainNode;
+    create(format?: ExplainFormat, options?: OperationNode): Readonly<ExplainNode>;
+}>;
 interface ExplainNode extends OperationNode {
     readonly kind: 'ExplainNode';
     readonly format?: ExplainFormat;
@@ -1283,12 +1327,13 @@ interface ExplainNode extends OperationNode {
 /**
  * @internal
  */
-declare const ExplainNode: Readonly<{
-    is(node: OperationNode): node is ExplainNode;
-    create(format?: ExplainFormat, options?: OperationNode): ExplainNode;
-}>;
+declare const ExplainNode: ExplainNodeFactory;
 
 type SetOperator = 'union' | 'intersect' | 'except';
+type SetOperationNodeFactory = Readonly<{
+    is(node: OperationNode): node is SetOperationNode;
+    create(operator: SetOperator, expression: OperationNode, all: boolean): Readonly<SetOperationNode>;
+}>;
 interface SetOperationNode extends OperationNode {
     kind: 'SetOperationNode';
     operator: SetOperator;
@@ -1298,11 +1343,13 @@ interface SetOperationNode extends OperationNode {
 /**
  * @internal
  */
-declare const SetOperationNode: Readonly<{
-    is(node: OperationNode): node is SetOperationNode;
-    create(operator: SetOperator, expression: OperationNode, all: boolean): SetOperationNode;
-}>;
+declare const SetOperationNode: SetOperationNodeFactory;
 
+type ValueNodeFactory = Readonly<{
+    is(node: OperationNode): node is ValueNode;
+    create(value: unknown): Readonly<ValueNode>;
+    createImmediate(value: unknown): Readonly<ValueNode>;
+}>;
 interface ValueNode extends OperationNode {
     readonly kind: 'ValueNode';
     readonly value: unknown;
@@ -1311,13 +1358,13 @@ interface ValueNode extends OperationNode {
 /**
  * @internal
  */
-declare const ValueNode: Readonly<{
-    is(node: OperationNode): node is ValueNode;
-    create(value: unknown): ValueNode;
-    createImmediate(value: unknown): ValueNode;
-}>;
+declare const ValueNode: ValueNodeFactory;
 
 type FetchModifier = 'only' | 'with ties';
+type FetchNodeFactory = Readonly<{
+    is(node: OperationNode): node is FetchNode;
+    create(rowCount: number | bigint, modifier: FetchModifier): Readonly<FetchNode>;
+}>;
 interface FetchNode extends OperationNode {
     readonly kind: 'FetchNode';
     readonly rowCount: ValueNode;
@@ -1326,12 +1373,13 @@ interface FetchNode extends OperationNode {
 /**
  * @internal
  */
-declare const FetchNode: {
-    is(node: OperationNode): node is FetchNode;
-    create(rowCount: number | bigint, modifier: FetchModifier): FetchNode;
-};
+declare const FetchNode: FetchNodeFactory;
 
 type TopModifier = 'percent' | 'with ties' | 'percent with ties';
+type TopNodeFactory = Readonly<{
+    is(node: OperationNode): node is TopNode;
+    create(expression: number | bigint, modifiers?: TopModifier): Readonly<TopNode>;
+}>;
 interface TopNode extends OperationNode {
     readonly kind: 'TopNode';
     readonly expression: number | bigint;
@@ -1340,11 +1388,28 @@ interface TopNode extends OperationNode {
 /**
  * @internal
  */
-declare const TopNode: Readonly<{
-    is(node: OperationNode): node is TopNode;
-    create(expression: number | bigint, modifiers?: TopModifier): TopNode;
-}>;
+declare const TopNode: TopNodeFactory;
 
+type SelectQueryNodeFactory = Readonly<{
+    is(node: OperationNode): node is SelectQueryNode;
+    create(withNode?: WithNode): Readonly<SelectQueryNode>;
+    createFrom(fromItems: ReadonlyArray<OperationNode>, withNode?: WithNode): Readonly<SelectQueryNode>;
+    cloneWithSelections(select: SelectQueryNode, selections: ReadonlyArray<SelectionNode>): Readonly<SelectQueryNode>;
+    cloneWithDistinctOn(select: SelectQueryNode, expressions: ReadonlyArray<OperationNode>): Readonly<SelectQueryNode>;
+    cloneWithFrontModifier(select: SelectQueryNode, modifier: SelectModifierNode): Readonly<SelectQueryNode>;
+    cloneWithOrderByItems(node: SelectQueryNode, items: ReadonlyArray<OrderByItemNode>): Readonly<SelectQueryNode>;
+    cloneWithGroupByItems(selectNode: SelectQueryNode, items: ReadonlyArray<GroupByItemNode>): Readonly<SelectQueryNode>;
+    cloneWithLimit(selectNode: SelectQueryNode, limit: LimitNode): Readonly<SelectQueryNode>;
+    cloneWithOffset(selectNode: SelectQueryNode, offset: OffsetNode): Readonly<SelectQueryNode>;
+    cloneWithFetch(selectNode: SelectQueryNode, fetch: FetchNode): Readonly<SelectQueryNode>;
+    cloneWithHaving(selectNode: SelectQueryNode, operation: OperationNode): Readonly<SelectQueryNode>;
+    cloneWithSetOperations(selectNode: SelectQueryNode, setOperations: ReadonlyArray<SetOperationNode>): Readonly<SelectQueryNode>;
+    cloneWithoutSelections(select: SelectQueryNode): Readonly<SelectQueryNode>;
+    cloneWithoutLimit(select: SelectQueryNode): Readonly<SelectQueryNode>;
+    cloneWithoutOffset(select: SelectQueryNode): Readonly<SelectQueryNode>;
+    cloneWithoutOrderBy(node: SelectQueryNode): Readonly<SelectQueryNode>;
+    cloneWithoutGroupBy(select: SelectQueryNode): Readonly<SelectQueryNode>;
+}>;
 interface SelectQueryNode extends OperationNode {
     readonly kind: 'SelectQueryNode';
     readonly from?: FromNode;
@@ -1368,34 +1433,14 @@ interface SelectQueryNode extends OperationNode {
 /**
  * @internal
  */
-declare const SelectQueryNode: Readonly<{
-    is(node: OperationNode): node is SelectQueryNode;
-    create(withNode?: WithNode): SelectQueryNode;
-    createFrom(fromItems: ReadonlyArray<OperationNode>, withNode?: WithNode): SelectQueryNode;
-    cloneWithSelections(select: SelectQueryNode, selections: ReadonlyArray<SelectionNode>): SelectQueryNode;
-    cloneWithDistinctOn(select: SelectQueryNode, expressions: ReadonlyArray<OperationNode>): SelectQueryNode;
-    cloneWithFrontModifier(select: SelectQueryNode, modifier: SelectModifierNode): SelectQueryNode;
-    /**
-     * @deprecated Use `QueryNode.cloneWithoutOrderBy` instead.
-     */
-    cloneWithOrderByItems: (node: SelectQueryNode, items: ReadonlyArray<OrderByItemNode>) => SelectQueryNode;
-    cloneWithGroupByItems(selectNode: SelectQueryNode, items: ReadonlyArray<GroupByItemNode>): SelectQueryNode;
-    cloneWithLimit(selectNode: SelectQueryNode, limit: LimitNode): SelectQueryNode;
-    cloneWithOffset(selectNode: SelectQueryNode, offset: OffsetNode): SelectQueryNode;
-    cloneWithFetch(selectNode: SelectQueryNode, fetch: FetchNode): SelectQueryNode;
-    cloneWithHaving(selectNode: SelectQueryNode, operation: OperationNode): SelectQueryNode;
-    cloneWithSetOperations(selectNode: SelectQueryNode, setOperations: ReadonlyArray<SetOperationNode>): SelectQueryNode;
-    cloneWithoutSelections(select: SelectQueryNode): SelectQueryNode;
-    cloneWithoutLimit(select: SelectQueryNode): SelectQueryNode;
-    cloneWithoutOffset(select: SelectQueryNode): SelectQueryNode;
-    /**
-     * @deprecated Use `QueryNode.cloneWithoutOrderBy` instead.
-     */
-    cloneWithoutOrderBy: (node: SelectQueryNode) => SelectQueryNode;
-    cloneWithoutGroupBy(select: SelectQueryNode): SelectQueryNode;
-}>;
+declare const SelectQueryNode: SelectQueryNodeFactory;
 
 type CreateViewNodeParams = Omit<Partial<CreateViewNode>, 'kind' | 'name'>;
+type CreateViewNodeFactory = Readonly<{
+    is(node: OperationNode): node is CreateViewNode;
+    create(name: string): Readonly<CreateViewNode>;
+    cloneWith(createView: CreateViewNode, params: CreateViewNodeParams): Readonly<CreateViewNode>;
+}>;
 interface CreateViewNode extends OperationNode {
     readonly kind: 'CreateViewNode';
     readonly name: SchemableIdentifierNode;
@@ -1409,13 +1454,14 @@ interface CreateViewNode extends OperationNode {
 /**
  * @internal
  */
-declare const CreateViewNode: Readonly<{
-    is(node: OperationNode): node is CreateViewNode;
-    create(name: string): CreateViewNode;
-    cloneWith(createView: CreateViewNode, params: CreateViewNodeParams): CreateViewNode;
-}>;
+declare const CreateViewNode: CreateViewNodeFactory;
 
 type DropSchemaNodeParams = Omit<Partial<DropSchemaNode>, 'kind' | 'schema'>;
+type DropSchemaNodeFactory = Readonly<{
+    is(node: OperationNode): node is DropSchemaNode;
+    create(schema: string, params?: DropSchemaNodeParams): Readonly<DropSchemaNode>;
+    cloneWith(dropSchema: DropSchemaNode, params: DropSchemaNodeParams): Readonly<DropSchemaNode>;
+}>;
 interface DropSchemaNode extends OperationNode {
     readonly kind: 'DropSchemaNode';
     readonly schema: IdentifierNode;
@@ -1425,13 +1471,14 @@ interface DropSchemaNode extends OperationNode {
 /**
  * @internal
  */
-declare const DropSchemaNode: Readonly<{
-    is(node: OperationNode): node is DropSchemaNode;
-    create(schema: string, params?: DropSchemaNodeParams): DropSchemaNode;
-    cloneWith(dropSchema: DropSchemaNode, params: DropSchemaNodeParams): DropSchemaNode;
-}>;
+declare const DropSchemaNode: DropSchemaNodeFactory;
 
 type DropTablexNodeParams = Omit<Partial<DropTableNode>, 'kind' | 'table'>;
+type DropTableNodeFactory = Readonly<{
+    is(node: OperationNode): node is DropTableNode;
+    create(table: TableNode, params?: DropTablexNodeParams): Readonly<DropTableNode>;
+    cloneWith(dropIndex: DropTableNode, params: DropTablexNodeParams): Readonly<DropTableNode>;
+}>;
 interface DropTableNode extends OperationNode {
     readonly kind: 'DropTableNode';
     readonly table: TableNode;
@@ -1441,13 +1488,14 @@ interface DropTableNode extends OperationNode {
 /**
  * @internal
  */
-declare const DropTableNode: Readonly<{
-    is(node: OperationNode): node is DropTableNode;
-    create(table: TableNode, params?: DropTablexNodeParams): DropTableNode;
-    cloneWith(dropIndex: DropTableNode, params: DropTablexNodeParams): DropTableNode;
-}>;
+declare const DropTableNode: DropTableNodeFactory;
 
 type DropTypeNodeParams = Omit<Partial<DropTypeNode>, 'kind' | 'name'>;
+type DropTypeNodeFactory = Readonly<{
+    is(node: OperationNode): node is DropTypeNode;
+    create(name: SchemableIdentifierNode): Readonly<DropTypeNode>;
+    cloneWith(dropType: DropTypeNode, params: DropTypeNodeParams): Readonly<DropTypeNode>;
+}>;
 interface DropTypeNode extends OperationNode {
     readonly kind: 'DropTypeNode';
     readonly name: SchemableIdentifierNode;
@@ -1456,13 +1504,14 @@ interface DropTypeNode extends OperationNode {
 /**
  * @internal
  */
-declare const DropTypeNode: Readonly<{
-    is(node: OperationNode): node is DropTypeNode;
-    create(name: SchemableIdentifierNode): DropTypeNode;
-    cloneWith(dropType: DropTypeNode, params: DropTypeNodeParams): DropTypeNode;
-}>;
+declare const DropTypeNode: DropTypeNodeFactory;
 
 type DropViewNodeParams = Omit<Partial<DropViewNode>, 'kind' | 'name'>;
+type DropViewNodeFactory = Readonly<{
+    is(node: OperationNode): node is DropViewNode;
+    create(name: string): Readonly<DropViewNode>;
+    cloneWith(dropView: DropViewNode, params: DropViewNodeParams): Readonly<DropViewNode>;
+}>;
 interface DropViewNode extends OperationNode {
     readonly kind: 'DropViewNode';
     readonly name: SchemableIdentifierNode;
@@ -1473,12 +1522,13 @@ interface DropViewNode extends OperationNode {
 /**
  * @internal
  */
-declare const DropViewNode: Readonly<{
-    is(node: OperationNode): node is DropViewNode;
-    create(name: string): DropViewNode;
-    cloneWith(dropView: DropViewNode, params: DropViewNodeParams): DropViewNode;
-}>;
+declare const DropViewNode: DropViewNodeFactory;
 
+type OutputNodeFactory = Readonly<{
+    is(node: OperationNode): node is OutputNode;
+    create(selections: ReadonlyArray<OperationNode>): Readonly<OutputNode>;
+    cloneWithSelections(output: OutputNode, selections: ReadonlyArray<OperationNode>): Readonly<OutputNode>;
+}>;
 interface OutputNode extends OperationNode {
     readonly kind: 'OutputNode';
     readonly selections: ReadonlyArray<OperationNode>;
@@ -1486,12 +1536,13 @@ interface OutputNode extends OperationNode {
 /**
  * @internal
  */
-declare const OutputNode: Readonly<{
-    is(node: OperationNode): node is OutputNode;
-    create(selections: ReadonlyArray<OperationNode>): OutputNode;
-    cloneWithSelections(output: OutputNode, selections: ReadonlyArray<OperationNode>): OutputNode;
-}>;
+declare const OutputNode: OutputNodeFactory;
 
+type ReturningNodeFactory = Readonly<{
+    is(node: OperationNode): node is ReturningNode;
+    create(selections: ReadonlyArray<SelectionNode>): Readonly<ReturningNode>;
+    cloneWithSelections(returning: ReturningNode, selections: ReadonlyArray<SelectionNode>): Readonly<ReturningNode>;
+}>;
 interface ReturningNode extends OperationNode {
     readonly kind: 'ReturningNode';
     readonly selections: ReadonlyArray<SelectionNode>;
@@ -1499,12 +1550,13 @@ interface ReturningNode extends OperationNode {
 /**
  * @internal
  */
-declare const ReturningNode: Readonly<{
-    is(node: OperationNode): node is ReturningNode;
-    create(selections: ReadonlyArray<SelectionNode>): ReturningNode;
-    cloneWithSelections(returning: ReturningNode, selections: ReadonlyArray<SelectionNode>): ReturningNode;
-}>;
+declare const ReturningNode: ReturningNodeFactory;
 
+type WhenNodeFactory = Readonly<{
+    is(node: OperationNode): node is WhenNode;
+    create(condition: OperationNode): Readonly<WhenNode>;
+    cloneWithResult(whenNode: WhenNode, result: OperationNode): Readonly<WhenNode>;
+}>;
 interface WhenNode extends OperationNode {
     readonly kind: 'WhenNode';
     readonly condition: OperationNode;
@@ -1513,12 +1565,15 @@ interface WhenNode extends OperationNode {
 /**
  * @internal
  */
-declare const WhenNode: Readonly<{
-    is(node: OperationNode): node is WhenNode;
-    create(condition: OperationNode): WhenNode;
-    cloneWithResult(whenNode: WhenNode, result: OperationNode): WhenNode;
-}>;
+declare const WhenNode: WhenNodeFactory;
 
+type MergeQueryNodeFactory = Readonly<{
+    is(node: OperationNode): node is MergeQueryNode;
+    create(into: TableNode | AliasNode, withNode?: WithNode): Readonly<MergeQueryNode>;
+    cloneWithUsing(mergeNode: MergeQueryNode, using: JoinNode): Readonly<MergeQueryNode>;
+    cloneWithWhen(mergeNode: MergeQueryNode, when: WhenNode): Readonly<MergeQueryNode>;
+    cloneWithThen(mergeNode: MergeQueryNode, then: OperationNode): Readonly<MergeQueryNode>;
+}>;
 interface MergeQueryNode extends OperationNode {
     readonly kind: 'MergeQueryNode';
     readonly into: TableNode | AliasNode;
@@ -1533,14 +1588,12 @@ interface MergeQueryNode extends OperationNode {
 /**
  * @internal
  */
-declare const MergeQueryNode: Readonly<{
-    is(node: OperationNode): node is MergeQueryNode;
-    create(into: TableNode | AliasNode, withNode?: WithNode): MergeQueryNode;
-    cloneWithUsing(mergeNode: MergeQueryNode, using: JoinNode): MergeQueryNode;
-    cloneWithWhen(mergeNode: MergeQueryNode, when: WhenNode): MergeQueryNode;
-    cloneWithThen(mergeNode: MergeQueryNode, then: OperationNode): MergeQueryNode;
-}>;
+declare const MergeQueryNode: MergeQueryNodeFactory;
 
+type ColumnUpdateNodeFactory = Readonly<{
+    is(node: OperationNode): node is ColumnUpdateNode;
+    create(column: OperationNode, value: OperationNode): Readonly<ColumnUpdateNode>;
+}>;
 interface ColumnUpdateNode extends OperationNode {
     readonly kind: 'ColumnUpdateNode';
     readonly column: OperationNode;
@@ -1549,12 +1602,20 @@ interface ColumnUpdateNode extends OperationNode {
 /**
  * @internal
  */
-declare const ColumnUpdateNode: Readonly<{
-    is(node: OperationNode): node is ColumnUpdateNode;
-    create(column: OperationNode, value: OperationNode): ColumnUpdateNode;
-}>;
+declare const ColumnUpdateNode: ColumnUpdateNodeFactory;
 
 type OnConflictNodeProps = Omit<OnConflictNode, 'kind' | 'indexWhere' | 'updateWhere'>;
+type OnConflictNodeFactory = Readonly<{
+    is(node: OperationNode): node is OnConflictNode;
+    create(): Readonly<OnConflictNode>;
+    cloneWith(node: OnConflictNode, props: OnConflictNodeProps): Readonly<OnConflictNode>;
+    cloneWithIndexWhere(node: OnConflictNode, operation: OperationNode): Readonly<OnConflictNode>;
+    cloneWithIndexOrWhere(node: OnConflictNode, operation: OperationNode): Readonly<OnConflictNode>;
+    cloneWithUpdateWhere(node: OnConflictNode, operation: OperationNode): Readonly<OnConflictNode>;
+    cloneWithUpdateOrWhere(node: OnConflictNode, operation: OperationNode): Readonly<OnConflictNode>;
+    cloneWithoutIndexWhere(node: OnConflictNode): Readonly<OnConflictNode>;
+    cloneWithoutUpdateWhere(node: OnConflictNode): Readonly<OnConflictNode>;
+}>;
 interface OnConflictNode extends OperationNode {
     readonly kind: 'OnConflictNode';
     readonly columns?: ReadonlyArray<ColumnNode>;
@@ -1568,19 +1629,13 @@ interface OnConflictNode extends OperationNode {
 /**
  * @internal
  */
-declare const OnConflictNode: Readonly<{
-    is(node: OperationNode): node is OnConflictNode;
-    create(): OnConflictNode;
-    cloneWith(node: OnConflictNode, props: OnConflictNodeProps): OnConflictNode;
-    cloneWithIndexWhere(node: OnConflictNode, operation: OperationNode): OnConflictNode;
-    cloneWithIndexOrWhere(node: OnConflictNode, operation: OperationNode): OnConflictNode;
-    cloneWithUpdateWhere(node: OnConflictNode, operation: OperationNode): OnConflictNode;
-    cloneWithUpdateOrWhere(node: OnConflictNode, operation: OperationNode): OnConflictNode;
-    cloneWithoutIndexWhere(node: OnConflictNode): OnConflictNode;
-    cloneWithoutUpdateWhere(node: OnConflictNode): OnConflictNode;
-}>;
+declare const OnConflictNode: OnConflictNodeFactory;
 
 type OnDuplicateKeyNodeProps = Omit<OnDuplicateKeyNode, 'kind'>;
+type OnDuplicateKeyNodeFactory = Readonly<{
+    is(node: OperationNode): node is OnDuplicateKeyNode;
+    create(updates: ReadonlyArray<ColumnUpdateNode>): Readonly<OnDuplicateKeyNode>;
+}>;
 interface OnDuplicateKeyNode extends OperationNode {
     readonly kind: 'OnDuplicateKeyNode';
     readonly updates: ReadonlyArray<ColumnUpdateNode>;
@@ -1588,11 +1643,12 @@ interface OnDuplicateKeyNode extends OperationNode {
 /**
  * @internal
  */
-declare const OnDuplicateKeyNode: Readonly<{
-    is(node: OperationNode): node is OnDuplicateKeyNode;
-    create(updates: ReadonlyArray<ColumnUpdateNode>): OnDuplicateKeyNode;
-}>;
+declare const OnDuplicateKeyNode: OnDuplicateKeyNodeFactory;
 
+type OrActionNodeFactory = Readonly<{
+    is(node: OperationNode): node is OrActionNode;
+    create(action: string): Readonly<OrActionNode>;
+}>;
 interface OrActionNode extends OperationNode {
     readonly kind: 'OrActionNode';
     readonly action: string;
@@ -1600,12 +1656,15 @@ interface OrActionNode extends OperationNode {
 /**
  * @internal
  */
-declare const OrActionNode: Readonly<{
-    is(node: OperationNode): node is OrActionNode;
-    create(action: string): OrActionNode;
-}>;
+declare const OrActionNode: OrActionNodeFactory;
 
 type InsertQueryNodeProps = Omit<InsertQueryNode, 'kind' | 'into'>;
+type InsertQueryNodeFactory = Readonly<{
+    is(node: OperationNode): node is InsertQueryNode;
+    create(into: TableNode, withNode?: WithNode, replace?: boolean): Readonly<InsertQueryNode>;
+    createWithoutInto(): Readonly<InsertQueryNode>;
+    cloneWith(insertQuery: InsertQueryNode, props: InsertQueryNodeProps): Readonly<InsertQueryNode>;
+}>;
 interface InsertQueryNode extends OperationNode {
     readonly kind: 'InsertQueryNode';
     readonly into?: TableNode;
@@ -1628,13 +1687,16 @@ interface InsertQueryNode extends OperationNode {
 /**
  * @internal
  */
-declare const InsertQueryNode: Readonly<{
-    is(node: OperationNode): node is InsertQueryNode;
-    create(into: TableNode, withNode?: WithNode, replace?: boolean): InsertQueryNode;
-    createWithoutInto(): InsertQueryNode;
-    cloneWith(insertQuery: InsertQueryNode, props: InsertQueryNodeProps): InsertQueryNode;
-}>;
+declare const InsertQueryNode: InsertQueryNodeFactory;
 
+type UpdateQueryNodeFactory = Readonly<{
+    is(node: OperationNode): node is UpdateQueryNode;
+    create(tables: ReadonlyArray<OperationNode>, withNode?: WithNode): Readonly<UpdateQueryNode>;
+    createWithoutTable(): Readonly<UpdateQueryNode>;
+    cloneWithFromItems(updateQuery: UpdateQueryNode, fromItems: ReadonlyArray<OperationNode>): Readonly<UpdateQueryNode>;
+    cloneWithUpdates(updateQuery: UpdateQueryNode, updates: ReadonlyArray<ColumnUpdateNode>): Readonly<UpdateQueryNode>;
+    cloneWithLimit(updateQuery: UpdateQueryNode, limit: LimitNode): Readonly<UpdateQueryNode>;
+}>;
 interface UpdateQueryNode extends OperationNode {
     readonly kind: 'UpdateQueryNode';
     readonly table?: OperationNode;
@@ -1654,15 +1716,13 @@ interface UpdateQueryNode extends OperationNode {
 /**
  * @internal
  */
-declare const UpdateQueryNode: Readonly<{
-    is(node: OperationNode): node is UpdateQueryNode;
-    create(tables: ReadonlyArray<OperationNode>, withNode?: WithNode): UpdateQueryNode;
-    createWithoutTable(): UpdateQueryNode;
-    cloneWithFromItems(updateQuery: UpdateQueryNode, fromItems: ReadonlyArray<OperationNode>): UpdateQueryNode;
-    cloneWithUpdates(updateQuery: UpdateQueryNode, updates: ReadonlyArray<ColumnUpdateNode>): UpdateQueryNode;
-    cloneWithLimit(updateQuery: UpdateQueryNode, limit: LimitNode): UpdateQueryNode;
-}>;
+declare const UpdateQueryNode: UpdateQueryNodeFactory;
 
+type UsingNodeFactory = Readonly<{
+    is(node: OperationNode): node is UsingNode;
+    create(tables: ReadonlyArray<OperationNode>): Readonly<UsingNode>;
+    cloneWithTables(using: UsingNode, tables: ReadonlyArray<OperationNode>): Readonly<UsingNode>;
+}>;
 interface UsingNode extends OperationNode {
     readonly kind: 'UsingNode';
     readonly tables: ReadonlyArray<OperationNode>;
@@ -1670,12 +1730,17 @@ interface UsingNode extends OperationNode {
 /**
  * @internal
  */
-declare const UsingNode: Readonly<{
-    is(node: OperationNode): node is UsingNode;
-    create(tables: ReadonlyArray<OperationNode>): UsingNode;
-    cloneWithTables(using: UsingNode, tables: ReadonlyArray<OperationNode>): UsingNode;
-}>;
+declare const UsingNode: UsingNodeFactory;
 
+type DeleteQueryNodeFactory = Readonly<{
+    is(node: OperationNode): node is DeleteQueryNode;
+    create(fromItems: OperationNode[], withNode?: WithNode): Readonly<DeleteQueryNode>;
+    cloneWithOrderByItems(node: DeleteQueryNode, items: ReadonlyArray<OrderByItemNode>): Readonly<DeleteQueryNode>;
+    cloneWithoutOrderBy(node: DeleteQueryNode): Readonly<DeleteQueryNode>;
+    cloneWithLimit(deleteNode: DeleteQueryNode, limit: LimitNode): Readonly<DeleteQueryNode>;
+    cloneWithoutLimit(deleteNode: DeleteQueryNode): Readonly<DeleteQueryNode>;
+    cloneWithUsing(deleteNode: DeleteQueryNode, tables: OperationNode[]): Readonly<DeleteQueryNode>;
+}>;
 interface DeleteQueryNode extends OperationNode {
     readonly kind: 'DeleteQueryNode';
     readonly from: FromNode;
@@ -1694,21 +1759,7 @@ interface DeleteQueryNode extends OperationNode {
 /**
  * @internal
  */
-declare const DeleteQueryNode: Readonly<{
-    is(node: OperationNode): node is DeleteQueryNode;
-    create(fromItems: OperationNode[], withNode?: WithNode): DeleteQueryNode;
-    /**
-     * @deprecated Use `QueryNode.cloneWithoutOrderBy` instead.
-     */
-    cloneWithOrderByItems: (node: DeleteQueryNode, items: ReadonlyArray<OrderByItemNode>) => DeleteQueryNode;
-    /**
-     * @deprecated Use `QueryNode.cloneWithoutOrderBy` instead.
-     */
-    cloneWithoutOrderBy: (node: DeleteQueryNode) => DeleteQueryNode;
-    cloneWithLimit(deleteNode: DeleteQueryNode, limit: LimitNode): DeleteQueryNode;
-    cloneWithoutLimit(deleteNode: DeleteQueryNode): DeleteQueryNode;
-    cloneWithUsing(deleteNode: DeleteQueryNode, tables: OperationNode[]): DeleteQueryNode;
-}>;
+declare const DeleteQueryNode: DeleteQueryNodeFactory;
 
 type HasJoins = {
     joins?: ReadonlyArray<JoinNode>;
@@ -1734,26 +1785,32 @@ type HasEndModifiers = {
 type HasOrderBy = {
     orderBy?: OrderByNode;
 };
+type QueryNodeFactory = Readonly<{
+    is(node: OperationNode): node is QueryNode;
+    cloneWithEndModifier<T extends HasEndModifiers>(node: T, modifier: OperationNode): Readonly<T>;
+    cloneWithWhere<T extends HasWhere>(node: T, operation: OperationNode): Readonly<T>;
+    cloneWithJoin<T extends HasJoins>(node: T, join: JoinNode): Readonly<T>;
+    cloneWithReturning<T extends HasReturning>(node: T, selections: ReadonlyArray<SelectionNode>): Readonly<T>;
+    cloneWithoutReturning<T extends HasReturning>(node: T): Readonly<T>;
+    cloneWithoutWhere<T extends HasWhere>(node: T): Readonly<T>;
+    cloneWithExplain<T extends HasExplain>(node: T, format: ExplainFormat | undefined, options: Expression<any> | undefined): Readonly<T>;
+    cloneWithTop<T extends HasTop>(node: T, top: TopNode): Readonly<T>;
+    cloneWithOutput<T extends HasOutput>(node: T, selections: ReadonlyArray<SelectionNode>): Readonly<T>;
+    cloneWithOrderByItems<T extends HasOrderBy>(node: T, items: ReadonlyArray<OrderByItemNode>): Readonly<T>;
+    cloneWithoutOrderBy<T extends HasOrderBy>(node: T): Readonly<T>;
+}>;
 type QueryNode = SelectQueryNode | InsertQueryNode | UpdateQueryNode | DeleteQueryNode | MergeQueryNode;
 /**
  * @internal
  */
-declare const QueryNode: Readonly<{
-    is(node: OperationNode): node is QueryNode;
-    cloneWithEndModifier<T extends HasEndModifiers>(node: T, modifier: OperationNode): T;
-    cloneWithWhere<T extends HasWhere>(node: T, operation: OperationNode): T;
-    cloneWithJoin<T extends HasJoins>(node: T, join: JoinNode): T;
-    cloneWithReturning<T extends HasReturning>(node: T, selections: ReadonlyArray<SelectionNode>): T;
-    cloneWithoutReturning<T extends HasReturning>(node: T): T;
-    cloneWithoutWhere<T extends HasWhere>(node: T): T;
-    cloneWithExplain<T extends HasExplain>(node: T, format: ExplainFormat | undefined, options: Expression<any> | undefined): T;
-    cloneWithTop<T extends HasTop>(node: T, top: TopNode): T;
-    cloneWithOutput<T extends HasOutput>(node: T, selections: ReadonlyArray<SelectionNode>): T;
-    cloneWithOrderByItems<T extends HasOrderBy>(node: T, items: ReadonlyArray<OrderByItemNode>): T;
-    cloneWithoutOrderBy<T extends HasOrderBy>(node: T): T;
-}>;
+declare const QueryNode: QueryNodeFactory;
 
 type RefreshMaterializedViewNodeParams = Omit<Partial<RefreshMaterializedViewNode>, 'kind' | 'name'>;
+type RefreshMaterializedViewNodeFactory = Readonly<{
+    is(node: OperationNode): node is RefreshMaterializedViewNode;
+    create(name: string): Readonly<RefreshMaterializedViewNode>;
+    cloneWith(createView: RefreshMaterializedViewNode, params: RefreshMaterializedViewNodeParams): Readonly<RefreshMaterializedViewNode>;
+}>;
 interface RefreshMaterializedViewNode extends OperationNode {
     readonly kind: 'RefreshMaterializedViewNode';
     readonly name: SchemableIdentifierNode;
@@ -1763,26 +1820,23 @@ interface RefreshMaterializedViewNode extends OperationNode {
 /**
  * @internal
  */
-declare const RefreshMaterializedViewNode: Readonly<{
-    is(node: OperationNode): node is RefreshMaterializedViewNode;
-    create(name: string): RefreshMaterializedViewNode;
-    cloneWith(createView: RefreshMaterializedViewNode, params: RefreshMaterializedViewNodeParams): RefreshMaterializedViewNode;
-}>;
+declare const RefreshMaterializedViewNode: RefreshMaterializedViewNodeFactory;
 
 interface QueryId {
     readonly queryId: string;
 }
 declare function createQueryId(): QueryId;
 
+type CompiledQueryFactory = Readonly<{
+    raw(sql: string, parameters?: unknown[]): Readonly<CompiledQuery>;
+}>;
 interface CompiledQuery<O = unknown> {
     readonly query: RootOperationNode;
     readonly queryId: QueryId;
     readonly sql: string;
     readonly parameters: ReadonlyArray<unknown>;
 }
-declare const CompiledQuery: Readonly<{
-    raw(sql: string, parameters?: unknown[]): CompiledQuery;
-}>;
+declare const CompiledQuery: CompiledQueryFactory;
 
 type RootOperationNode = QueryNode | CreateTableNode | CreateIndexNode | CreateSchemaNode | CreateViewNode | RefreshMaterializedViewNode | DropTableNode | DropIndexNode | DropSchemaNode | DropViewNode | AlterTableNode | RawNode | CreateTypeNode | DropTypeNode | MergeQueryNode;
 /**
@@ -2760,6 +2814,10 @@ declare const SIMPLE_COLUMN_DATA_TYPES: readonly ["varchar", "char", "text", "in
 type SimpleColumnDataType = (typeof SIMPLE_COLUMN_DATA_TYPES)[number];
 type ColumnDataType = SimpleColumnDataType | `varchar(${number})` | `char(${number})` | `decimal(${number}, ${number})` | `numeric(${number}, ${number})` | `binary(${number})` | `datetime(${number})` | `time(${number})` | `timetz(${number})` | `timestamp(${number})` | `timestamptz(${number})` | `varbinary(${number})`;
 type DataTypeParams = Omit<DataTypeNode, 'kind' | 'dataType'>;
+type DataTypeNodeFactory = Readonly<{
+    is(node: OperationNode): node is DataTypeNode;
+    create(dataType: ColumnDataType): Readonly<DataTypeNode>;
+}>;
 interface DataTypeNode extends OperationNode {
     readonly kind: 'DataTypeNode';
     readonly dataType: ColumnDataType;
@@ -2767,10 +2825,7 @@ interface DataTypeNode extends OperationNode {
 /**
  * @internal
  */
-declare const DataTypeNode: Readonly<{
-    is(node: OperationNode): node is DataTypeNode;
-    create(dataType: ColumnDataType): DataTypeNode;
-}>;
+declare const DataTypeNode: DataTypeNodeFactory;
 declare function isColumnDataType(dataType: string): dataType is ColumnDataType;
 
 type DataTypeExpression = ColumnDataType | Expression<any>;
@@ -2952,6 +3007,10 @@ type BinaryOperator = (typeof BINARY_OPERATORS)[number];
 type UnaryOperator = (typeof UNARY_OPERATORS)[number];
 type UnaryFilterOperator = (typeof UNARY_FILTER_OPERATORS)[number];
 type Operator = (typeof OPERATORS)[number];
+type OperatorNodeFactory = Readonly<{
+    is(node: OperationNode): node is OperatorNode;
+    create(operator: Operator): Readonly<OperatorNode>;
+}>;
 interface OperatorNode extends OperationNode {
     readonly kind: 'OperatorNode';
     readonly operator: Operator;
@@ -2959,10 +3018,7 @@ interface OperatorNode extends OperationNode {
 /**
  * @internal
  */
-declare const OperatorNode: Readonly<{
-    is(node: OperationNode): node is OperatorNode;
-    create(operator: Operator): OperatorNode;
-}>;
+declare const OperatorNode: OperatorNodeFactory;
 declare function isOperator(op: unknown): op is Operator;
 declare function isBinaryOperator(op: unknown): op is BinaryOperator;
 declare function isComparisonOperator(op: unknown): op is ComparisonOperator;
@@ -3758,6 +3814,10 @@ interface Streamable<O> {
     stream(chunkSize?: number): AsyncIterableIterator<O>;
 }
 
+type AndNodeFactory = Readonly<{
+    is(node: OperationNode): node is AndNode;
+    create(left: OperationNode, right: OperationNode): Readonly<AndNode>;
+}>;
 interface AndNode extends OperationNode {
     readonly kind: 'AndNode';
     readonly left: OperationNode;
@@ -3766,11 +3826,12 @@ interface AndNode extends OperationNode {
 /**
  * @internal
  */
-declare const AndNode: Readonly<{
-    is(node: OperationNode): node is AndNode;
-    create(left: OperationNode, right: OperationNode): AndNode;
-}>;
+declare const AndNode: AndNodeFactory;
 
+type OrNodeFactory = Readonly<{
+    is(node: OperationNode): node is OrNode;
+    create(left: OperationNode, right: OperationNode): Readonly<OrNode>;
+}>;
 interface OrNode extends OperationNode {
     readonly kind: 'OrNode';
     readonly left: OperationNode;
@@ -3779,11 +3840,12 @@ interface OrNode extends OperationNode {
 /**
  * @internal
  */
-declare const OrNode: Readonly<{
-    is(node: OperationNode): node is OrNode;
-    create(left: OperationNode, right: OperationNode): OrNode;
-}>;
+declare const OrNode: OrNodeFactory;
 
+type ParensNodeFactory = Readonly<{
+    is(node: OperationNode): node is ParensNode;
+    create(node: OperationNode): Readonly<ParensNode>;
+}>;
 interface ParensNode extends OperationNode {
     readonly kind: 'ParensNode';
     readonly node: OperationNode;
@@ -3791,10 +3853,7 @@ interface ParensNode extends OperationNode {
 /**
  * @internal
  */
-declare const ParensNode: Readonly<{
-    is(node: OperationNode): node is ParensNode;
-    create(node: OperationNode): ParensNode;
-}>;
+declare const ParensNode: ParensNodeFactory;
 
 declare class ExpressionWrapper<DB, TB extends keyof DB, T> implements AliasableExpression<T> {
     #private;
@@ -6945,6 +7004,10 @@ type ExtractTypeFromCoalesce5<DB, TB extends keyof DB, R1, R2, R3, R4, R5> = Ext
 type ExtractTypeFromCoalesceValues5<V1, V2, V3, V4, V5> = null extends V1 ? null extends V2 ? null extends V3 ? null extends V4 ? null extends V5 ? V1 | V2 | V3 | V4 | V5 : NotNull<V1 | V2 | V3 | V4 | V5> : NotNull<V1 | V2 | V3 | V4> : NotNull<V1 | V2 | V3> : NotNull<V1 | V2> : NotNull<V1>;
 type NotNull<T> = Exclude<T, null>;
 
+type PartitionByItemNodeFactory = Readonly<{
+    is(node: OperationNode): node is PartitionByItemNode;
+    create(partitionBy: SimpleReferenceExpressionNode): Readonly<PartitionByItemNode>;
+}>;
 interface PartitionByItemNode extends OperationNode {
     readonly kind: 'PartitionByItemNode';
     readonly partitionBy: SimpleReferenceExpressionNode;
@@ -6952,11 +7015,13 @@ interface PartitionByItemNode extends OperationNode {
 /**
  * @internal
  */
-declare const PartitionByItemNode: Readonly<{
-    is(node: OperationNode): node is PartitionByItemNode;
-    create(partitionBy: SimpleReferenceExpressionNode): PartitionByItemNode;
-}>;
+declare const PartitionByItemNode: PartitionByItemNodeFactory;
 
+type PartitionByNodeFactory = Readonly<{
+    is(node: OperationNode): node is PartitionByNode;
+    create(items: ReadonlyArray<PartitionByItemNode>): Readonly<PartitionByNode>;
+    cloneWithItems(partitionBy: PartitionByNode, items: ReadonlyArray<PartitionByItemNode>): Readonly<PartitionByNode>;
+}>;
 interface PartitionByNode extends OperationNode {
     readonly kind: 'PartitionByNode';
     readonly items: ReadonlyArray<PartitionByItemNode>;
@@ -6964,12 +7029,14 @@ interface PartitionByNode extends OperationNode {
 /**
  * @internal
  */
-declare const PartitionByNode: Readonly<{
-    is(node: OperationNode): node is PartitionByNode;
-    create(items: ReadonlyArray<PartitionByItemNode>): PartitionByNode;
-    cloneWithItems(partitionBy: PartitionByNode, items: ReadonlyArray<PartitionByItemNode>): PartitionByNode;
-}>;
+declare const PartitionByNode: PartitionByNodeFactory;
 
+type OverNodeFactory = Readonly<{
+    is(node: OperationNode): node is OverNode;
+    create(): Readonly<OverNode>;
+    cloneWithOrderByItems(overNode: OverNode, items: ReadonlyArray<OrderByItemNode>): Readonly<OverNode>;
+    cloneWithPartitionByItems(overNode: OverNode, items: ReadonlyArray<PartitionByItemNode>): Readonly<OverNode>;
+}>;
 interface OverNode extends OperationNode {
     readonly kind: 'OverNode';
     readonly orderBy?: OrderByNode;
@@ -6978,13 +7045,17 @@ interface OverNode extends OperationNode {
 /**
  * @internal
  */
-declare const OverNode: Readonly<{
-    is(node: OperationNode): node is OverNode;
-    create(): OverNode;
-    cloneWithOrderByItems(overNode: OverNode, items: ReadonlyArray<OrderByItemNode>): OverNode;
-    cloneWithPartitionByItems(overNode: OverNode, items: ReadonlyArray<PartitionByItemNode>): OverNode;
-}>;
+declare const OverNode: OverNodeFactory;
 
+type AggregateFunctionNodeFactory = Readonly<{
+    is(node: OperationNode): node is AggregateFunctionNode;
+    create(aggregateFunction: string, aggregated?: readonly OperationNode[]): Readonly<AggregateFunctionNode>;
+    cloneWithDistinct(aggregateFunctionNode: AggregateFunctionNode): Readonly<AggregateFunctionNode>;
+    cloneWithOrderBy(aggregateFunctionNode: AggregateFunctionNode, orderItems: ReadonlyArray<OrderByItemNode>, withinGroup?: boolean): Readonly<AggregateFunctionNode>;
+    cloneWithFilter(aggregateFunctionNode: AggregateFunctionNode, filter: OperationNode): Readonly<AggregateFunctionNode>;
+    cloneWithOrFilter(aggregateFunctionNode: AggregateFunctionNode, filter: OperationNode): Readonly<AggregateFunctionNode>;
+    cloneWithOver(aggregateFunctionNode: AggregateFunctionNode, over?: OverNode): Readonly<AggregateFunctionNode>;
+}>;
 interface AggregateFunctionNode extends OperationNode {
     readonly kind: 'AggregateFunctionNode';
     readonly func: string;
@@ -6998,15 +7069,7 @@ interface AggregateFunctionNode extends OperationNode {
 /**
  * @internal
  */
-declare const AggregateFunctionNode: Readonly<{
-    is(node: OperationNode): node is AggregateFunctionNode;
-    create(aggregateFunction: string, aggregated?: readonly OperationNode[]): AggregateFunctionNode;
-    cloneWithDistinct(aggregateFunctionNode: AggregateFunctionNode): AggregateFunctionNode;
-    cloneWithOrderBy(aggregateFunctionNode: AggregateFunctionNode, orderItems: ReadonlyArray<OrderByItemNode>, withinGroup?: boolean): AggregateFunctionNode;
-    cloneWithFilter(aggregateFunctionNode: AggregateFunctionNode, filter: OperationNode): AggregateFunctionNode;
-    cloneWithOrFilter(aggregateFunctionNode: AggregateFunctionNode, filter: OperationNode): AggregateFunctionNode;
-    cloneWithOver(aggregateFunctionNode: AggregateFunctionNode, over?: OverNode): AggregateFunctionNode;
-}>;
+declare const AggregateFunctionNode: AggregateFunctionNodeFactory;
 
 type PartitionByExpression<DB, TB extends keyof DB> = StringReference<DB, TB> | DynamicReferenceBuilder<any>;
 
@@ -8060,6 +8123,13 @@ interface FunctionModule<DB, TB extends keyof DB> {
 }
 declare function createFunctionModule<DB, TB extends keyof DB>(): FunctionModule<DB, TB>;
 
+type CaseNodeFactory = Readonly<{
+    is(node: OperationNode): node is CaseNode;
+    create(value?: OperationNode): Readonly<CaseNode>;
+    cloneWithWhen(caseNode: CaseNode, when: WhenNode): Readonly<CaseNode>;
+    cloneWithThen(caseNode: CaseNode, then: OperationNode): Readonly<CaseNode>;
+    cloneWith(caseNode: CaseNode, props: Partial<Pick<CaseNode, 'else' | 'isStatement'>>): Readonly<CaseNode>;
+}>;
 interface CaseNode extends OperationNode {
     readonly kind: 'CaseNode';
     readonly value?: OperationNode;
@@ -8070,13 +8140,7 @@ interface CaseNode extends OperationNode {
 /**
  * @internal
  */
-declare const CaseNode: Readonly<{
-    is(node: OperationNode): node is CaseNode;
-    create(value?: OperationNode): CaseNode;
-    cloneWithWhen(caseNode: CaseNode, when: WhenNode): CaseNode;
-    cloneWithThen(caseNode: CaseNode, then: OperationNode): CaseNode;
-    cloneWith(caseNode: CaseNode, props: Partial<Pick<CaseNode, "else" | "isStatement">>): CaseNode;
-}>;
+declare const CaseNode: CaseNodeFactory;
 
 declare class CaseBuilder<DB, TB extends keyof DB, W = unknown, O = never> implements Whenable<DB, TB, W, O> {
     #private;
@@ -8184,6 +8248,10 @@ interface Endable<DB, TB extends keyof DB, O> {
 }
 
 type JSONPathLegType = 'Member' | 'ArrayLocation';
+type JSONPathLegNodeFactory = Readonly<{
+    is(node: OperationNode): node is JSONPathLegNode;
+    create(type: JSONPathLegType, value: string | number): Readonly<JSONPathLegNode>;
+}>;
 interface JSONPathLegNode extends OperationNode {
     readonly kind: 'JSONPathLegNode';
     readonly type: JSONPathLegType;
@@ -8192,11 +8260,13 @@ interface JSONPathLegNode extends OperationNode {
 /**
  * @internal
  */
-declare const JSONPathLegNode: Readonly<{
-    is(node: OperationNode): node is JSONPathLegNode;
-    create(type: JSONPathLegType, value: string | number): JSONPathLegNode;
-}>;
+declare const JSONPathLegNode: JSONPathLegNodeFactory;
 
+type JSONPathNodeFactory = Readonly<{
+    is(node: OperationNode): node is JSONPathNode;
+    create(inOperator?: OperatorNode): Readonly<JSONPathNode>;
+    cloneWithLeg(jsonPathNode: JSONPathNode, pathLeg: JSONPathLegNode): Readonly<JSONPathNode>;
+}>;
 interface JSONPathNode extends OperationNode {
     readonly kind: 'JSONPathNode';
     readonly inOperator?: OperatorNode;
@@ -8205,12 +8275,13 @@ interface JSONPathNode extends OperationNode {
 /**
  * @internal
  */
-declare const JSONPathNode: Readonly<{
-    is(node: OperationNode): node is JSONPathNode;
-    create(inOperator?: OperatorNode): JSONPathNode;
-    cloneWithLeg(jsonPathNode: JSONPathNode, pathLeg: JSONPathLegNode): JSONPathNode;
-}>;
+declare const JSONPathNode: JSONPathNodeFactory;
 
+type JSONOperatorChainNodeFactory = Readonly<{
+    is(node: OperationNode): node is JSONOperatorChainNode;
+    create(operator: OperatorNode): Readonly<JSONOperatorChainNode>;
+    cloneWithValue(node: JSONOperatorChainNode, value: ValueNode): Readonly<JSONOperatorChainNode>;
+}>;
 interface JSONOperatorChainNode extends OperationNode {
     readonly kind: 'JSONOperatorChainNode';
     readonly operator: OperatorNode;
@@ -8219,12 +8290,13 @@ interface JSONOperatorChainNode extends OperationNode {
 /**
  * @internal
  */
-declare const JSONOperatorChainNode: Readonly<{
-    is(node: OperationNode): node is JSONOperatorChainNode;
-    create(operator: OperatorNode): JSONOperatorChainNode;
-    cloneWithValue(node: JSONOperatorChainNode, value: ValueNode): JSONOperatorChainNode;
-}>;
+declare const JSONOperatorChainNode: JSONOperatorChainNodeFactory;
 
+type JSONReferenceNodeFactory = Readonly<{
+    is(node: OperationNode): node is JSONReferenceNode;
+    create(reference: ReferenceNode, traversal: JSONPathNode | JSONOperatorChainNode): Readonly<JSONReferenceNode>;
+    cloneWithTraversal(node: JSONReferenceNode, traversal: JSONPathNode | JSONOperatorChainNode): Readonly<JSONReferenceNode>;
+}>;
 interface JSONReferenceNode extends OperationNode {
     readonly kind: 'JSONReferenceNode';
     readonly reference: ReferenceNode;
@@ -8233,11 +8305,7 @@ interface JSONReferenceNode extends OperationNode {
 /**
  * @internal
  */
-declare const JSONReferenceNode: Readonly<{
-    is(node: OperationNode): node is JSONReferenceNode;
-    create(reference: ReferenceNode, traversal: JSONPathNode | JSONOperatorChainNode): JSONReferenceNode;
-    cloneWithTraversal(node: JSONReferenceNode, traversal: JSONPathNode | JSONOperatorChainNode): JSONReferenceNode;
-}>;
+declare const JSONReferenceNode: JSONReferenceNodeFactory;
 
 declare class JSONPathBuilder<S, O = S> {
     #private;
@@ -10265,7 +10333,7 @@ declare class CreateTableBuilder<TB extends string, C extends string = never> im
      * select "first_name", "last_name" from "person"
      * ```
      */
-    as(expression: Expression<unknown>): CreateTableBuilder<string, never>;
+    as(expression: Expression<unknown>): CreateTableBuilder<TB, C>;
     /**
      * Calls the given function passing `this` as the only argument.
      *
@@ -17718,7 +17786,8 @@ interface QueryCreatorProps {
     readonly withNode?: WithNode;
 }
 
-declare const LOG_LEVELS: readonly ["query", "error"];
+declare const logLevels: readonly ["query", "error"];
+declare const LOG_LEVELS: Readonly<typeof logLevels>;
 type LogLevel = ArrayItemType<typeof LOG_LEVELS>;
 interface QueryLogEvent {
     readonly level: 'query';

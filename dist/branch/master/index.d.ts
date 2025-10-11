@@ -1,6 +1,10 @@
-import { O as OperationNode, V as ValueListNode, R as RawBuilder, Q as QueryExecutor, K as KyselyPlugin, D as DialectAdapter, a as RootOperationNode, b as QueryId, C as CompiledQuery, c as DatabaseConnection, d as QueryResult, e as ConnectionProvider, f as QueryCompiler, S as SelectQueryNode, g as SelectionNode, h as ColumnNode, A as AliasNode, T as TableNode, F as FromNode, i as ReferenceNode, j as AndNode, k as OrNode, P as ParensNode, J as JoinNode, l as RawNode, W as WhereNode, I as InsertQueryNode, m as DeleteQueryNode, n as ReturningNode, o as CreateTableNode, p as AddColumnNode, q as ColumnDefinitionNode, r as DropTableNode, s as OrderByNode, t as OrderByItemNode, G as GroupByNode, u as GroupByItemNode, U as UpdateQueryNode, v as ColumnUpdateNode, L as LimitNode, w as OffsetNode, x as OnConflictNode, y as OnDuplicateKeyNode, z as CreateIndexNode, B as DropIndexNode, E as PrimaryKeyConstraintNode, H as UniqueConstraintNode, M as ReferencesNode, N as CheckConstraintNode, X as WithNode, Y as CommonTableExpressionNode, Z as CommonTableExpressionNameNode, _ as HavingNode, $ as CreateSchemaNode, a0 as DropSchemaNode, a1 as AlterTableNode, a2 as DropColumnNode, a3 as RenameColumnNode, a4 as AlterColumnNode, a5 as ModifyColumnNode, a6 as AddConstraintNode, a7 as DropConstraintNode, a8 as RenameConstraintNode, a9 as ForeignKeyConstraintNode, aa as DataTypeNode, ab as SelectAllNode, ac as IdentifierNode, ad as SchemableIdentifierNode, ae as ValueNode, af as OperatorNode, ag as CreateViewNode, ah as RefreshMaterializedViewNode, ai as DropViewNode, aj as GeneratedNode, ak as DefaultValueNode, al as OnNode, am as SelectModifierNode, an as CreateTypeNode, ao as DropTypeNode, ap as ExplainNode, aq as AggregateFunctionNode, ar as OverNode, as as PartitionByNode, at as PartitionByItemNode, au as SetOperationNode, av as UsingNode, aw as CaseNode, ax as WhenNode, ay as JSONReferenceNode, az as JSONPathNode, aA as JSONPathLegNode, aB as JSONOperatorChainNode, aC as MergeQueryNode, aD as AddIndexNode, aE as FetchNode, aF as TopNode, aG as OutputNode, aH as OrActionNode, aI as CollateNode, aJ as AlterTableColumnAlterationNode, aK as Driver, aL as Kysely, aM as MigrationLockOptions, aN as Dialect, aO as DatabaseIntrospector, aP as SchemaMetadata, aQ as DatabaseMetadataOptions, aR as TableMetadata, aS as DatabaseMetadata, aT as TransactionSettings, aU as KyselyTypeError, aV as PluginTransformQueryArgs, aW as PluginTransformResultArgs, aX as UnknownRow, aY as Compilable, aZ as InsertResult, a_ as UpdateResult, a$ as DeleteResult, b0 as MergeResult, b1 as Simplify, b2 as ExpressionOrFactory } from './kysely.d-v_F937cW.js';
-export { ex as ARITHMETIC_OPERATORS, dV as AccessMode, d_ as AddIndexNodeProps, cR as AggregateFunctionBuilder, cT as AggregateFunctionBuilderProps, b_ as AliasableExpression, cS as AliasedAggregateFunctionBuilder, dS as AliasedDynamicTableBuilder, b$ as AliasedExpression, c3 as AliasedExpressionWrapper, c$ as AliasedJSONPathBuilder, da as AliasedRawBuilder, cl as AliasedSelectQueryBuilder, dL as AlterColumnBuilder, dN as AlterColumnBuilderCallback, d$ as AlterColumnNodeProps, dA as AlterTableBuilder, dB as AlterTableBuilderProps, dD as AlterTableColumnAlteringBuilder, dE as AlterTableColumnAlteringBuilderProps, e0 as AlterTableNodeTableProps, dM as AlteredColumnBuilder, c5 as AndWrapper, b5 as AnyAliasedColumn, b6 as AnyAliasedColumnWithTable, b7 as AnyColumn, b8 as AnyColumnWithTable, eE as ArithmeticOperator, ez as BINARY_OPERATORS, eH as BinaryOperator, ew as COMPARISON_OPERATORS, bn as CallbackSelection, cV as CaseBuilder, cY as CaseEndBuilder, cW as CaseThenBuilder, cX as CaseWhenBuilder, bN as Collation, dC as ColumnAlteringInterface, df as ColumnBuilderCallback, ec as ColumnDataType, dv as ColumnDefinitionBuilder, dw as ColumnDefinitionBuilderCallback, e1 as ColumnDefinitionNodeProps, dZ as ColumnMetadata, f0 as ColumnType, bW as Command, eD as ComparisonOperator, bI as ComparisonOperatorExpression, bS as ConnectionBuilder, e2 as ConstraintNode, bV as ControlledTransaction, bU as ControlledTransactionBuilder, dm as CreateIndexBuilder, dn as CreateIndexBuilderProps, e3 as CreateIndexNodeProps, dr as CreateSchemaBuilder, ds as CreateSchemaBuilderProps, e5 as CreateSchemaNodeParams, dd as CreateTableBuilder, de as CreateTableBuilderProps, e8 as CreateTableNodeParams, dg as CreateTypeBuilder, dh as CreateTypeBuilderProps, e9 as CreateTypeNodeParams, dF as CreateViewBuilder, dG as CreateViewBuilderProps, ea as CreateViewNodeParams, ed as DataTypeParams, cy as DeleteQueryBuilder, cz as DeleteQueryBuilderProps, cD as DeleteQueryBuilderWithFullJoin, cA as DeleteQueryBuilderWithInnerJoin, cB as DeleteQueryBuilderWithLeftJoin, cC as DeleteQueryBuilderWithRightJoin, ef as DropConstraintNodeProps, dp as DropIndexBuilder, dq as DropIndexBuilderProps, eg as DropIndexNodeProps, dt as DropSchemaBuilder, du as DropSchemaBuilderProps, eh as DropSchemaNodeParams, di as DropTableBuilder, dj as DropTableBuilderProps, ei as DropTablexNodeParams, dk as DropTypeBuilder, dl as DropTypeBuilderProps, ej as DropTypeNodeParams, dJ as DropViewBuilder, dK as DropViewBuilderProps, ek as DropViewNodeParams, dO as DynamicModule, dP as DynamicReferenceBuilder, dR as DynamicTableBuilder, b9 as Equals, fk as ErrorLogEvent, fe as ExplainFormat, ff as Explainable, bZ as Expression, b3 as ExpressionBuilder, c2 as ExpressionWrapper, bt as ExtractTypeFromReferenceExpression, bs as ExtractTypeFromStringReference, d5 as ExtractWheneableMergeQueryBuilder, el as FetchModifier, bL as FilterObject, dy as ForeignKeyConstraintBuilder, dz as ForeignKeyConstraintBuilderCallback, dx as ForeignKeyConstraintBuilderInterface, em as ForeignKeyConstraintNodeProps, cJ as FunctionModule, f1 as Generated, f2 as GeneratedAlways, en as GeneratedNodeParams, cg as HavingInterface, e4 as IndexType, bB as InsertObject, cq as InsertQueryBuilder, cr as InsertQueryBuilderProps, eo as InsertQueryNodeProps, f5 as InsertType, fb as Insertable, dX as IsolationLevel, f3 as JSONColumnType, eF as JSONOperator, eG as JSONOperatorWith$, cZ as JSONPathBuilder, eq as JSONPathLegType, ey as JSON_OPERATORS, cH as JoinBuilder, cI as JoinBuilderProps, bA as JoinCallbackExpression, bz as JoinReferenceExpression, ep as JoinType, bR as KyselyConfig, bP as KyselyProps, fh as LOG_LEVELS, fo as Log, fn as LogConfig, fl as LogEvent, fi as LogLevel, fm as Logger, d3 as MatchedThenableMergeQueryBuilder, d0 as MergeQueryBuilder, d1 as MergeQueryBuilderProps, c8 as MultiTableReturningInterface, cF as NoResultError, cE as NoResultErrorConstructor, f8 as NonNullableInsertKeys, d4 as NotMatchedThenableMergeQueryBuilder, bd as NotNull, bb as Nullable, f7 as NullableInsertKeys, bc as NumbersWhenDataTypeNotAvailable, be as NumericString, e6 as ON_COMMIT_ACTIONS, eU as ON_MODIFY_FOREIGN_ACTIONS, eC as OPERATORS, e7 as OnCommitAction, cL as OnConflictBuilder, cM as OnConflictBuilderProps, cN as OnConflictDatabase, cP as OnConflictDoNothingBuilder, er as OnConflictNodeProps, cO as OnConflictTables, cQ as OnConflictUpdateBuilder, es as OnDuplicateKeyNodeProps, eV as OnModifyForeignAction, bM as OperandExpression, bJ as OperandValueExpression, bK as OperandValueExpressionOrList, ev as OperationNodeKind, et as OperationNodeSource, eK as Operator, c4 as OrWrapper, bG as OrderByDirection, bE as OrderByDirectionExpression, bD as OrderByExpression, ch as OrderByInterface, d6 as OrderByItemBuilder, d7 as OrderByItemBuilderProps, eQ as OrderByItemNodeProps, bF as OrderByModifiers, bH as OrderByModifiersCallbackExpression, cd as OutputCallback, cb as OutputDatabase, cc as OutputExpression, c9 as OutputInterface, ca as OutputPrefix, cU as OverBuilderCallback, eS as PrimaryConstraintNode, eR as PrimaryKeyConstraintNodeProps, bX as QueryCreator, bY as QueryCreatorProps, db as QueryExecutorProvider, fj as QueryLogEvent, eT as QueryNode, d8 as RawBuilderProps, bo as ReferenceExpression, bp as ReferenceExpressionOrList, dH as RefreshMaterializedViewBuilder, dI as RefreshMaterializedViewBuilderProps, eb as RefreshMaterializedViewNodeParams, c7 as ReturningInterface, dc as SchemaModule, bl as SelectArg, bk as SelectCallback, bj as SelectExpression, cf as SelectExpressionFromOutputCallback, ce as SelectExpressionFromOutputExpression, eW as SelectModifier, ci as SelectQueryBuilder, ck as SelectQueryBuilderProps, cp as SelectQueryBuilderWithFullJoin, cm as SelectQueryBuilderWithInnerJoin, cn as SelectQueryBuilderWithLeftJoin, co as SelectQueryBuilderWithRightJoin, f4 as SelectType, fa as Selectable, bm as Selection, eX as SetOperator, bf as ShallowDehydrateObject, bg as ShallowDehydrateValue, bq as SimpleReferenceExpression, eY as SimpleReferenceExpressionNode, bw as SimpleTableReference, ba as SqlBool, fg as Streamable, br as StringReference, bh as StringsWhenDataTypeNotAvailable, dU as TRANSACTION_ACCESS_MODES, dW as TRANSACTION_ISOLATION_LEVELS, bx as TableExpression, by as TableExpressionOrList, eZ as TopModifier, bO as Transaction, bT as TransactionBuilder, c_ as TraversedJSONPathBuilder, eA as UNARY_FILTER_OPERATORS, eB as UNARY_OPERATORS, eJ as UnaryFilterOperator, eI as UnaryOperator, e_ as UniqueConstraintNodeProps, f9 as UpdateKeys, bC as UpdateObject, cs as UpdateQueryBuilder, ct as UpdateQueryBuilderProps, cx as UpdateQueryBuilderWithFullJoin, cu as UpdateQueryBuilderWithInnerJoin, cv as UpdateQueryBuilderWithLeftJoin, cw as UpdateQueryBuilderWithRightJoin, f6 as UpdateType, fc as Updateable, bu as ValueExpression, bv as ValueExpressionOrList, d2 as WheneableMergeQueryBuilder, c6 as WhereInterface, e$ as WithNodeParams, cK as createFunctionModule, bi as createQueryId, d9 as createRawBuilder, cj as createSelectQueryBuilder, b4 as expressionBuilder, dT as isAliasedDynamicTableBuilder, c1 as isAliasedExpression, eO as isArithmeticOperator, eM as isBinaryOperator, ee as isColumnDataType, eN as isComparisonOperator, fd as isCompilable, dQ as isDynamicReferenceBuilder, c0 as isExpression, eP as isJSONOperator, bQ as isKyselyProps, cG as isNoResultErrorConstructor, eu as isOperationNodeSource, eL as isOperator, dY as validateTransactionSettings } from './kysely.d-v_F937cW.js';
+import { O as OperationNode, V as ValueListNode, R as RawBuilder, Q as QueryExecutor, K as KyselyPlugin, D as DialectAdapter, a as RootOperationNode, b as QueryId, C as CompiledQuery, c as DatabaseConnection, d as QueryResult, e as ConnectionProvider, f as QueryCompiler, S as SelectQueryNode, g as SelectionNode, h as ColumnNode, A as AliasNode, T as TableNode, F as FromNode, i as ReferenceNode, j as AndNode, k as OrNode, P as ParensNode, J as JoinNode, l as RawNode, W as WhereNode, I as InsertQueryNode, m as DeleteQueryNode, n as ReturningNode, o as CreateTableNode, p as AddColumnNode, q as ColumnDefinitionNode, r as DropTableNode, s as OrderByNode, t as OrderByItemNode, G as GroupByNode, u as GroupByItemNode, U as UpdateQueryNode, v as ColumnUpdateNode, L as LimitNode, w as OffsetNode, x as OnConflictNode, y as OnDuplicateKeyNode, z as CreateIndexNode, B as DropIndexNode, E as PrimaryKeyConstraintNode, H as UniqueConstraintNode, M as ReferencesNode, N as CheckConstraintNode, X as WithNode, Y as CommonTableExpressionNode, Z as CommonTableExpressionNameNode, _ as HavingNode, $ as CreateSchemaNode, a0 as DropSchemaNode, a1 as AlterTableNode, a2 as DropColumnNode, a3 as RenameColumnNode, a4 as AlterColumnNode, a5 as ModifyColumnNode, a6 as AddConstraintNode, a7 as DropConstraintNode, a8 as RenameConstraintNode, a9 as ForeignKeyConstraintNode, aa as DataTypeNode, ab as SelectAllNode, ac as IdentifierNode, ad as SchemableIdentifierNode, ae as ValueNode, af as OperatorNode, ag as CreateViewNode, ah as RefreshMaterializedViewNode, ai as DropViewNode, aj as GeneratedNode, ak as DefaultValueNode, al as OnNode, am as SelectModifierNode, an as CreateTypeNode, ao as DropTypeNode, ap as ExplainNode, aq as AggregateFunctionNode, ar as OverNode, as as PartitionByNode, at as PartitionByItemNode, au as SetOperationNode, av as UsingNode, aw as CaseNode, ax as WhenNode, ay as JSONReferenceNode, az as JSONPathNode, aA as JSONPathLegNode, aB as JSONOperatorChainNode, aC as MergeQueryNode, aD as AddIndexNode, aE as FetchNode, aF as TopNode, aG as OutputNode, aH as OrActionNode, aI as CollateNode, aJ as AlterTableColumnAlterationNode, aK as Driver, aL as Kysely, aM as MigrationLockOptions, aN as Dialect, aO as DatabaseIntrospector, aP as SchemaMetadata, aQ as DatabaseMetadataOptions, aR as TableMetadata, aS as DatabaseMetadata, aT as TransactionSettings, aU as KyselyTypeError, aV as PluginTransformQueryArgs, aW as PluginTransformResultArgs, aX as UnknownRow, aY as Compilable, aZ as InsertResult, a_ as UpdateResult, a$ as DeleteResult, b0 as MergeResult, b1 as Simplify, b2 as ExpressionOrFactory } from './kysely.d-ezjuEPyg.js';
+export { ex as ARITHMETIC_OPERATORS, dV as AccessMode, d_ as AddIndexNodeProps, cR as AggregateFunctionBuilder, cT as AggregateFunctionBuilderProps, b_ as AliasableExpression, cS as AliasedAggregateFunctionBuilder, dS as AliasedDynamicTableBuilder, b$ as AliasedExpression, c3 as AliasedExpressionWrapper, c$ as AliasedJSONPathBuilder, da as AliasedRawBuilder, cl as AliasedSelectQueryBuilder, dL as AlterColumnBuilder, dN as AlterColumnBuilderCallback, d$ as AlterColumnNodeProps, dA as AlterTableBuilder, dB as AlterTableBuilderProps, dD as AlterTableColumnAlteringBuilder, dE as AlterTableColumnAlteringBuilderProps, e0 as AlterTableNodeTableProps, dM as AlteredColumnBuilder, c5 as AndWrapper, b5 as AnyAliasedColumn, b6 as AnyAliasedColumnWithTable, b7 as AnyColumn, b8 as AnyColumnWithTable, eE as ArithmeticOperator, ez as BINARY_OPERATORS, eH as BinaryOperator, ew as COMPARISON_OPERATORS, bn as CallbackSelection, cV as CaseBuilder, cY as CaseEndBuilder, cW as CaseThenBuilder, cX as CaseWhenBuilder, bN as Collation, dC as ColumnAlteringInterface, df as ColumnBuilderCallback, ec as ColumnDataType, dv as ColumnDefinitionBuilder, dw as ColumnDefinitionBuilderCallback, e1 as ColumnDefinitionNodeProps, dZ as ColumnMetadata, f0 as ColumnType, bW as Command, eD as ComparisonOperator, bI as ComparisonOperatorExpression, bS as ConnectionBuilder, e2 as ConstraintNode, bV as ControlledTransaction, bU as ControlledTransactionBuilder, dm as CreateIndexBuilder, dn as CreateIndexBuilderProps, e3 as CreateIndexNodeProps, dr as CreateSchemaBuilder, ds as CreateSchemaBuilderProps, e5 as CreateSchemaNodeParams, dd as CreateTableBuilder, de as CreateTableBuilderProps, e8 as CreateTableNodeParams, dg as CreateTypeBuilder, dh as CreateTypeBuilderProps, e9 as CreateTypeNodeParams, dF as CreateViewBuilder, dG as CreateViewBuilderProps, ea as CreateViewNodeParams, ed as DataTypeParams, cy as DeleteQueryBuilder, cz as DeleteQueryBuilderProps, cD as DeleteQueryBuilderWithFullJoin, cA as DeleteQueryBuilderWithInnerJoin, cB as DeleteQueryBuilderWithLeftJoin, cC as DeleteQueryBuilderWithRightJoin, ef as DropConstraintNodeProps, dp as DropIndexBuilder, dq as DropIndexBuilderProps, eg as DropIndexNodeProps, dt as DropSchemaBuilder, du as DropSchemaBuilderProps, eh as DropSchemaNodeParams, di as DropTableBuilder, dj as DropTableBuilderProps, ei as DropTablexNodeParams, dk as DropTypeBuilder, dl as DropTypeBuilderProps, ej as DropTypeNodeParams, dJ as DropViewBuilder, dK as DropViewBuilderProps, ek as DropViewNodeParams, dO as DynamicModule, dP as DynamicReferenceBuilder, dR as DynamicTableBuilder, b9 as Equals, fk as ErrorLogEvent, fe as ExplainFormat, ff as Explainable, bZ as Expression, b3 as ExpressionBuilder, c2 as ExpressionWrapper, bt as ExtractTypeFromReferenceExpression, bs as ExtractTypeFromStringReference, d5 as ExtractWheneableMergeQueryBuilder, el as FetchModifier, bL as FilterObject, dy as ForeignKeyConstraintBuilder, dz as ForeignKeyConstraintBuilderCallback, dx as ForeignKeyConstraintBuilderInterface, em as ForeignKeyConstraintNodeProps, cJ as FunctionModule, f1 as Generated, f2 as GeneratedAlways, en as GeneratedNodeParams, cg as HavingInterface, e4 as IndexType, bB as InsertObject, cq as InsertQueryBuilder, cr as InsertQueryBuilderProps, eo as InsertQueryNodeProps, f5 as InsertType, fb as Insertable, dX as IsolationLevel, f3 as JSONColumnType, eF as JSONOperator, eG as JSONOperatorWith$, cZ as JSONPathBuilder, eq as JSONPathLegType, ey as JSON_OPERATORS, cH as JoinBuilder, cI as JoinBuilderProps, bA as JoinCallbackExpression, bz as JoinReferenceExpression, ep as JoinType, bR as KyselyConfig, bP as KyselyProps, fh as LOG_LEVELS, fo as Log, fn as LogConfig, fl as LogEvent, fi as LogLevel, fm as Logger, d3 as MatchedThenableMergeQueryBuilder, d0 as MergeQueryBuilder, d1 as MergeQueryBuilderProps, c8 as MultiTableReturningInterface, cF as NoResultError, cE as NoResultErrorConstructor, f8 as NonNullableInsertKeys, d4 as NotMatchedThenableMergeQueryBuilder, bd as NotNull, bb as Nullable, f7 as NullableInsertKeys, bc as NumbersWhenDataTypeNotAvailable, be as NumericString, e6 as ON_COMMIT_ACTIONS, eU as ON_MODIFY_FOREIGN_ACTIONS, eC as OPERATORS, e7 as OnCommitAction, cL as OnConflictBuilder, cM as OnConflictBuilderProps, cN as OnConflictDatabase, cP as OnConflictDoNothingBuilder, er as OnConflictNodeProps, cO as OnConflictTables, cQ as OnConflictUpdateBuilder, es as OnDuplicateKeyNodeProps, eV as OnModifyForeignAction, bM as OperandExpression, bJ as OperandValueExpression, bK as OperandValueExpressionOrList, ev as OperationNodeKind, et as OperationNodeSource, eK as Operator, c4 as OrWrapper, bG as OrderByDirection, bE as OrderByDirectionExpression, bD as OrderByExpression, ch as OrderByInterface, d6 as OrderByItemBuilder, d7 as OrderByItemBuilderProps, eQ as OrderByItemNodeProps, bF as OrderByModifiers, bH as OrderByModifiersCallbackExpression, cd as OutputCallback, cb as OutputDatabase, cc as OutputExpression, c9 as OutputInterface, ca as OutputPrefix, cU as OverBuilderCallback, eS as PrimaryConstraintNode, eR as PrimaryKeyConstraintNodeProps, bX as QueryCreator, bY as QueryCreatorProps, db as QueryExecutorProvider, fj as QueryLogEvent, eT as QueryNode, d8 as RawBuilderProps, bo as ReferenceExpression, bp as ReferenceExpressionOrList, dH as RefreshMaterializedViewBuilder, dI as RefreshMaterializedViewBuilderProps, eb as RefreshMaterializedViewNodeParams, c7 as ReturningInterface, dc as SchemaModule, bl as SelectArg, bk as SelectCallback, bj as SelectExpression, cf as SelectExpressionFromOutputCallback, ce as SelectExpressionFromOutputExpression, eW as SelectModifier, ci as SelectQueryBuilder, ck as SelectQueryBuilderProps, cp as SelectQueryBuilderWithFullJoin, cm as SelectQueryBuilderWithInnerJoin, cn as SelectQueryBuilderWithLeftJoin, co as SelectQueryBuilderWithRightJoin, f4 as SelectType, fa as Selectable, bm as Selection, eX as SetOperator, bf as ShallowDehydrateObject, bg as ShallowDehydrateValue, bq as SimpleReferenceExpression, eY as SimpleReferenceExpressionNode, bw as SimpleTableReference, ba as SqlBool, fg as Streamable, br as StringReference, bh as StringsWhenDataTypeNotAvailable, dU as TRANSACTION_ACCESS_MODES, dW as TRANSACTION_ISOLATION_LEVELS, bx as TableExpression, by as TableExpressionOrList, eZ as TopModifier, bO as Transaction, bT as TransactionBuilder, c_ as TraversedJSONPathBuilder, eA as UNARY_FILTER_OPERATORS, eB as UNARY_OPERATORS, eJ as UnaryFilterOperator, eI as UnaryOperator, e_ as UniqueConstraintNodeProps, f9 as UpdateKeys, bC as UpdateObject, cs as UpdateQueryBuilder, ct as UpdateQueryBuilderProps, cx as UpdateQueryBuilderWithFullJoin, cu as UpdateQueryBuilderWithInnerJoin, cv as UpdateQueryBuilderWithLeftJoin, cw as UpdateQueryBuilderWithRightJoin, f6 as UpdateType, fc as Updateable, bu as ValueExpression, bv as ValueExpressionOrList, d2 as WheneableMergeQueryBuilder, c6 as WhereInterface, e$ as WithNodeParams, cK as createFunctionModule, bi as createQueryId, d9 as createRawBuilder, cj as createSelectQueryBuilder, b4 as expressionBuilder, dT as isAliasedDynamicTableBuilder, c1 as isAliasedExpression, eO as isArithmeticOperator, eM as isBinaryOperator, ee as isColumnDataType, eN as isComparisonOperator, fd as isCompilable, dQ as isDynamicReferenceBuilder, c0 as isExpression, eP as isJSONOperator, bQ as isKyselyProps, cG as isNoResultErrorConstructor, eu as isOperationNodeSource, eL as isOperator, dY as validateTransactionSettings } from './kysely.d-ezjuEPyg.js';
 
+type BinaryOperationNodeFactory = Readonly<{
+    is(node: OperationNode): node is BinaryOperationNode;
+    create(leftOperand: OperationNode, operator: OperationNode, rightOperand: OperationNode): Readonly<BinaryOperationNode>;
+}>;
 interface BinaryOperationNode extends OperationNode {
     readonly kind: 'BinaryOperationNode';
     readonly leftOperand: OperationNode;
@@ -10,11 +14,12 @@ interface BinaryOperationNode extends OperationNode {
 /**
  * @internal
  */
-declare const BinaryOperationNode: Readonly<{
-    is(node: OperationNode): node is BinaryOperationNode;
-    create(leftOperand: OperationNode, operator: OperationNode, rightOperand: OperationNode): BinaryOperationNode;
-}>;
+declare const BinaryOperationNode: BinaryOperationNodeFactory;
 
+type PrimitiveValueListNodeFactory = Readonly<{
+    is(node: OperationNode): node is PrimitiveValueListNode;
+    create(values: ReadonlyArray<unknown>): Readonly<PrimitiveValueListNode>;
+}>;
 /**
  * This node is basically just a performance optimization over the normal ValueListNode.
  * The queries often contain large arrays of primitive values (for example in a `where in` list)
@@ -27,12 +32,13 @@ interface PrimitiveValueListNode extends OperationNode {
 /**
  * @internal
  */
-declare const PrimitiveValueListNode: Readonly<{
-    is(node: OperationNode): node is PrimitiveValueListNode;
-    create(values: ReadonlyArray<unknown>): PrimitiveValueListNode;
-}>;
+declare const PrimitiveValueListNode: PrimitiveValueListNodeFactory;
 
 type ValuesItemNode = ValueListNode | PrimitiveValueListNode;
+type ValuesNodeFactory = Readonly<{
+    is(node: OperationNode): node is ValuesNode;
+    create(values: ReadonlyArray<ValuesItemNode>): Readonly<ValuesNode>;
+}>;
 interface ValuesNode extends OperationNode {
     readonly kind: 'ValuesNode';
     readonly values: ReadonlyArray<ValuesItemNode>;
@@ -40,10 +46,7 @@ interface ValuesNode extends OperationNode {
 /**
  * @internal
  */
-declare const ValuesNode: Readonly<{
-    is(node: OperationNode): node is ValuesNode;
-    create(values: ReadonlyArray<ValuesItemNode>): ValuesNode;
-}>;
+declare const ValuesNode: ValuesNodeFactory;
 
 interface Sql {
     /**
@@ -562,6 +565,10 @@ declare class NoopQueryExecutor extends QueryExecutorBase {
 }
 declare const NOOP_QUERY_EXECUTOR: NoopQueryExecutor;
 
+type ListNodeFactory = Readonly<{
+    is(node: OperationNode): node is ListNode;
+    create(items: ReadonlyArray<OperationNode>): Readonly<ListNode>;
+}>;
 interface ListNode extends OperationNode {
     readonly kind: 'ListNode';
     readonly items: ReadonlyArray<OperationNode>;
@@ -569,22 +576,24 @@ interface ListNode extends OperationNode {
 /**
  * @internal
  */
-declare const ListNode: Readonly<{
-    is(node: OperationNode): node is ListNode;
-    create(items: ReadonlyArray<OperationNode>): ListNode;
-}>;
+declare const ListNode: ListNodeFactory;
 
+type DefaultInsertValueNodeFactory = Readonly<{
+    is(node: OperationNode): node is DefaultInsertValueNode;
+    create(): Readonly<DefaultInsertValueNode>;
+}>;
 interface DefaultInsertValueNode extends OperationNode {
     readonly kind: 'DefaultInsertValueNode';
 }
 /**
  * @internal
  */
-declare const DefaultInsertValueNode: Readonly<{
-    is(node: OperationNode): node is DefaultInsertValueNode;
-    create(): DefaultInsertValueNode;
-}>;
+declare const DefaultInsertValueNode: DefaultInsertValueNodeFactory;
 
+type UnaryOperationNodeFactory = Readonly<{
+    is(node: OperationNode): node is UnaryOperationNode;
+    create(operator: OperationNode, operand: OperationNode): Readonly<UnaryOperationNode>;
+}>;
 interface UnaryOperationNode extends OperationNode {
     readonly kind: 'UnaryOperationNode';
     readonly operator: OperationNode;
@@ -593,11 +602,12 @@ interface UnaryOperationNode extends OperationNode {
 /**
  * @internal
  */
-declare const UnaryOperationNode: Readonly<{
-    is(node: OperationNode): node is UnaryOperationNode;
-    create(operator: OperationNode, operand: OperationNode): UnaryOperationNode;
-}>;
+declare const UnaryOperationNode: UnaryOperationNodeFactory;
 
+type FunctionNodeFactory = Readonly<{
+    is(node: OperationNode): node is FunctionNode;
+    create(func: string, args: ReadonlyArray<OperationNode>): Readonly<FunctionNode>;
+}>;
 interface FunctionNode extends OperationNode {
     readonly kind: 'FunctionNode';
     readonly func: string;
@@ -606,11 +616,12 @@ interface FunctionNode extends OperationNode {
 /**
  * @internal
  */
-declare const FunctionNode: Readonly<{
-    is(node: OperationNode): node is FunctionNode;
-    create(func: string, args: ReadonlyArray<OperationNode>): FunctionNode;
-}>;
+declare const FunctionNode: FunctionNodeFactory;
 
+type TupleNodeFactory = Readonly<{
+    is(node: OperationNode): node is TupleNode;
+    create(values: ReadonlyArray<OperationNode>): Readonly<TupleNode>;
+}>;
 interface TupleNode extends OperationNode {
     readonly kind: 'TupleNode';
     readonly values: ReadonlyArray<OperationNode>;
@@ -618,11 +629,12 @@ interface TupleNode extends OperationNode {
 /**
  * @internal
  */
-declare const TupleNode: Readonly<{
-    is(node: OperationNode): node is TupleNode;
-    create(values: ReadonlyArray<OperationNode>): TupleNode;
-}>;
+declare const TupleNode: TupleNodeFactory;
 
+type MatchedNodeFactory = Readonly<{
+    is(node: OperationNode): node is MatchedNode;
+    create(not: boolean, bySource?: boolean): Readonly<MatchedNode>;
+}>;
 interface MatchedNode extends OperationNode {
     readonly kind: 'MatchedNode';
     readonly not: boolean;
@@ -631,11 +643,12 @@ interface MatchedNode extends OperationNode {
 /**
  * @internal
  */
-declare const MatchedNode: Readonly<{
-    is(node: OperationNode): node is MatchedNode;
-    create(not: boolean, bySource?: boolean): MatchedNode;
-}>;
+declare const MatchedNode: MatchedNodeFactory;
 
+type CastNodeFactory = Readonly<{
+    is(node: OperationNode): node is CastNode;
+    create(expression: OperationNode, dataType: OperationNode): Readonly<CastNode>;
+}>;
 interface CastNode extends OperationNode {
     readonly kind: 'CastNode';
     readonly expression: OperationNode;
@@ -644,10 +657,7 @@ interface CastNode extends OperationNode {
 /**
  * @internal
  */
-declare const CastNode: Readonly<{
-    is(node: OperationNode): node is CastNode;
-    create(expression: OperationNode, dataType: OperationNode): CastNode;
-}>;
+declare const CastNode: CastNodeFactory;
 
 declare abstract class OperationNodeVisitor {
     #private;
