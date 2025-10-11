@@ -1,5 +1,5 @@
 {
-    "lastCommitId": "4e3d27ebb6c0cdd91eb13b912ddd18793b445049",
+    "lastCommitId": "456e0b2d92d422d0c6676ddef2a18f317e2b73fe",
     "tags": [
         {
             "name": "0.24.0",
@@ -625,12 +625,10 @@
                 "sqlite"
             ],
             "dir": "dist/tag/v0.28.3"
-        }
-    ],
-    "branches": [
+        },
         {
-            "name": "master",
-            "commitId": "4e3d27ebb6c0cdd91eb13b912ddd18793b445049",
+            "name": "v0.28.4",
+            "commitId": "60740fcaaf25c7af1e1ba1ef624ffd23d4c990b4",
             "dependencies": {
                 "typescript": "^5.8.3"
             },
@@ -645,8 +643,190 @@
                 "index.d.ts",
                 "index.js",
                 "json-object-args-TSy-YmJr.js",
-                "kysely.d-YKFY4VAQ.d.ts",
+                "kysely.d-rF-oPSnx.d.ts",
                 "sql-LwB1Z6zS.js",
+                "helpers/mssql.d.ts",
+                "helpers/mssql.js",
+                "helpers/mysql.d.ts",
+                "helpers/mysql.js",
+                "helpers/postgres.d.ts",
+                "helpers/postgres.js",
+                "helpers/sqlite.d.ts",
+                "helpers/sqlite.js"
+            ],
+            "dialects": [
+                "postgres",
+                "mysql",
+                "mssql",
+                "sqlite"
+            ],
+            "dir": "dist/tag/v0.28.4"
+        },
+        {
+            "name": "v0.28.5",
+            "commitId": "b2105547998f7f034d49e81f5fd5bcc2d8491c0c",
+            "dependencies": {
+                "typescript": "^5.8.3"
+            },
+            "exports": [
+                ".",
+                "./helpers/postgres",
+                "./helpers/mysql",
+                "./helpers/mssql",
+                "./helpers/sqlite"
+            ],
+            "files": [
+                "index.d.ts",
+                "index.js",
+                "json-object-args-TSy-YmJr.js",
+                "kysely.d-rPlYGTF3.d.ts",
+                "sql-LwB1Z6zS.js",
+                "helpers/mssql.d.ts",
+                "helpers/mssql.js",
+                "helpers/mysql.d.ts",
+                "helpers/mysql.js",
+                "helpers/postgres.d.ts",
+                "helpers/postgres.js",
+                "helpers/sqlite.d.ts",
+                "helpers/sqlite.js"
+            ],
+            "dialects": [
+                "postgres",
+                "mysql",
+                "mssql",
+                "sqlite"
+            ],
+            "dir": "dist/tag/v0.28.5"
+        },
+        {
+            "name": "v0.28.6",
+            "commitId": "6216e1f0e302f57a27c19e6f69d0893577640977",
+            "dependencies": {
+                "typescript": "~5.9.2"
+            },
+            "exports": [
+                ".",
+                "./helpers/postgres",
+                "./helpers/mysql",
+                "./helpers/mssql",
+                "./helpers/sqlite"
+            ],
+            "files": [
+                "index.d.ts",
+                "index.js",
+                "json-object-args-rPDgACEI.js",
+                "kysely.d-xljlifda.d.ts",
+                "sql-pbFhIE6e.js",
+                "helpers/mssql.d.ts",
+                "helpers/mssql.js",
+                "helpers/mysql.d.ts",
+                "helpers/mysql.js",
+                "helpers/postgres.d.ts",
+                "helpers/postgres.js",
+                "helpers/sqlite.d.ts",
+                "helpers/sqlite.js"
+            ],
+            "dialects": [
+                "postgres",
+                "mysql",
+                "mssql",
+                "sqlite"
+            ],
+            "dir": "dist/tag/v0.28.6"
+        },
+        {
+            "name": "v0.28.7",
+            "commitId": "504af7af1c99d41ddb80f81d54a03f09792e9297",
+            "dependencies": {
+                "typescript": "~5.9.2"
+            },
+            "exports": [
+                ".",
+                "./helpers/postgres",
+                "./helpers/mysql",
+                "./helpers/mssql",
+                "./helpers/sqlite"
+            ],
+            "files": [
+                "index.d.ts",
+                "index.js",
+                "json-object-args-OR04EBgw.js",
+                "kysely.d-v_F937cW.d.ts",
+                "sql-81COyFJq.js",
+                "helpers/mssql.d.ts",
+                "helpers/mssql.js",
+                "helpers/mysql.d.ts",
+                "helpers/mysql.js",
+                "helpers/postgres.d.ts",
+                "helpers/postgres.js",
+                "helpers/sqlite.d.ts",
+                "helpers/sqlite.js"
+            ],
+            "dialects": [
+                "postgres",
+                "mysql",
+                "mssql",
+                "sqlite"
+            ],
+            "dir": "dist/tag/v0.28.7"
+        },
+        {
+            "name": "v0.28.8",
+            "commitId": "4daed49d735dd48e17c90c4f16b369f56f282e09",
+            "dependencies": {
+                "typescript": "~5.9.3"
+            },
+            "exports": [
+                ".",
+                "./helpers/postgres",
+                "./helpers/mysql",
+                "./helpers/mssql",
+                "./helpers/sqlite"
+            ],
+            "files": [
+                "index.d.ts",
+                "index.js",
+                "json-object-args-qOSaahtn.js",
+                "kysely.d-v_F937cW.d.ts",
+                "sql-EZ618Qbp.js",
+                "helpers/mssql.d.ts",
+                "helpers/mssql.js",
+                "helpers/mysql.d.ts",
+                "helpers/mysql.js",
+                "helpers/postgres.d.ts",
+                "helpers/postgres.js",
+                "helpers/sqlite.d.ts",
+                "helpers/sqlite.js"
+            ],
+            "dialects": [
+                "postgres",
+                "mysql",
+                "mssql",
+                "sqlite"
+            ],
+            "dir": "dist/tag/v0.28.8"
+        }
+    ],
+    "branches": [
+        {
+            "name": "master",
+            "commitId": "4daed49d735dd48e17c90c4f16b369f56f282e09",
+            "dependencies": {
+                "typescript": "~5.9.3"
+            },
+            "exports": [
+                ".",
+                "./helpers/postgres",
+                "./helpers/mysql",
+                "./helpers/mssql",
+                "./helpers/sqlite"
+            ],
+            "files": [
+                "index.d.ts",
+                "index.js",
+                "json-object-args-qOSaahtn.js",
+                "kysely.d-v_F937cW.d.ts",
+                "sql-EZ618Qbp.js",
                 "helpers/mssql.d.ts",
                 "helpers/mssql.js",
                 "helpers/mysql.d.ts",

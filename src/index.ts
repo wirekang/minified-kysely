@@ -76,8 +76,8 @@ async function go(
   await restore(dir);
   await checkout(dir, commitId);
   await patchFiles(dir, commitId, commitIds);
-  await execAsync(`cd "${dir}" && npm ci`);
-  await execAsync(`cd "${dir}" && npm run build`);
+  await execAsync(`cd "${dir}" && pnpm install --frozen-lockfile`);
+  await execAsync(`cd "${dir}" && pnpm run build`);
   const packageJson = JSON.parse(await fs.readFile(path.join(dir, "package.json"), { encoding: "utf-8" }));
   const exports: any = {};
   Object.keys(packageJson.exports).forEach((it) => {

@@ -20,6 +20,11 @@ export async function getCommits(dir: string): Promise<Array<Commit>> {
   const lines = str.split("\n");
   let startIndex = -1;
   const commits = lines.map((line, i) => {
+    // certain git clients have different output formats.
+    if (line.startsWith("'") && line.endsWith("'")) {
+      line = line.substring(1, line.length - 1);
+    }
+
     const [id, refNames] = line.split(sep);
     if (id === START_COMMIT) {
       startIndex = i;
