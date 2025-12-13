@@ -1,5 +1,5 @@
 {
-    "lastCommitId": "630ef7c49721186fd4a9c5a81cbeab528bfee66e",
+    "lastCommitId": "44e578de6214e9558c13bbcb0fdf24fc2d53d281",
     "tags": [
         {
             "name": "0.24.0",
@@ -805,12 +805,48 @@
                 "sqlite"
             ],
             "dir": "dist/tag/v0.28.8"
+        },
+        {
+            "name": "v0.28.9",
+            "commitId": "44e578de6214e9558c13bbcb0fdf24fc2d53d281",
+            "dependencies": {
+                "typescript": "~5.9.3"
+            },
+            "exports": [
+                ".",
+                "./helpers/postgres",
+                "./helpers/mysql",
+                "./helpers/mssql",
+                "./helpers/sqlite"
+            ],
+            "files": [
+                "index.d.ts",
+                "index.js",
+                "json-object-args-dk-wmpvY.js",
+                "kysely.d-ezjuEPyg.d.ts",
+                "sql-A2tQZs4J.js",
+                "helpers/mssql.d.ts",
+                "helpers/mssql.js",
+                "helpers/mysql.d.ts",
+                "helpers/mysql.js",
+                "helpers/postgres.d.ts",
+                "helpers/postgres.js",
+                "helpers/sqlite.d.ts",
+                "helpers/sqlite.js"
+            ],
+            "dialects": [
+                "postgres",
+                "mysql",
+                "mssql",
+                "sqlite"
+            ],
+            "dir": "dist/tag/v0.28.9"
         }
     ],
     "branches": [
         {
             "name": "master",
-            "commitId": "630ef7c49721186fd4a9c5a81cbeab528bfee66e",
+            "commitId": "44e578de6214e9558c13bbcb0fdf24fc2d53d281",
             "dependencies": {
                 "typescript": "~5.9.3"
             },
