@@ -2539,7 +2539,7 @@ interface MigratorProps {
      * the project, to the end of time or prepare to manually migrate the migration
      * tables.
      *
-     * This only works on postgres.
+     * This only works on postgres and mssql.
      */
     readonly migrationTableSchema?: string;
     /**
