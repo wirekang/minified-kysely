@@ -1,4 +1,4 @@
-import { b$ as Expression, R as RawBuilder, b1 as Simplify, bh as ShallowDehydrateObject, bi as ShallowDehydrateValue } from '../kysely.d--idVExPl.js';
+import { c0 as Expression, R as RawBuilder, b1 as Simplify, bh as ShallowDehydrateObject, bi as ShallowDehydrateValue } from '../kysely.d-SFhhUPmX.js';
 
 /**
  * An MS SQL Server helper for aggregating a subquery into a JSON array.

@@ -1,4 +1,4 @@
-import { fr as SelectQueryBuilderExpression, R as RawBuilder, b1 as Simplify, bh as ShallowDehydrateObject, b$ as Expression, bi as ShallowDehydrateValue } from '../kysely.d--idVExPl.js';
+import { fs as SelectQueryBuilderExpression, R as RawBuilder, b1 as Simplify, bh as ShallowDehydrateObject, c0 as Expression, bi as ShallowDehydrateValue } from '../kysely.d-SFhhUPmX.js';
 
 /**
  * A SQLite helper for aggregating a subquery into a JSON array.
