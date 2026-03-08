@@ -1350,10 +1350,10 @@ interface MysqlPool {
     end(callback: (error: unknown) => void): void;
 }
 interface MysqlPoolConnection {
-    query(sql: string, parameters: ReadonlyArray<unknown>): {
+    query(sql: string, parameters: Array<unknown>): {
         stream: <T>(options: MysqlStreamOptions) => MysqlStream<T>;
     };
-    query(sql: string, parameters: ReadonlyArray<unknown>, callback: (error: unknown, result: MysqlQueryResult) => void): void;
+    query(sql: string, parameters: Array<unknown>, callback: (error: unknown, result: MysqlQueryResult) => void): void;
     release(): void;
 }
 interface MysqlStreamOptions {
