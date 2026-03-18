@@ -3174,7 +3174,7 @@ type Selectable<R> = DrainOuterGeneric<{
  * // }
  * ```
  */
-type Insertable<R> = DrainOuterGeneric<{
+type Insertable<R> = DrainOuterGeneric<object & {
     [K in NonNullableInsertKeys<R>]: InsertType<R[K]>;
 } & {
     [K in NullableInsertKeys<R>]?: InsertType<R[K]>;
