@@ -1,5 +1,5 @@
 {
-    "lastCommitId": "2fb071bfb9c4bf27ce0cf7d05ef1eeb89668e7e0",
+    "lastCommitId": "91cf3733b2a419f5b17dff118cedb7052ab5300d",
     "tags": [
         {
             "name": "0.24.0",
@@ -985,12 +985,10 @@
                 "sqlite"
             ],
             "dir": "dist/tag/v0.28.13"
-        }
-    ],
-    "branches": [
+        },
         {
-            "name": "master",
-            "commitId": "2fb071bfb9c4bf27ce0cf7d05ef1eeb89668e7e0",
+            "name": "v0.28.14",
+            "commitId": "91cf3733b2a419f5b17dff118cedb7052ab5300d",
             "dependencies": {
                 "typescript": "~5.9.3"
             },
@@ -1005,7 +1003,45 @@
                 "index.d.ts",
                 "index.js",
                 "json-object-args-dk-wmpvY.js",
-                "kysely.d-5XwF2IIQ.d.ts",
+                "kysely.d-OvJBGBxV.d.ts",
+                "sql-A2tQZs4J.js",
+                "helpers/mssql.d.ts",
+                "helpers/mssql.js",
+                "helpers/mysql.d.ts",
+                "helpers/mysql.js",
+                "helpers/postgres.d.ts",
+                "helpers/postgres.js",
+                "helpers/sqlite.d.ts",
+                "helpers/sqlite.js"
+            ],
+            "dialects": [
+                "postgres",
+                "mysql",
+                "mssql",
+                "sqlite"
+            ],
+            "dir": "dist/tag/v0.28.14"
+        }
+    ],
+    "branches": [
+        {
+            "name": "master",
+            "commitId": "91cf3733b2a419f5b17dff118cedb7052ab5300d",
+            "dependencies": {
+                "typescript": "~5.9.3"
+            },
+            "exports": [
+                ".",
+                "./helpers/postgres",
+                "./helpers/mysql",
+                "./helpers/mssql",
+                "./helpers/sqlite"
+            ],
+            "files": [
+                "index.d.ts",
+                "index.js",
+                "json-object-args-dk-wmpvY.js",
+                "kysely.d-OvJBGBxV.d.ts",
                 "sql-A2tQZs4J.js",
                 "helpers/mssql.d.ts",
                 "helpers/mssql.js",
