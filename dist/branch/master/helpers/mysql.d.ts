@@ -1,4 +1,4 @@
-import { fu as SelectQueryBuilderExpression, R as RawBuilder, b1 as Simplify, bh as ShallowDehydrateObject, c2 as Expression, bi as ShallowDehydrateValue } from '../kysely.d-OvJBGBxV.js';
+import { fv as SelectQueryBuilderExpression, R as RawBuilder, b1 as Simplify, bh as ShallowDehydrateObject, c2 as Expression, bi as ShallowDehydrateValue } from '../kysely.d-ArG9JfFn.js';
 
 /**
  * A MySQL helper for aggregating a subquery into a JSON array.
