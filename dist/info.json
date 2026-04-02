@@ -1,5 +1,5 @@
 {
-    "lastCommitId": "699891593c4d7888940dd7539282a0444fb4bd45",
+    "lastCommitId": "5a0f14b84bf1658bff83babc71e3bf039797b4d9",
     "tags": [
         {
             "name": "0.24.0",
@@ -1062,7 +1062,7 @@
     "branches": [
         {
             "name": "master",
-            "commitId": "699891593c4d7888940dd7539282a0444fb4bd45",
+            "commitId": "5a0f14b84bf1658bff83babc71e3bf039797b4d9",
             "dependencies": {
                 "typescript": "6.0.2"
             },
@@ -1077,7 +1077,7 @@
                 "index.d.ts",
                 "index.js",
                 "json-object-args-G4RpYjcg.js",
-                "kysely.d-ArG9JfFn.d.ts",
+                "kysely.d-hPOgT1AH.d.ts",
                 "sql-usf0kc1e.js",
                 "helpers/mssql.d.ts",
                 "helpers/mssql.js",

@@ -9223,7 +9223,7 @@ interface ExpressionBuilder<DB, TB extends keyof DB> {
      * ```
      *
      * In the next example a reference tuple is compared to a subquery. Note that
-     * in this case you need to use the {@link @SelectQueryBuilder.$asTuple | $asTuple}
+     * in this case you need to use the {@link SelectQueryBuilder.$asTuple | $asTuple}
      * function:
      *
      * ```ts
@@ -14122,21 +14122,21 @@ declare class UpdateQueryBuilder<DB, UT extends keyof DB, TB extends keyof DB, O
     fullJoin<TE extends TableExpression<DB, TB>, K1 extends JoinReferenceExpression<DB, TB, TE>, K2 extends JoinReferenceExpression<DB, TB, TE>>(table: TE, k1: K1, k2: K2): UpdateQueryBuilderWithFullJoin<DB, UT, TB, O, TE>;
     fullJoin<TE extends TableExpression<DB, TB>, FN extends JoinCallbackExpression<DB, TB, TE>>(table: TE, callback: FN): UpdateQueryBuilderWithFullJoin<DB, UT, TB, O, TE>;
     /**
-     * @description This is only supported by some dialects like MySQL or SQLite with `SQLITE_ENABLE_UPDATE_DELETE_LIMIT`.
+     * @remarks This is only supported by some dialects like MySQL or SQLite with `SQLITE_ENABLE_UPDATE_DELETE_LIMIT`.
      */
     orderBy<OE extends OrderByExpression<DB, TB, {}>>(expr: OE, modifiers?: OrderByModifiers): UpdateQueryBuilder<DB, UT, TB, O>;
     /**
-     * @description This is only supported by some dialects like MySQL or SQLite with `SQLITE_ENABLE_UPDATE_DELETE_LIMIT`.
+     * @remarks This is only supported by some dialects like MySQL or SQLite with `SQLITE_ENABLE_UPDATE_DELETE_LIMIT`.
      * @deprecated It does ~2-2.6x more compile-time instantiations compared to multiple chained `orderBy(expr, modifiers?)` calls (in `order by` clauses with reasonable item counts), and has broken autocompletion.
      */
     orderBy<OE extends OrderByExpression<DB, TB, {}> | DirectedOrderByStringReference<DB, TB, {}>>(exprs: ReadonlyArray<OE>): UpdateQueryBuilder<DB, UT, TB, O>;
     /**
-     * @description This is only supported by some dialects like MySQL or SQLite with `SQLITE_ENABLE_UPDATE_DELETE_LIMIT`.
+     * @remarks This is only supported by some dialects like MySQL or SQLite with `SQLITE_ENABLE_UPDATE_DELETE_LIMIT`.
      * @deprecated It does ~2.9x more compile-time instantiations compared to a `orderBy(expr, direction)` call.
      */
     orderBy<OE extends DirectedOrderByStringReference<DB, TB, {}>>(expr: OE): UpdateQueryBuilder<DB, UT, TB, O>;
     /**
-     * @description This is only supported by some dialects like MySQL or SQLite with `SQLITE_ENABLE_UPDATE_DELETE_LIMIT`.
+     * @remarks This is only supported by some dialects like MySQL or SQLite with `SQLITE_ENABLE_UPDATE_DELETE_LIMIT`.
      * @deprecated Use `orderBy(expr, (ob) => ...)` instead.
      */
     orderBy<OE extends OrderByExpression<DB, TB, {}>>(expr: OE, modifiers: Expression<any>): UpdateQueryBuilder<DB, UT, TB, O>;
@@ -15860,21 +15860,21 @@ declare class DeleteQueryBuilder<DB, TB extends keyof DB, O> implements WhereInt
      */
     clearLimit(): DeleteQueryBuilder<DB, TB, O>;
     /**
-     * @description This is only supported by some dialects like MySQL or SQLite with `SQLITE_ENABLE_UPDATE_DELETE_LIMIT`.
+     * @remarks This is only supported by some dialects like MySQL or SQLite with `SQLITE_ENABLE_UPDATE_DELETE_LIMIT`.
      */
     orderBy<OE extends OrderByExpression<DB, TB, {}>>(expr: OE, modifiers?: OrderByModifiers): DeleteQueryBuilder<DB, TB, O>;
     /**
-     * @description This is only supported by some dialects like MySQL or SQLite with `SQLITE_ENABLE_UPDATE_DELETE_LIMIT`.
+     * @remarks This is only supported by some dialects like MySQL or SQLite with `SQLITE_ENABLE_UPDATE_DELETE_LIMIT`.
      * @deprecated It does ~2-2.6x more compile-time instantiations compared to multiple chained `orderBy(expr, modifiers?)` calls (in `order by` clauses with reasonable item counts), and has broken autocompletion.
      */
     orderBy<OE extends OrderByExpression<DB, TB, {}> | DirectedOrderByStringReference<DB, TB, {}>>(exprs: ReadonlyArray<OE>): DeleteQueryBuilder<DB, TB, O>;
     /**
-     * @description This is only supported by some dialects like MySQL or SQLite with `SQLITE_ENABLE_UPDATE_DELETE_LIMIT`.
+     * @remarks This is only supported by some dialects like MySQL or SQLite with `SQLITE_ENABLE_UPDATE_DELETE_LIMIT`.
      * @deprecated It does ~2.9x more compile-time instantiations compared to a `orderBy(expr, direction)` call.
      */
     orderBy<OE extends DirectedOrderByStringReference<DB, TB, {}>>(expr: OE): DeleteQueryBuilder<DB, TB, O>;
     /**
-     * @description This is only supported by some dialects like MySQL or SQLite with `SQLITE_ENABLE_UPDATE_DELETE_LIMIT`.
+     * @remarks This is only supported by some dialects like MySQL or SQLite with `SQLITE_ENABLE_UPDATE_DELETE_LIMIT`.
      * @deprecated Use `orderBy(expr, (ob) => ...)` instead.
      */
     orderBy<OE extends OrderByExpression<DB, TB, {}>>(expr: OE, modifiers: Expression<any>): DeleteQueryBuilder<DB, TB, O>;
