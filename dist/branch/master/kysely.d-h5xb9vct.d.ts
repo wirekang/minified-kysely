@@ -3261,7 +3261,7 @@ type OperandValueExpression<DB, TB extends keyof DB, RE> = ValueExpression<DB, T
 type OperandValueExpressionOrList<DB, TB extends keyof DB, RE> = ValueExpressionOrList<DB, TB, ExtractTypeFromReferenceExpression<DB, TB, RE> | null>;
 type BinaryOperatorExpression = BinaryOperator | Expression<unknown>;
 type ComparisonOperatorExpression = ComparisonOperator | Expression<unknown>;
-type FilterObject<DB, TB extends keyof DB> = {
+type FilterObject<DB, TB extends keyof DB> = IsNever<TB> extends true ? KyselyTypeError<'there are no tables in query context, so a filter object cannot be defined. try passing an array instead.'> : {
     [R in StringReference<DB, TB>]?: ValueExpressionOrList<DB, TB, SelectType<ExtractTypeFromStringReference<DB, TB, R>>>;
 };
 
