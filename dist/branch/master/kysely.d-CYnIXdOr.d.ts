@@ -11255,10 +11255,6 @@ interface ReturningInterface<DB, TB extends keyof DB, O> {
      * On supported databases like PostgreSQL, this method can be chained to
      * `insert`, `update`, `delete` and `merge` queries to return data.
      *
-     * Note that on SQLite you need to give aliases for the expressions to avoid
-     * [this bug](https://sqlite.org/forum/forumpost/033daf0b32) in SQLite.
-     * For example `.returning('id as id')`.
-     *
      * Also see the {@link returningAll} method.
      *
      * ### Examples
@@ -13065,10 +13061,6 @@ declare class InsertQueryBuilder<DB, TB extends keyof DB, O> implements Returnin
      * On supported databases like PostgreSQL, this method can be chained to
      * `insert`, `update`, `delete` and `merge` queries to return data.
      *
-     * Note that on SQLite you need to give aliases for the expressions to avoid
-     * [this bug](https://sqlite.org/forum/forumpost/033daf0b32) in SQLite.
-     * For example `.returning('id as id')`.
-     *
      * Also see the {@link returningAll} method.
      *
      * ### Examples
@@ -14370,10 +14362,6 @@ declare class UpdateQueryBuilder<DB, UT extends keyof DB, TB extends keyof DB, O
      * On supported databases like PostgreSQL, this method can be chained to
      * `insert`, `update`, `delete` and `merge` queries to return data.
      *
-     * Note that on SQLite you need to give aliases for the expressions to avoid
-     * [this bug](https://sqlite.org/forum/forumpost/033daf0b32) in SQLite.
-     * For example `.returning('id as id')`.
-     *
      * Also see the {@link returningAll} method.
      *
      * ### Examples
@@ -15537,10 +15525,6 @@ declare class DeleteQueryBuilder<DB, TB extends keyof DB, O> implements WhereInt
      * On supported databases like PostgreSQL, this method can be chained to
      * `insert`, `update`, `delete` and `merge` queries to return data.
      *
-     * Note that on SQLite you need to give aliases for the expressions to avoid
-     * [this bug](https://sqlite.org/forum/forumpost/033daf0b32) in SQLite.
-     * For example `.returning('id as id')`.
-     *
      * Also see the {@link returningAll} method.
      *
      * ### Examples
@@ -16404,10 +16388,6 @@ declare class MergeQueryBuilder<DB, TT extends keyof DB, O> implements MultiTabl
      * On supported databases like PostgreSQL, this method can be chained to
      * `insert`, `update`, `delete` and `merge` queries to return data.
      *
-     * Note that on SQLite you need to give aliases for the expressions to avoid
-     * [this bug](https://sqlite.org/forum/forumpost/033daf0b32) in SQLite.
-     * For example `.returning('id as id')`.
-     *
      * Also see the {@link returningAll} method.
      *
      * ### Examples
@@ -16800,10 +16780,6 @@ declare class WheneableMergeQueryBuilder<DB, TT extends keyof DB, ST extends key
      *
      * On supported databases like PostgreSQL, this method can be chained to
      * `insert`, `update`, `delete` and `merge` queries to return data.
-     *
-     * Note that on SQLite you need to give aliases for the expressions to avoid
-     * [this bug](https://sqlite.org/forum/forumpost/033daf0b32) in SQLite.
-     * For example `.returning('id as id')`.
      *
      * Also see the {@link returningAll} method.
      *
